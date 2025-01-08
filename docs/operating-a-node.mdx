@@ -39,7 +39,9 @@ You'll need to request a quota for "Standard ECEV5 Family vCPUs" (16 vCPUs).
 Notes the setup:
 - Azure CLI version 2.65.0 (or later)
 - Storage account: no redundancy necessary
-- Disks: 2TB storage, burst-enabled (needs to support 30K IOPS read/write, 1200MiB/s sequential read/write).
+- Disk: 
+  - 2TB Premium SSD v1 (not v2!) with toggled "Performance Plus" and read-only host cache
+  - Need to support 20k IOPS read/write, 900MiB/s sequential read/write
 
 <hr class="clean" />
 
