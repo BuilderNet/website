@@ -40,7 +40,7 @@ Notes the setup:
 - Azure CLI version 2.65.0 (or later)
 - Storage account: no redundancy necessary
 - Disk: 
-  - 2TB Premium SSD v1 (not v2!) with toggled "Performance Plus" and read-only host cache
+  - 2TB Premium SSD v1 (not v2!) with toggled ["Performance Plus"](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-enable-performance?tabs=azure-cli#enable-performance-plus) and read-only [host cache](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-performance#virtual-machine-uncached-vs-cached-limits)
   - Need to support 20k IOPS read/write, 900MiB/s sequential read/write
 
 <hr class="clean" />
