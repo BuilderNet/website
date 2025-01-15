@@ -23,7 +23,7 @@ Ports open for connections from outside the TDX instance.
 
 | Port | Protocol         | Service                                                                                       | Use                                                   |
 | ---- | ---------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| 443  | TCP (HTTPS)      | [orderflow-proxy](https://www.notion.so/1066b4a0d876808e9aebca8b8ee2b99f?pvs=21)              | Orderflow from operator, users, wallets, etc.         |
+| 443  | TCP (HTTPS)      | HAProxy for [orderflow-proxy](https://github.com/flashbots/orderflow-proxy)                   | Orderflow from operator, users, wallets, etc.         |
 | 7936 | TCP (HTTPS/aTLS) | [cvm-proxy](https://github.com/flashbots/cvm-reverse-proxy)                                   | aTLS attested channel to serve local TLS certificate. |
 | 3535 | TCP (HTTP)       | [system-api](https://github.com/flashbots/builder-tools?tab=readme-ov-file#status-api-server) | Admin interface for configuration and logs.           |
 
@@ -33,20 +33,21 @@ Ports open for connections from outside the TDX instance.
 
 Ports open to requests from inside the TDX instance only.
 
-| Port  | Protocol   | Service                                                                          | Use                                                                                                                                                                                            |
-| ----- | ---------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 14727 | TCP (HTTP) | [orderflow-proxy](https://www.notion.so/1066b4a0d876808e9aebca8b8ee2b99f?pvs=21) | Serving `GET /cert` REST API which is used by cvm-proxy on port 7936.                                                                                                                          |
-| 7937  | TCP (HTTP) | [cvm-proxy](https://github.com/flashbots/cvm-reverse-proxy)                      | Proxy for requests to Flashbots infra (BuilderHub) using client-aTLS-attestation. Used to retrieve secrets and configuration, a list of peers, and for services to register their public keys. |
-| 8645  | TCP        | [rbuilder](https://github.com/flashbots/rbuilder)                                | JSON-RPC API (requests are sent from orderflow-proxy).                                                                                                                                         |
-| 6069  | TCP        | [rbuilder](https://github.com/flashbots/rbuilder)                                | Prometheus telemetry.                                                                                                                                                                          |
-| 6070  | TCP        | [rbuilder](https://github.com/flashbots/rbuilder)                                | Redacted telemetry and health check                                                                                                                                                            |
-| 6148  | TCP        | bidding-service                                                                  | Used by rbuilder for bidding                                                                                                                                                                   |
-| 3500  | TCP        | [Lighthouse](https://lighthouse-book.sigmaprime.io/advanced_networking.html)     | REST HTTP API                                                                                                                                                                                  |
-| 9001  | TCP        | [Reth](https://reth.rs/run/ports.html)                                           | Metrics, used by local Prometheus                                                                                                                                                              |
-| 8545  | TCP        | [Reth](https://reth.rs/run/ports.html)                                           | JSON-RPC API (used by rbuilder, orderflow-proxy)                                                                                                                                               |
-| 8546  | TCP/WS     | [Reth](https://reth.rs/run/ports.html)                                           |                                                                                                                                                                                                |
-| 8551  | TCP        | [Reth](https://reth.rs/run/ports.html)                                           | Engine API (used by Lighthouse)                                                                                                                                                                |
-| 9100  | TCP        | [node-exporter](https://github.com/prometheus/node_exporter)                     | System utilization metrics (cpu load, memory usage, etc) for Prometheus.                                                                                                                       |
+| Port  | Protocol   | Service                                                                      | Use                                                                                                                                                                                            |
+| ----- | ---------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 14727 | TCP (HTTP) | [orderflow-proxy](https://github.com/flashbots/orderflow-proxy)              | Serving `GET /cert` REST API which is used by cvm-proxy on port 7936.                                                                                                                          |
+| 3443  | TCP (HTTP) | [orderflow-proxy](https://github.com/flashbots/orderflow-proxy)              | User orderflow, via HAProxy on port 443.                                                                                                                                                       |
+| 7937  | TCP (HTTP) | [cvm-proxy](https://github.com/flashbots/cvm-reverse-proxy)                  | Proxy for requests to Flashbots infra (BuilderHub) using client-aTLS-attestation. Used to retrieve secrets and configuration, a list of peers, and for services to register their public keys. |
+| 8645  | TCP        | [rbuilder](https://github.com/flashbots/rbuilder)                            | JSON-RPC API (requests are sent from orderflow-proxy).                                                                                                                                         |
+| 6069  | TCP        | [rbuilder](https://github.com/flashbots/rbuilder)                            | Prometheus telemetry.                                                                                                                                                                          |
+| 6070  | TCP        | [rbuilder](https://github.com/flashbots/rbuilder)                            | Redacted telemetry and health check                                                                                                                                                            |
+| 6148  | TCP        | bidding-service                                                              | Used by rbuilder for bidding                                                                                                                                                                   |
+| 3500  | TCP        | [Lighthouse](https://lighthouse-book.sigmaprime.io/advanced_networking.html) | REST HTTP API                                                                                                                                                                                  |
+| 9001  | TCP        | [Reth](https://reth.rs/run/ports.html)                                       | Metrics, used by local Prometheus                                                                                                                                                              |
+| 8545  | TCP        | [Reth](https://reth.rs/run/ports.html)                                       | JSON-RPC API (used by rbuilder, orderflow-proxy)                                                                                                                                               |
+| 8546  | TCP/WS     | [Reth](https://reth.rs/run/ports.html)                                       |                                                                                                                                                                                                |
+| 8551  | TCP        | [Reth](https://reth.rs/run/ports.html)                                       | Engine API (used by Lighthouse)                                                                                                                                                                |
+| 9100  | TCP        | [node-exporter](https://github.com/prometheus/node_exporter)                 | System utilization metrics (cpu load, memory usage, etc) for Prometheus.                                                                                                                       |
 
 <hr class="clean" />
 
@@ -54,11 +55,11 @@ Ports open to requests from inside the TDX instance only.
 
 On the firewall, these ports should be opened up for either private or public access:
 
-| Port  | Service         | Open to                        | Used for                                                            |
-| ----- | --------------- | ------------------------------ | ------------------------------------------------------------------- |
-| 5544  | Orderflow Proxy | **Public**                     | Receive orderflow from other nodes and Flashbots.                   |
-| 9000  | Lighthouse      | **Public**                     | Consensus network peering                                           |
-| 30303 | Reth            | **Public**                     | Execution network peering                                           |
-| 443   | Orderflow Proxy | Operator, optionally for users | Receive orderflow from operator, users, wallets.                    |
-| 7936  | cvm-proxy       | Operator, optionally for users | Serve the local TLS certificate through an attested channel (aTLS). |
-| 3535  | System Api      | Operator                       | Admin interface                                                     |
+| Port  | Service                       | Open to                        | Used for                                                            |
+| ----- | ----------------------------- | ------------------------------ | ------------------------------------------------------------------- |
+| 5544  | Orderflow Proxy               | **Public**                     | Receive orderflow from other nodes and Flashbots.                   |
+| 9000  | Lighthouse                    | **Public**                     | Consensus network peering                                           |
+| 30303 | Reth                          | **Public**                     | Execution network peering                                           |
+| 443   | Orderflow Proxy (via HAProxy) | Operator, optionally for users | Receive orderflow from operator, users, wallets.                    |
+| 7936  | cvm-proxy                     | Operator, optionally for users | Serve the local TLS certificate through an attested channel (aTLS). |
+| 3535  | System Api                    | Operator                       | Admin interface                                                     |
