@@ -21,11 +21,12 @@ Ports open for connections from outside the TDX instance.
 
 **Selective access**
 
-| Port | Protocol         | Service                                                                                       | Use                                                   |
-| ---- | ---------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| 443  | TCP (HTTPS)      | HAProxy for [orderflow-proxy](https://github.com/flashbots/orderflow-proxy)                   | Orderflow from operator, users, wallets, etc.         |
-| 7936 | TCP (HTTPS/aTLS) | [cvm-proxy](https://github.com/flashbots/cvm-reverse-proxy)                                   | aTLS attested channel to serve local TLS certificate. |
-| 3535 | TCP (HTTP)       | [system-api](https://github.com/flashbots/builder-tools?tab=readme-ov-file#status-api-server) | Admin interface for configuration and logs.           |
+| Port  | Protocol         | Service                                                                                       | Use                                                                                 |
+| ----- | ---------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| 443   | TCP (HTTPS)      | HAProxy for [orderflow-proxy](https://github.com/flashbots/orderflow-proxy)                   | Orderflow from operator, users, wallets, etc.                                       |
+| 7936  | TCP (HTTPS/aTLS) | [cvm-proxy](https://github.com/flashbots/cvm-reverse-proxy)                                   | aTLS attested channel to serve local TLS certificate.                               |
+| 3535  | TCP (HTTP)       | [system-api](https://github.com/flashbots/builder-tools?tab=readme-ov-file#status-api-server) | Admin interface for configuration and logs.                                         |
+| 14192 | TCP              | SSH                                                                                           | SSH access to the instance (disabled by default, toggle through System API action). |
 
 <hr class="clean" />
 
@@ -63,3 +64,4 @@ On the firewall, these ports should be opened up for either private or public ac
 | 443   | Orderflow Proxy (via HAProxy) | Operator, optionally for users | Receive orderflow from operator, users, wallets.                    |
 | 7936  | cvm-proxy                     | Operator, optionally for users | Serve the local TLS certificate through an attested channel (aTLS). |
 | 3535  | System Api                    | Operator                       | Admin interface                                                     |
+| 14192 | SSH                           | Operator                       | SSH access to the instance                                          |
