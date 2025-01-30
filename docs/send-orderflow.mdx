@@ -87,7 +87,7 @@ It works by making a HTTPS request through an attested connection. During the TL
 You can use [this tool](https://github.com/flashbots/cvm-reverse-proxy/blob/main/cmd/attested-get/main.go) to get the certificate **with TEE attestation** (along with the attested measurements):
 
 ```bash
-go run cmd/get-measurements/main.go \
+go run cmd/attested-get/main.go \
     --addr=https://builder_hostname:7936/cert \
     --out-measurements=measurements.json \
     --out-response=builder-cert.pem \

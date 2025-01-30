@@ -51,16 +51,26 @@ Read more about aTLS in the [Constellation documentation](https://github.com/edg
 As part of the aTLS handshake, the client (i.e. user) can verify that the server runs inside a TEE instance with specific measurements
 (i.e. specific codebase and configuration).
 
-You can use [this tool](https://github.com/flashbots/cvm-reverse-proxy/blob/get-measurements/cmd/get-measurements/main.go) to get the certificate with TEE attestation:
+You can use [this tool](https://github.com/flashbots/cvm-reverse-proxy/blob/get-measurements/cmd/attested-get/main.go) to get the certificate with TEE attestation:
 
 ```bash
-go run cmd/get-measurements/main.go \
+go run cmd/attested-get/main.go \
     --addr=https://instance_ip:7936/cert \
     --out-measurements=measurements.json \
     --out-response=builder-cert.pem
 ```
 
-You can now check that the verified TEE measurements match expected measurements from https://measurements.builder.flashbots.net. This will also allow you to look up instructions for verifying the measurements through reproducible builds.
+Here's a full attestation request to the Flashbots BuilderNet node, matching expected measurements from https://measurements.builder.flashbots.net.
+:
+
+```
+go run cmd/attested-get/main.go \
+    --addr=https://buildernet-01-euw.builder.flashbots.net:7936/cert \
+    --expected-measurements=https://measurements.builder.flashbots.net
+```
+
+
+This will also allow you to look up instructions for verifying the measurements through reproducible builds.
 
 If you just want the certificate, you can request it without attestation using `curl` like this:
 
