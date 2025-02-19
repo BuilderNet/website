@@ -1,11 +1,11 @@
 ---
-title: Announcing BuilderNet v1.2
-description: We are excited to announce the release of BuilderNet v1.2! This release introduces fully automatic node bootstrapping, improved system management capabilities and authentication, and lays the groundwork for a more flexible, container-based architecture.
+title: BuilderNet v1.2
+description: We are excited to release BuilderNet v1.2, a significant upgrade that streamlines operator onboarding and enhances the security and performance of the BuilderNet infrastructure.
 image: /img/buildernet-cover-photo-m.jpg
 hide_table_of_contents: false
 ---
 
-We are excited to announce the release of BuilderNet v1.2, a significant BuilderNet upgrade that includes performance improvements, streamlined operator onboarding, and enhanced security measures.
+We are excited to release BuilderNet v1.2, a significant upgrade that streamlines operator onboarding and enhances the security and performance of the BuilderNet infrastructure.
 
 <!-- truncate -->
 
@@ -71,48 +71,6 @@ As a step towards this direction in this iteration we replaced two services (pri
 - Fix time synchronization. Instead of syncing the time once a minute run an NTP daemon
 - Fix shipping logs from containers
 
-## Version Details
-
-BuilderNet is based on [v1.2.1](https://github.com/flashbots/yocto-manifests/releases/tag/v1.2.1) tag ([commit `da661d4`](https://github.com/flashbots/yocto-manifests/commit/da661d4ade92bc282d73f35289adacc0f381e2e8)) of Yocto Manifests, our BuilderNet TDX image build toolchain.
-
-### Artifacts
-
-Signed artifacts are stored [here](https://builder-artifacts.flashbots.net/buildernet-images/), and the specific VM image file is [buildernet-v1.2.1-azure-tdx-5ddf9cba5dfe0e3ac097b005145ad789bcfdf262231382909062b02db3d461d4.wic.vhd](https://builder-artifacts.flashbots.net/buildernet-images/buildernet-v1.2.1-azure-tdx-5ddf9cba5dfe0e3ac097b005145ad789bcfdf262231382909062b02db3d461d4.wic.vhd) ([checksum](https://builder-artifacts.flashbots.net/buildernet-images/buildernet-v1.2.1-azure-tdx-5ddf9cba5dfe0e3ac097b005145ad789bcfdf262231382909062b02db3d461d4.wic.vhd.sha256), [signature](https://builder-artifacts.flashbots.net/buildernet-images/buildernet-v1.2.1-azure-tdx-5ddf9cba5dfe0e3ac097b005145ad789bcfdf262231382909062b02db3d461d4.wic.vhd.minisig)).
-
-### Measurements
-
-These are the new [live](https://measurements.builder.flashbots.net/) measurements for v1.2.1:
-
-```bash
-{
-    "measurement_id": "buildernet-v1.2.1-azure-tdx-5ddf9cba5dfe0e3ac097b005145ad789bcfdf262231382909062b02db3d461d4.wic.vhd",
-    "attestation_type": "azure-tdx",
-    "measurements": {
-        "4": {
-            "expected": "b5fee89a85bf5b168efc4468c18ec4718b26a5c9fc7854bdc34ce25b60add132"
-        },
-        "9": {
-            "expected": "210d55d0e3bd00874faaf0ac45778d53a5fd13d84e3a76720cc19b72b0eefbbc"
-        },
-        "11": {
-            "expected": "84b0ef2e25a43fae992d27602d9c35a3ec66c32fc3d7ea08df543dcc87f287e2"
-        }
-    }
-}
-```
-
-### Service versions
-
-| Service                                                                  | Version |
-| ------------------------------------------------------------------------ | ------- |
-| [Lighthouse](https://github.com/sigp/lighthouse)                         | v5.3.0  |
-| [Reth](https://github.com/paradigmxyz/reth)                              | v1.0.8  |
-| [Orderflow Proxy](https://github.com/flashbots/orderflow-proxy)          | v0.2.6  |
-| [Rbuilder-Operator](https://github.com/flashbots/rbuilder-operator/tags) | v0.1.5  |
-| [System-API](https://github.com/flashbots/system-api)                    | v0.7.0  |
-| [CVM-Proxy](https://github.com/flashbots/cvm-reverse-proxy) (client)     | v0.1.0  |
-| [CVM-Proxy](https://github.com/flashbots/cvm-reverse-proxy) (server)     | v0.1.0  |
-
 ## Reproducible builds
 
 BuilderNet v1.2 supports fully reproducible TDX image builds, which lets you arrive at the exact same measurements as our reference builds. Previously there were some non-deterministic parts in the build process of [Podman](https://github.com/containers/podman), which we have now fixed [[1]](https://github.com/flashbots/meta-custom-podman/commit/bc9c4735461f591cbcd4bff8f12b67e98cd32d06) [[2]](https://github.com/flashbots/meta-custom-podman/commit/a48177738b6216f4ef828f0fa7ab7a41081bb186).
@@ -154,6 +112,48 @@ We also wanted to share some key performance insights (data for four days, betwe
 **Finalize Time (aka Block Sealing):** Time spent finalizing blocks in milliseconds. Its applying withdrawals, doing the post block call and calculating state root hash of the block. p50 does typically not require any disk access, and is mostly io/cpu/keccak calculation
 
 ![Finalize Time Metrics](/img/post-bnet12/finalize-time-1.png)
+
+## Version Details
+
+BuilderNet is based on [v1.2.1](https://github.com/flashbots/yocto-manifests/releases/tag/v1.2.1) tag ([commit `da661d4`](https://github.com/flashbots/yocto-manifests/commit/da661d4ade92bc282d73f35289adacc0f381e2e8)) of Yocto Manifests, our BuilderNet TDX image build toolchain.
+
+### Artifacts
+
+Signed artifacts are stored [here](https://builder-artifacts.flashbots.net/buildernet-images/), and the specific VM image file is [buildernet-v1.2.1-azure-tdx-5ddf9cba5dfe0e3ac097b005145ad789bcfdf262231382909062b02db3d461d4.wic.vhd](https://builder-artifacts.flashbots.net/buildernet-images/buildernet-v1.2.1-azure-tdx-5ddf9cba5dfe0e3ac097b005145ad789bcfdf262231382909062b02db3d461d4.wic.vhd) ([checksum](https://builder-artifacts.flashbots.net/buildernet-images/buildernet-v1.2.1-azure-tdx-5ddf9cba5dfe0e3ac097b005145ad789bcfdf262231382909062b02db3d461d4.wic.vhd.sha256), [signature](https://builder-artifacts.flashbots.net/buildernet-images/buildernet-v1.2.1-azure-tdx-5ddf9cba5dfe0e3ac097b005145ad789bcfdf262231382909062b02db3d461d4.wic.vhd.minisig)).
+
+### Measurements
+
+These are the new [live](https://measurements.builder.flashbots.net/) measurements for v1.2.1:
+
+```bash
+{
+    "measurement_id": "buildernet-v1.2.1-azure-tdx-5ddf9cba5dfe0e3ac097b005145ad789bcfdf262231382909062b02db3d461d4.wic.vhd",
+    "attestation_type": "azure-tdx",
+    "measurements": {
+        "4": {
+            "expected": "b5fee89a85bf5b168efc4468c18ec4718b26a5c9fc7854bdc34ce25b60add132"
+        },
+        "9": {
+            "expected": "210d55d0e3bd00874faaf0ac45778d53a5fd13d84e3a76720cc19b72b0eefbbc"
+        },
+        "11": {
+            "expected": "84b0ef2e25a43fae992d27602d9c35a3ec66c32fc3d7ea08df543dcc87f287e2"
+        }
+    }
+}
+```
+
+### Service versions
+
+| Service                                                                  | Version |
+| ------------------------------------------------------------------------ | ------- |
+| [Lighthouse](https://github.com/sigp/lighthouse)                         | v5.3.0  |
+| [Reth](https://github.com/paradigmxyz/reth)                              | v1.0.8  |
+| [Orderflow Proxy](https://github.com/flashbots/orderflow-proxy)          | v0.2.6  |
+| [Rbuilder-Operator](https://github.com/flashbots/rbuilder-operator/tags) | v0.1.5  |
+| [System-API](https://github.com/flashbots/system-api)                    | v0.7.0  |
+| [CVM-Proxy](https://github.com/flashbots/cvm-reverse-proxy) (client)     | v0.1.0  |
+| [CVM-Proxy](https://github.com/flashbots/cvm-reverse-proxy) (server)     | v0.1.0  |
 
 ---
 
