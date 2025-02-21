@@ -24,8 +24,8 @@ You can send orderflow to any BuilderNet node that's publicly available or acces
 
 Flashbots operates a public node:
 
-- Orderflow endpoint: https://buildernet-01-euw.builder.flashbots.net:443
-- TEE proof validation (aTLS): https://buildernet-01-euw.builder.flashbots.net:7936
+- Orderflow endpoint: https://buildernet-flashbots-azure-eastus2-04.builder.flashbots.net:443
+- TEE proof validation (aTLS): https://buildernet-flashbots-azure-eastus2-04.builder.flashbots.net:7936
 
 
 :::
@@ -61,7 +61,7 @@ As an alternative to pinning the specific server certificate, you can also allow
 A curl request to send a signed transaction looks like this:
 
 ```bash
-curl https://builder_hostname:443 \
+curl https://buildernet-flashbots-azure-eastus2-04.builder.flashbots.net \
     --cacert builder-cert.pem \  # or using --insecure
     --header 'Content-Type: application/json' \
     --header 'X-Flashbots-Signature: <public key address>:<signature>' \
@@ -73,7 +73,9 @@ curl https://builder_hostname:443 \
     }'
 ```
 
-See also [this Golang code](https://github.com/flashbots/go-utils/blob/main/examples/send-multioperator-orderflow/main.go) for an full implementation.
+See also [this Golang code](https://github.com/flashbots/go-utils/blob/main/examples/send-multioperator-orderflow/main.go) for an full example about how to send a transaction with a pinned server certificate.
+
+The code below shows how to get the builder certificate (`builder-cert.pem`) over a TDX-attested channel.
 
 <hr class="clean" />
 
@@ -84,33 +86,77 @@ You can verify a builder node is running the correct code and configuration, and
 
 It works by making a HTTPS request through an attested connection. During the TLS handshake, the server proves that it's running inside a TEE with specific measurements and responds with a TLS certificate for future use. Based on the verifiable code and configuration, this provides assurances that this certificate belongs to a specific VM image with specific measurements.
 
-You can use [this tool](https://github.com/flashbots/cvm-reverse-proxy/blob/main/cmd/attested-get/main.go) to get the certificate **with TEE attestation** (along with the attested measurements):
+You can use our open-source [`attested-get` tool](https://github.com/flashbots/cvm-reverse-proxy/blob/main/cmd/attested-get/main.go) to receive the certificate **over an attested channel** (after verifying the TEE proof) and save it as `builder-cert.pem`:
 
 ```bash
-go run cmd/attested-get/main.go \
-    --addr=https://builder_hostname:7936/cert \
-    --out-measurements=measurements.json \
-    --out-response=builder-cert.pem \
-    --expected-measurements=https://measurements.builder.flashbots.net
+# Install attested-get tool
+go install github.com/flashbots/cvm-reverse-proxy/cmd/attested-get
+
+# Get the builder certificate over an attested channel
+attested-get \
+    --addr=https://buildernet-flashbots-azure-eastus2-04.builder.flashbots.net:7936/cert \
+    --expected-measurements=https://measurements.builder.flashbots.net \
+    --out-response=builder-cert.pem
 ```
 
-You can request the certificate (without attestation) using `curl` like this:
+
+<details>
+  <summary>Example output</summary>
 
 ```bash
-curl -s --insecure https://builder_hostname:7936/cert > builder-cert.pem
+time=2025-02-21T14:58:58.978+01:00 level=INFO msg="Loading expected measurements from https://measurements.builder.flashbots.net ..." service=attested-get version=dev
+time=2025-02-21T14:58:59.461+01:00 level=INFO msg="Measurements loaded" service=attested-get version=dev measurements=3
+time=2025-02-21T14:58:59.461+01:00 level=INFO msg="Executing attested GET request to https://buildernet-flashbots-azure-eastus2-04.builder.flashbots.net:7936/cert ..." service=attested-get version=dev
+time=2025-02-21T14:59:00.441+01:00 level=INFO msg="Validating attestation document" service=attested-get version=dev
+time=2025-02-21T14:59:02.419+01:00 level=INFO msg="Successfully validated attestation document" service=attested-get version=dev
+time=2025-02-21T14:59:02.533+01:00 level=INFO msg="Measurements for azure-tdx with 24 entries:" service=attested-get version=dev
+{
+    "0": "2ade8023eeec241d83eff996830fd33b6b26811a79e8e809def01296337abced",
+    "1": "3d458cfe55cc03ea1f443f1562beec8df51c75e14a9fcf9a7234a13f198e7969",
+    "10": "0000000000000000000000000000000000000000000000000000000000000000",
+    "11": "84b0ef2e25a43fae992d27602d9c35a3ec66c32fc3d7ea08df543dcc87f287e2",
+    "12": "0000000000000000000000000000000000000000000000000000000000000000",
+    "13": "0000000000000000000000000000000000000000000000000000000000000000",
+    "14": "0000000000000000000000000000000000000000000000000000000000000000",
+    "15": "0000000000000000000000000000000000000000000000000000000000000000",
+    "16": "0000000000000000000000000000000000000000000000000000000000000000",
+    "17": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "18": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "19": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "2": "3d458cfe55cc03ea1f443f1562beec8df51c75e14a9fcf9a7234a13f198e7969",
+    "20": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "21": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "22": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "23": "0000000000000000000000000000000000000000000000000000000000000000",
+    "3": "3d458cfe55cc03ea1f443f1562beec8df51c75e14a9fcf9a7234a13f198e7969",
+    "4": "b5fee89a85bf5b168efc4468c18ec4718b26a5c9fc7854bdc34ce25b60add132",
+    "5": "21b1ad7993b7fafb6325d42feb78edae740559f42fb13bff207b63a03570d7e6",
+    "6": "5d925f4f3d5191128843b4233fbb5857deeaa01e16678b3da034d8d385e56781",
+    "7": "124daf47b4d67179a77dc3c1bcca198ae1ee1d094a2a879974842e44ab98bb06",
+    "8": "0000000000000000000000000000000000000000000000000000000000000000",
+    "9": "210d55d0e3bd00874faaf0ac45778d53a5fd13d84e3a76720cc19b72b0eefbbc"
+}
+time=2025-02-21T14:59:02.533+01:00 level=INFO msg="Measurements match expected measurements ✅" service=attested-get version=dev matchedMeasurements=buildernet-v1.2.1-azure-tdx-5ddf9cba5dfe0e3ac097b005145ad789bcfdf262231382909062b02db3d461d4.wic.vhd
+time=2025-02-21T14:59:02.533+01:00 level=INFO msg="Response body with 696 bytes:" service=attested-get version=dev
+-----BEGIN CERTIFICATE-----
+MIIB1TCCAXugAwIBAgIRAIWcROk61DuUAYC2xAqrP9IwCgYIKoZIzj0EAwIwDzEN
+MAsGA1UEChMEQWNtZTAeFw0yNTAyMTcxODAwMDBaFw0yNjAyMTcxODAwMDBaMA8x
+DTALBgNVBAoTBEFjbWUwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAATycPoG5DUZ
+pGIlCVbujGM1IR5nQCHR7EtqKjESP6QRFUcEL1ElKHfqTD7OPK/M8t/xbTsR2eJT
+yjKI6Z8vnnTDo4G3MIG0MA4GA1UdDwEB/wQEAwIChDATBgNVHSUEDDAKBggrBgEF
+BQcDATAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBQ5TGL/QTbTdnZCpIa64Bgc
+7cZ3EjBdBgNVHREEVjBUgglsb2NhbGhvc3SCO2J1aWxkZXJuZXQtZmxhc2hib3Rz
+LWF6dXJlLWVhc3R1czItMDQuYnVpbGRlci5mbGFzaGJvdHMubmV0hwR/AAABhwQo
+QcO4MAoGCCqGSM49BAMCA0gAMEUCIHVTqjYYzCnH7cF7NzOpavBoh7BWQgN6D5/X
+6MReAtIwAiEA5CNGjIXUznOFvXzLMK5udyTHbBPd0WgukT7575KTniA=
+-----END CERTIFICATE-----
 ```
 
-This TLS certificate is now provably tied to the specific VM image, and any server with the corresponding private key is verified to run the correct code and configuration and inside a TEE.
+</details>
 
-You can use this certificate to securely send orderflow to this node on port 443 (see the previous section).
+This returned TLS certificate is now provably tied to the specific VM image, and any server with the corresponding private key is verified to run the correct code and configuration and inside a TEE.
 
----
-
-Example request requiring the server to own the private key:
-
-```bash
-curl --cacert builder-cert.pem https://builder_hostname:443
-```
+You can use this certificate to securely send orderflow to this node on port 443 (see the [previous section](#example-curl-request)).
 
 <hr class="clean" />
 

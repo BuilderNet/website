@@ -38,17 +38,17 @@ This is an example set of measurements in JSON format:
 
 ```json
 {
-    "measurement_id": "measurement-test-1",
+    "measurement_id": "buildernet-v1.2.1-azure-tdx-5ddf9cba5dfe0e3ac097b005145ad789bcfdf262231382909062b02db3d461d4.wic.vhd",
     "attestation_type": "azure-tdx",
     "measurements": {
         "4": {
-            "expected": "98ba2c602b62e67b8e0bd6c6676f12ade320a763e5e4564f62fd875a502dd651"
+            "expected": "b5fee89a85bf5b168efc4468c18ec4718b26a5c9fc7854bdc34ce25b60add132"
         },
         "9": {
-            "expected": "e77938394412d83a8d4de52cdaf97df82a4d4059e1e7c4fc3c73581816cea496"
+            "expected": "210d55d0e3bd00874faaf0ac45778d53a5fd13d84e3a76720cc19b72b0eefbbc"
         },
         "11": {
-            "expected": "0000000000000000000000000000000000000000000000000000000000000000"
+            "expected": "84b0ef2e25a43fae992d27602d9c35a3ec66c32fc3d7ea08df543dcc87f287e2"
         }
     }
 }
@@ -61,6 +61,11 @@ You can find more details about the individual measurement hashes in https://doc
 :::
 
 Anyone can reproduce TDX VM images that match these measurements by executing the reproducible build process.
+
+For more details, see also:
+
+- [Reproducible Builds](os-services-builds#reproducible-builds)
+- [TEE Proof Validation](send-orderflow#tee-attestation)
 
 <hr class="clean" />
 
