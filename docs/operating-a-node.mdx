@@ -32,14 +32,13 @@ We are actively working with Google, OVH and other providers, and expect to expa
 
 ### Microsoft Azure Cloud
 
-For Azure, we recommend the [Standard_EC16es_v5](https://learn.microsoft.com/en-us/azure/virtual-machines/ecesv5-ecedsv5-series#ecesv5-series) instance type.
+For Azure, we recommend the [Standard_EC16es_v5](https://learn.microsoft.com/en-us/azure/virtual-machines/ecesv5-ecedsv5-series#ecesv5-series) instance type. You'll need to request a quota for "Standard ECEV5 Family vCPUs" (16 vCPUs).
 
-You'll need to request a quota for "Standard ECEV5 Family vCPUs" (16 vCPUs).
+The Azure infrastructure can be created with this Terraform module: https://github.com/flashbots/terraform-module-azure-confidential-vm
 
-Notes the setup:
-- Azure CLI version 2.65.0 (or later)
+Notes on the setup:
 - Storage account: no redundancy necessary
-- Disk: 
+- Disk:
   - 2TB Premium SSD v1 (not v2!) with toggled ["Performance Plus"](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-enable-performance?tabs=azure-cli#enable-performance-plus) and read-only [host cache](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-performance#virtual-machine-uncached-vs-cached-limits)
   - Need to support 20k IOPS read/write, 900MiB/s sequential read/write
 

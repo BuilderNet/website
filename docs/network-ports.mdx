@@ -21,12 +21,12 @@ Ports open for connections from outside the TDX instance.
 
 **Selective access**
 
-| Port  | Protocol         | Service                                                                                       | Use                                                                                 |
-| ----- | ---------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| 443   | TCP (HTTPS)      | HAProxy for [orderflow-proxy](https://github.com/flashbots/orderflow-proxy)                   | Orderflow from operator, users, wallets, etc.                                       |
-| 7936  | TCP (HTTPS/aTLS) | [cvm-proxy](https://github.com/flashbots/cvm-reverse-proxy)                                   | aTLS attested channel to serve local TLS certificate.                               |
-| 3535  | TCP (HTTP)       | [system-api](https://github.com/flashbots/builder-tools?tab=readme-ov-file#status-api-server) | Admin interface for configuration and logs.                                         |
-| 14192 | TCP              | SSH                                                                                           | SSH access to the instance (disabled by default, toggle through System API action). |
+| Port  | Protocol         | Service                                                                     | Use                                                                                 |
+| ----- | ---------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| 443   | TCP (HTTPS)      | HAProxy for [orderflow-proxy](https://github.com/flashbots/orderflow-proxy) | Orderflow from operator, users, wallets, etc.                                       |
+| 7936  | TCP (HTTPS/aTLS) | [cvm-proxy](https://github.com/flashbots/cvm-reverse-proxy)                 | aTLS attested channel to serve local TLS certificate.                               |
+| 3535  | TCP (HTTPS)      | [Operator API](./operator-api)                                              | Admin interface for configuration and logs.                                         |
+| 14192 | TCP              | SSH                                                                         | SSH access to the instance (disabled by default, toggle through System API action). |
 
 <hr class="clean" />
 

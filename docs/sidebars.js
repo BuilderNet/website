@@ -30,8 +30,7 @@ module.exports = {
       items: [
         'architecture',
         'os-services-builds',
-        'network-ports',
-        'system-api',
+        'operator-api',
         'flashbots-infra',
       ],
     },
@@ -40,6 +39,7 @@ module.exports = {
       label: 'References',
       collapsed: false,
       items: [
+        'network-ports',
         'public-identity',
         'open-source',
         'downloads-measurements',

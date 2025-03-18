@@ -32,4 +32,5 @@ To start a new blog entry:
 
 Notes:
 
+- When making a release, search for `UPDATE_ON_RELEASE` in the docs to see what needs to be updated
 - The main index page is in [`/src/pages/index.js`](./src/pages/index.js)

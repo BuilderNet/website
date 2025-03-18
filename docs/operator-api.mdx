@@ -1,0 +1,100 @@
+---
+title: Operator API
+description: The Operator API provides a basic interaction interface for the operator with the BuilderNet node.
+---
+
+The Operator API provides an interface for operators to interact with the BuilderNet node. It allows operators to observe the node's status, restart services, trigger a graceful reboot, and apply configuration changes.
+
+The service listening on port 3535. It uses the [system-api](https://github.com/flashbots/system-api) codebase (Golang).
+
+---
+
+## Functionality for operators
+
+1. Basic observability (i.e. startup stages, errors, etc.)
+2. Trigger a graceful reboot
+3. Refresh the configuration
+4. Apply certain config changes
+5. Restart services
+
+---
+
+## Access & Security
+
+The Operator API...
+- listens on port 3535.
+- is designed to be used by the operator only, and the port should be firewalled to restrict public access.
+- supports [HTTP Basic Auth](https://datatracker.ietf.org/doc/html/rfc7617) to restrict access, and TLS for secure communication.
+- uses the [system-api](https://github.com/flashbots/system-api) codebase (Golang).
+
+---
+
+## Live configuration
+
+<!-- UPDATE_ON_RELEASE -->
+The Operator API is configured with a `system-api.toml` config file. The configuration used in BuilderNet v1.2.1 is available at the following link: [github.com/flashbots/meta-confidential-compute@f1b1770 `/recipes-core/system-api/files/systemapi-config.toml.mustache`](https://github.com/flashbots/meta-confidential-compute/blob/f1b1770d80946ea8d879632a8d572dacadb3edc4/recipes-core/system-api/files/systemapi-config.toml.mustache)
+
+```toml
+[general]
+listen_addr = "0.0.0.0:3535"
+pipe_file = "/var/volatile/system-api.fifo"
+pprof = false
+log_json = true
+log_debug = false
+
+# HTTP Basic Auth
+basic_auth_secret_path = "/persistent/system-api/basic-auth-secret"
+basic_auth_secret_salt = "1_drink_coffee:|"
+
+# HTTP server timeouts
+# http_read_timeout_ms = 2500
+# http_write_timeout_ms = 2500
+
+# TLS configuration
+tls_enabled = true
+tls_create_if_missing = true
+tls_cert_hosts = ["127.0.0.1","localhost","{{public_ip}}","{{dns_name}}"]
+tls_cert_path = "/persistent/system-api/cert.pem"
+tls_key_path = "/persistent/system-api/key.pem"
+
+[actions]
+reboot = "reboot"
+rbuilder_restart = "/etc/init.d/rbuilder restart"
+rbuilder_stop = "/etc/init.d/rbuilder stop"
+fetch_config = "/etc/init.d/fetch-config start"
+rbuilder_bidding_restart = "/etc/init.d/rbuilder-bidding restart"
+ssh_stop = "/etc/init.d/dropbear stop"
+ssh_start = "/etc/init.d/dropbear start"
+
+[file_uploads]
+rbuilder_blocklist = "/persistent/rbuilder/rbuilder.blocklist.json"
+```
+
+
+<hr class="clean" />
+
+## Example usage
+
+```bash
+# Set the initial basic auth secret (from here on out, authentication is required for all API requests).
+$ curl -d "basic_auth_secret" https://INSTANCE_IP:3535/api/v1/set-basic-auth
+
+# Get-logs API
+$ curl -u admin:basic_auth_secret https://INSTANCE_IP:3535/logs
+
+# Liveness API
+$ curl -u admin:basic_auth_secret https://INSTANCE_IP:3535/livez
+
+# API calls now only work with correct basic auth credentials
+$ curl -u admin:basic_auth_secret https://INSTANCE_IP:3535/livez
+
+# Execute 'rbuilder_restart' action
+$ curl -u admin:basic_auth_secret https://INSTANCE_IP:3535/api/v1/actions/rbuilder_restart
+
+# Upload a file
+$ curl --u admin:basic_auth_secret --data-binary "@blocklist.json" https://INSTANCE_IP:3535/api/v1/file-upload/rbuilder_blocklist
+```
+
+<hr class="clean" />
+
+Contribute to System-API on Github: https://github.com/flashbots/system-api
