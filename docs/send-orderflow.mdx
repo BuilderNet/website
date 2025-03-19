@@ -3,26 +3,26 @@ title: Send orderflow securely
 description: How to send orderflow securely to a BuilderNet node.
 ---
 
-Orderflow sent to [Flashbots Protect](https://protect.flashbots.net) and [Flashbots Bundle Relay](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint) is shared with BuilderNet. You can also send orderflow directly to a BuilderNet node (and validate its TEE proof).
+Orderflow sent to [Flashbots Protect](https://protect.flashbots.net) and [Flashbots Bundle Relay](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint) is shared with BuilderNet. You can also send orderflow directly to a BuilderNet node (and validate its TEE proof)!
 
 ---
 
 :::note
 
-The instructions in this document are intended for advanced technical users with strict trust assumptions. As a regular user, you can also use [Flashbots Protect](https://protect.flashbots.net) to transact securely through BuilderNet and get refunds for your transactions.
+The instructions in this document are intended for advanced technical users with strict trust assumptions. As a regular user, you can simply use [Flashbots Protect](https://protect.flashbots.net) to transact securely through BuilderNet and get refunds for your transactions.
 
 :::
 
 <hr class="clean" />
 
-## Sending orderflow to a builder node
+## Sending orderflow to BuilderNet directly
 
-You can send orderflow to any BuilderNet node that's publicly available or accessible to you.
+You can send orderflow to any BuilderNet node available to you.
 
 
 :::tip[Public BuilderNet node]
 
-Flashbots operates a public node:
+Flashbots operates a public BuilderNet node:
 
 - Orderflow endpoint: https://buildernet-flashbots-azure-eastus2-04.builder.flashbots.net:443
 - TEE proof validation (aTLS): https://buildernet-flashbots-azure-eastus2-04.builder.flashbots.net:7936
@@ -37,28 +37,11 @@ Flashbots operates a public node:
 1. [`eth_cancelBundle`](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint#eth_cancelbundle)
 1. [`mev_sendBundle`](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint#mev_sendbundle)
 
+---
 
-### Example Golang code
+### Example `curl` request
 
-See [this example Golang code](https://github.com/flashbots/go-utils/blob/main/examples/send-multioperator-orderflow/main.go) for sending a signed transaction to a builder node.
-The example code supports requiring a specific TLS certificate as well as skipping certificate validation.
-
-### Request authentication
-
-Requests need a `X-Flashbots-Signature` header. The signature is calculated by taking the EIP-191 hash of the json body encoded as UTF-8 bytes.
-Any valid [ECDSA secp256k1](https://en.bitcoin.it/wiki/Secp256k1) key (i.e. any Ethereum key) can be used to sign the payload. The address associated with this key will be used for [Redistribution](refunds).
-
-For more details and examples on signing the payload, see the [documentation here](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint#authentication).
-
-### Server TLS certificate
-
-The server uses a TLS certificate that's generated inside the TEE instance, which you can verify with the TEE attestation mechanism. See also "[TEE proof validation](#tee-attestation)" for more details.
-
-As an alternative to pinning the specific server certificate, you can also allow self-signed certificates (i.e. with `curl` using the `--insecure` flag).
-
-### Example curl request
-
-A curl request to send a signed transaction looks like this:
+This `curl` request sends a signed transaction to BuilderNet:
 
 ```bash
 curl https://buildernet-flashbots-azure-eastus2-04.builder.flashbots.net \
@@ -68,17 +51,40 @@ curl https://buildernet-flashbots-azure-eastus2-04.builder.flashbots.net \
     --data '{
         "jsonrpc":"2.0",
         "method":"eth_sendRawTransaction",
-        "params":["0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675"],
+        "params":["0x000000..."],
         "id":1
     }'
 ```
 
-See also [this Golang code](https://github.com/flashbots/go-utils/blob/main/examples/send-multioperator-orderflow/main.go) for an full example about how to send a transaction with a pinned server certificate.
+See also [this example Golang code](https://github.com/flashbots/go-utils/blob/main/examples/send-multioperator-orderflow/main.go) for sending a transaction with a pinned server certificate.
 
 The code below shows how to get the builder certificate (`builder-cert.pem`) over a TDX-attested channel.
 
 <hr class="clean" />
 
+### Request authentication
+
+Requests need a `X-Flashbots-Signature` header. The signature is calculated by taking the EIP-191 hash of the json body encoded as UTF-8 bytes.
+Any valid [ECDSA secp256k1](https://en.bitcoin.it/wiki/Secp256k1) key (i.e. any Ethereum key) can be used to sign the payload. The address associated with this key will be used for [Redistribution](refunds).
+
+For more details and examples on signing the payload, see the [documentation here](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint#authentication).
+
+<hr class="clean" />
+
+### Example Golang code
+
+See [this example Golang code](https://github.com/flashbots/go-utils/blob/main/examples/send-multioperator-orderflow/main.go) for sending a signed transaction to a builder node.
+The example code supports requiring a specific TLS certificate as well as skipping certificate validation.
+
+<hr class="clean" />
+
+### Server TLS certificate
+
+The server uses a TLS certificate that's generated inside the TEE instance, which you can verify with the TEE attestation mechanism. See also "[TEE proof validation](#tee-attestation)" for more details.
+
+As an alternative to pinning the specific server certificate, you can also allow self-signed certificates (i.e. with `curl` using the `--insecure` flag).
+
+<hr class="clean" />
 
 ## TEE proof validation {#tee-attestation}
 
@@ -160,11 +166,12 @@ You can use this certificate to securely send orderflow to this node on port 443
 
 <hr class="clean" />
 
-See also:
+## See also
+
 - [Example code (Golang) for sending orderflow](https://github.com/flashbots/go-utils/blob/main/examples/send-multioperator-orderflow/main.go)
 - [Verifiable System Integrity](verifiable-system-integrity)
 - [Reproducible Builds](os-services-builds#reproducible-builds)
 
-
 ---
-Join the discussion in the [Flashbots forum](https://collective.flashbots.net/c/builders/14)!
+
+Join the discussion in the [Flashbots forum](https://collective.flashbots.net/c/buildernet/31)!
