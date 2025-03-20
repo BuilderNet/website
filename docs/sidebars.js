@@ -13,18 +13,6 @@ module.exports = {
     },
     {
       type: 'category',
-      label: 'Security',
-      collapsed: false,
-      items: [
-        'verifiable-system-integrity',
-        'encryption-attestations',
-        'orderflow-sharing-confidentiality',
-        // 'threat-model',
-        'send-orderflow',
-      ],
-    },
-    {
-      type: 'category',
       label: 'Architecture',
       collapsed: false,
       items: [
@@ -36,13 +24,25 @@ module.exports = {
     },
     {
       type: 'category',
+      label: 'Security',
+      collapsed: false,
+      items: [
+        'verifiable-system-integrity',
+        'encryption-attestations',
+        'orderflow-sharing-confidentiality',
+        // 'threat-model',
+      ],
+    },
+    {
+      type: 'category',
       label: 'References',
       collapsed: false,
       items: [
-        'network-ports',
+        'send-orderflow',
         'public-identity',
-        'open-source',
+        'network-ports',
         'downloads-measurements',
+        'open-source',
         'operating-a-node',
         // 'contribute',
       ],
