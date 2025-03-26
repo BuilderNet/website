@@ -17,14 +17,14 @@ The operating system and all components support fully reproducible builds.
 
 These are the main services running inside an instance:
 
-| Repository                                                                                   | Description                                                      |
-| -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| [github.com/flashbots/rbuilder](https://github.com/flashbots/rbuilder)                       | The block building software                                      |
-| [github.com/sigp/lighthouse](https://github.com/sigp/lighthouse)                             | CL client                                                        |
-| [github.com/paradigmxyz/reth/](https://github.com/paradigmxyz/reth/)                         | EL client                                                        |
-| [github.com/flashbots/system-api](https://github.com/flashbots/system-api)                   | Interface between operators and services inside the TDX instance |
-| [github.com/flashbots/cvm-reverse-proxy](https://github.com/flashbots/cvm-reverse-proxy)     | For verifying TDX measurements using attestations                |
-| [github.com/flashbots/tdx-orderflow-proxy](https://github.com/flashbots/tdx-orderflow-proxy) | Receiving and multiplexing orderflow                             |
+| Repository                                                                                                 | Description                                                      |
+| ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| [github.com/flashbots/rbuilder](https://github.com/flashbots/rbuilder)                                     | The block building software                                      |
+| [github.com/sigp/lighthouse](https://github.com/sigp/lighthouse)                                           | CL client                                                        |
+| [github.com/paradigmxyz/reth/](https://github.com/paradigmxyz/reth/)                                       | EL client                                                        |
+| [github.com/flashbots/system-api](https://github.com/flashbots/system-api)                                 | Interface between operators and services inside the TDX instance |
+| [github.com/flashbots/cvm-reverse-proxy](https://github.com/flashbots/cvm-reverse-proxy)                   | For verifying TDX measurements using attestations                |
+| [github.com/flashbots/buildernet-orderflow-proxy](https://github.com/flashbots/buildernet-orderflow-proxy) | Receiving and multiplexing orderflow                             |
 
 Additional software that runs inside the TDX instance includes cron, time synchronization, utilities for mounting the encrypted disk and a Reth database downloader (for fast chain syncs).
 
@@ -47,7 +47,7 @@ This diagram shows the builder node boot sequence, services and data flows:
 
 ## Orderflow Proxy
 
-[Orderflow Proxy](https://github.com/flashbots/tdx-orderflow-proxy) is a key service running inside TDX (and also in the Flashbots infra). It's main responsibilities are:
+[Orderflow Proxy](https://github.com/flashbots/buildernet-orderflow-proxy) is a key service running inside TDX (and also in the Flashbots infra). It's main responsibilities are:
 
 1. Receiving orderflow from peers and Flashbots.
 1. Receiving orderflow directly (from users, wallets, operators, etc).

@@ -64,7 +64,7 @@ As a step towards this direction in this iteration we replaced two services (pri
 - Bind SSH to a non-standard port (40192)
 - Update checkpoint sync URL for Lighthouse
 - Refactor `reth-sync` script: keep the main sync process running in background, run a monitor in foreground that continuously reports the download progress to System API. Once the main reth-sync PID is gone the foreground monitor shuts down continuing the rest of the boot sequence.
-- Add [Orderflow Proxy](https://github.com/flashbots/tdx-orderflow-proxy) metrics
+- Add [Orderflow Proxy](https://github.com/flashbots/buildernet-orderflow-proxy) metrics
 - Fix broken system reboots
 - Avoid costly Reth DB snapshot sync when directory is not empty
 - Allow puling the disk encryption key from BuilderHub, while we are exploring further privacy-preserving key-management solutions.
