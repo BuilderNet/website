@@ -54,8 +54,11 @@ As part of the aTLS handshake, the client (i.e. user) can verify that the server
 You can use [this tool](https://github.com/flashbots/cvm-reverse-proxy/blob/get-measurements/cmd/attested-get/main.go) to get the certificate with TEE attestation:
 
 ```bash
-go run cmd/attested-get/main.go \
-    --addr=https://instance_ip:7936/cert \
+# Install attested-get
+go install github.com/flashbots/cvm-reverse-proxy/cmd/attested-get
+
+attested-get \
+    --addr=https://buildernet-flashbots-azure-eastus2-04.builder.flashbots.net:7936/cert \
     --out-measurements=measurements.json \
     --out-response=builder-cert.pem
 ```
@@ -64,9 +67,10 @@ Here's a full attestation request to the Flashbots BuilderNet node, matching exp
 :
 
 ```
-go run cmd/attested-get/main.go \
-    --addr=https://buildernet-01-euw.builder.flashbots.net:7936/cert \
-    --expected-measurements=https://measurements.builder.flashbots.net
+attested-get \
+    --addr=https://buildernet-flashbots-azure-eastus2-04.builder.flashbots.net:7936/cert \
+    --expected-measurements=https://measurements.builder.flashbots.net \
+    --out-response=builder-cert.pem
 ```
 
 

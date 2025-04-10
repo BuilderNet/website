@@ -1,0 +1,174 @@
+---
+title: API Reference
+description: API reference for BuilderNet.
+---
+
+BuilderNet provides these APIs:
+
+- [`eth_sendBundle`](#eth_sendbundle)
+  - [Replacing and cancelling bundles](#replacing-and-cancelling-bundles)
+- [`eth_sendRawTransaction`](#eth_sendrawtransaction)
+- [TEE Proof Validation API (aTLS)](#tee-proof-validation-api-atls)
+
+---
+
+
+## `eth_sendBundle`
+
+You can use `eth_sendBundle` to send a bundle of transactions to BuilderNet. You can also use `eth_sendBundle` to replace - or cancel - a previously sent bundle.
+
+:::info[What is a bundle]
+
+A bundle is a list of signed transactions that are executed atomically. If any transaction in the bundle fails, the entire bundle fails.
+This is useful for sending multiple transactions that depend on each other.
+
+:::
+
+### Request <!-- omit in toc -->
+
+```json
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "eth_sendBundle",
+    "params": [{
+        txs               // Array[String], A list of signed transactions to execute in an atomic bundle
+        blockNumber       // String, a hex encoded block number for which this bundle is valid on
+        minTimestamp      // (Optional) Number, the minimum timestamp for which this bundle is valid, in seconds since the unix epoch
+        maxTimestamp      // (Optional) Number, the maximum timestamp for which this bundle is valid, in seconds since the unix epoch
+        revertingTxHashes // (Optional) Array[String], A list of tx hashes that are allowed to revert
+        uuid              // (Optional) String, UUID that can be used to cancel/replace this bundle
+        replacementUuid   // (Optional) Deprecated, alias for uuid.
+    }]
+}
+```
+
+### Response <!-- omit in toc -->
+
+```json
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+        "bundleHash": "0x2228f5d8954ce31dc1601a8ba264dbd401bf1428388ce88238932815c5d6f23f"
+    }
+}
+```
+
+### Example request <!-- omit in toc -->
+
+```bash
+curl https://buildernet-flashbots-azure-eastus2-04.builder.flashbots.net \
+    --cacert builder-cert.pem \  # or using --insecure
+    --header 'Content-Type: application/json' \
+    --header 'X-Flashbots-Signature: <public key address>:<signature>' \
+    --data '{
+        "id": 1,
+        "jsonrpc": "2.0",
+        "method": "eth_sendBundle",
+        "params": [{
+            "txs": [
+                "0x000000..."
+            ],
+            "blockNumber": "0x1361bd3"
+        }]
+    }'
+```
+
+See [this example Golang code](https://github.com/flashbots/go-utils/blob/main/examples/send-multioperator-orderflow/main.go) for sending a transaction with a signed request and a pinned server certificate.
+
+### Replacing and cancelling bundles
+
+You can replace bundles by sending a new bundle with the same `uuid` as the previous one. The new bundle will replace the old one.
+
+If you want to cancel a bundle, you can send a new bundle with the same `uuid` and an empty list of transactions.
+
+### Request signature and authentication <!-- omit in toc -->
+
+`eth_sendBundle` requests require a `X-Flashbots-Signature` header for authentication and for the signer to receive [refunds](refunds):
+
+```
+X-Flashbots-Signature: <public_key_address>:<signature>
+```
+
+The signature is calculated by taking the EIP-191 hash of the json body encoded as UTF-8 bytes.
+Any valid [ECDSA secp256k1](https://en.bitcoin.it/wiki/Secp256k1) key (i.e. any Ethereum key) can be used to sign the payload. The address associated with this key will be used for [Redistribution](refunds).
+For more details and examples on signing the payload, see the [documentation here](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint#authentication).
+
+### Instance TLS certificate <!-- omit in toc -->
+
+The builder node creates a fresh TLS certificate on each startup, of which the private key is guaranteed to stay inside the TEE instance. You can verify the TEE proof for this certificate using the "[TEE Proof Validation API](#tee-proof-validation-api-atls)". You can also - insecurely - get the certificate with `curl` like this:
+
+```bash
+curl -w %{certs} -k https://buildernet-flashbots-azure-eastus2-04.builder.flashbots.net
+```
+
+### Example Golang code <!-- omit in toc -->
+
+See [this example Golang code](https://github.com/flashbots/go-utils/blob/main/examples/send-multioperator-orderflow/main.go) for sending a signed transaction to a builder node.
+The example code supports requiring a specific TLS certificate as well as skipping certificate validation.
+
+---
+
+## `eth_sendRawTransaction`
+
+You can use `eth_sendRawTransaction` to send a single signed transaction to BuilderNet.
+
+- Transactions are _not_ sent to the mempool.
+- Transactions propagate to other BuilderNet builder nodes.
+- Builder nodes try to include the transaction for up to 5 blocks.
+
+#### Request <!-- omit in toc -->
+
+```json
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "eth_sendRawTransaction",
+    "params": ["0x000000..."]
+}
+```
+
+#### Response <!-- omit in toc -->
+
+The response contains the transaction hash:
+
+```json
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": "0x000000..."
+}
+```
+
+### Request signature and authentication <!-- omit in toc -->
+
+`eth_sendRawTransaction` requests also require a `X-Flashbots-Signature` header for authentication. For more details, see the [relevant section for `eth_sendBundle`](#request-signature-and-authentication-).
+
+---
+
+## TEE Proof Validation API (aTLS)
+
+BuilderNet uses attested TLS (aTLS) to verify the attestation of specific builder node instances.
+
+You can find more details in the [Constellation docs](https://docs.edgeless.systems/constellation/architecture/attestation#attested-tls-atls):
+
+> aTLS modifies the TLS handshake by embedding an attestation statement into the TLS certificate. Instead of relying on a certificate authority, aTLS uses this attestation statement to establish trust in the certificate.
+>
+> The protocol can be used by clients to verify a server certificate, by a server to verify a client certificate, or for mutual verification (mutual aTLS).
+
+In BuilderNet, [github.com/flashbots/cvm-reverse-proxy](https://github.com/flashbots/cvm-reverse-proxy) is responsible for attested TLS (aTLS) communication, both towards users as well as within the network.
+You can use the [`attested-get`](https://github.com/flashbots/cvm-reverse-proxy/blob/main/cmd/attested-get/main.go) tool to receive the builder certificate over an attested channel:
+
+```bash
+# Install attested-get
+go install github.com/flashbots/cvm-reverse-proxy/cmd/attested-get
+
+# Get the builder certificate over an attested channel
+attested-get \
+    --addr=https://buildernet-flashbots-azure-eastus2-04.builder.flashbots.net:7936/cert \
+    --expected-measurements=https://measurements.builder.flashbots.net \
+    --out-response=builder-cert.pem
+```
+
+See also "[Orderflow encryption and attestation](encryption-attestations)" for more details.

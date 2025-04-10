@@ -38,6 +38,7 @@ module.exports = {
       label: 'References',
       collapsed: false,
       items: [
+        'api',
         'send-orderflow',
         'public-identity',
         'network-ports',
