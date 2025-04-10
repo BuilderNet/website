@@ -37,11 +37,16 @@ This is useful for sending multiple transactions that depend on each other.
         minTimestamp      // (Optional) Number, the minimum timestamp for which this bundle is valid, in seconds since the unix epoch
         maxTimestamp      // (Optional) Number, the maximum timestamp for which this bundle is valid, in seconds since the unix epoch
         revertingTxHashes // (Optional) Array[String], A list of tx hashes that are allowed to revert
-        uuid              // (Optional) String, UUID that can be used to cancel/replace this bundle
-        replacementUuid   // (Optional) Deprecated, alias for uuid.
+        replacementUuid   // (Optional) String, UUID that can be used to cancel/replace this bundle
     }]
 }
 ```
+
+Notes:
+- `blockNumber` can be:
+  1. For a specific block: hex encoded block number (e.g. `0x1361bd3`)
+  2. For next block only: `"0x"` or `null` or missing field
+- `uuid` is supported as alias for `replacementUuid`.
 
 ### Response <!-- omit in toc -->
 
@@ -114,9 +119,10 @@ The example code supports requiring a specific TLS certificate as well as skippi
 
 You can use `eth_sendRawTransaction` to send a single signed transaction to BuilderNet.
 
-- Transactions are _not_ sent to the mempool.
-- Transactions propagate to other BuilderNet builder nodes.
-- Builder nodes try to include the transaction for up to 5 blocks.
+Transactions sent this way are:
+- _not_ sent to the mempool.
+- propagated to other BuilderNet builder nodes.
+- tried to include for up to 5 blocks.
 
 #### Request <!-- omit in toc -->
 
@@ -141,7 +147,7 @@ The response contains the transaction hash:
 }
 ```
 
-### Request signature and authentication <!-- omit in toc -->
+#### Request signature and authentication <!-- omit in toc -->
 
 `eth_sendRawTransaction` requests also require a `X-Flashbots-Signature` header for authentication. For more details, see the [relevant section for `eth_sendBundle`](#request-signature-and-authentication-).
 
