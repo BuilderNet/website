@@ -49,10 +49,15 @@ curl https://buildernet-flashbots-azure-eastus2-05.builder.flashbots.net \
     --header 'Content-Type: application/json' \
     --header 'X-Flashbots-Signature: <public key address>:<signature>' \
     --data '{
-        "jsonrpc":"2.0",
-        "method":"eth_sendRawTransaction",
-        "params":["0x000000..."],
-        "id":1
+        "id": 1,
+        "jsonrpc": "2.0",
+        "method": "eth_sendBundle",
+        "params": [{
+            "txs": [
+                "0x000000..."
+            ],
+            "blockNumber": "0x1361bd3"
+        }]
     }'
 ```
 
