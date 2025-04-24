@@ -6,7 +6,6 @@ description: API reference for BuilderNet.
 BuilderNet provides these APIs:
 
 - [`eth_sendBundle`](#eth_sendbundle)
-  - [Replacing and cancelling bundles](#replacing-and-cancelling-bundles)
 - [`eth_sendRawTransaction`](#eth_sendrawtransaction)
 - [TEE Proof Validation API (aTLS)](#tee-proof-validation-api-atls)
 
@@ -15,7 +14,9 @@ BuilderNet provides these APIs:
 
 ## `eth_sendBundle`
 
-You can use `eth_sendBundle` to send a bundle of transactions to BuilderNet. You can also use `eth_sendBundle` to replace - or cancel - a previously sent bundle.
+You can use `eth_sendBundle` to send a bundle of transactions to BuilderNet. You can also use it to replace or cancel past bundles.
+
+Transactions sent with `eth_sendBundle` are eligible for refunds.
 
 :::info[What is a bundle]
 
@@ -32,21 +33,42 @@ This is useful for sending multiple transactions that depend on each other.
     "jsonrpc": "2.0",
     "method": "eth_sendBundle",
     "params": [{
-        txs               // Array[String], A list of signed transactions to execute in an atomic bundle
-        blockNumber       // String, a hex encoded block number for which this bundle is valid on
-        minTimestamp      // (Optional) Number, the minimum timestamp for which this bundle is valid, in seconds since the unix epoch
-        maxTimestamp      // (Optional) Number, the maximum timestamp for which this bundle is valid, in seconds since the unix epoch
-        revertingTxHashes // (Optional) Array[String], A list of tx hashes that are allowed to revert
-        replacementUuid   // (Optional) String, UUID that can be used to cancel/replace this bundle
+        txs               // Array[String], A list of signed transactions to execute in an atomic bundle.
+        blockNumber       // String, A hex encoded block number for which this bundle is valid on.
+
+        // Optional fields
+        replacementUuid   // String, UUID that can be used to cancel/replace this bundle.
+
+        revertingTxHashes // Array[String], A list of tx hashes that are allowed to revert.
+        droppingTxHashes  // Array[String], A list of tx hashes that can be removed from the bundle if it's deemed useful (but not revert).
+
+        minTimestamp      // Number, The minimum timestamp for which this bundle is valid, in seconds since the unix epoch.
+        maxTimestamp      // Number, The maximum timestamp for which this bundle is valid, in seconds since the unix epoch.
+
+        refundPercent     // Number (integer between 1-99), How much of the total priority fee + coinbase payment you want to be refunded for.
+        refundRecipient   // String, The address that the funds from refundPercent will be sent to. If not specified, they will be sent to the from address of the first transaction.
     }]
 }
 ```
 
-Notes:
+**Notes:**
 - `blockNumber` can be:
-  1. For a specific block: hex encoded block number (e.g. `0x1361bd3`)
+  1. A specific block number, hex encoded (e.g. `0x1361bd3`)
   2. For next block only: `"0x"` or `null` or missing field
 - `uuid` is supported as alias for `replacementUuid`.
+
+**Bundle replacement and cancellation:**
+
+- **Replacing bundles**: Send another bundle with the same `replacementUuid` , and it will override any previous one.
+- **Cancelling bundles**: Send another bundle with the same `replacementUuid` and an empty list of transactions.
+
+**Refunds:**
+
+- Refunds are based on the last transaction in the bundle.
+- `refundPercent` field
+  - (Optional) An integer between 1-99 which defines how much of the total priority fee + coinbase payment you want to be refunded for.
+  - Example: If a bundle pays 0.2 ETH of priority fee plus 1 ETH to coinbase, a refundPercent set to 50 will result in a transaction being appended after the bundle, paying 0.59 ETH back to the EOA. This is assuming the payout tx will cost beaver 0.01 ETH in fees, which are deduced from the 0.6 ETH payout.
+- See also [Refunds](./refunds.mdx) for more details.
 
 ### Response <!-- omit in toc -->
 
@@ -82,12 +104,6 @@ curl https://buildernet-flashbots-azure-eastus2-05.builder.flashbots.net \
 
 See [this example Golang code](https://github.com/flashbots/go-utils/blob/main/examples/send-multioperator-orderflow/main.go) for sending a transaction with a signed request and a pinned server certificate.
 
-### Replacing and cancelling bundles
-
-You can replace bundles by sending a new bundle with the same `replacementUuid` as the previous one. The new bundle will replace the old one.
-
-If you want to cancel a bundle, you can send a new bundle with the same `replacementUuid` and an empty list of transactions.
-
 ### Request signature and authentication <!-- omit in toc -->
 
 `eth_sendBundle` requests require a `X-Flashbots-Signature` header for authentication and for the signer to receive [refunds](refunds):
@@ -118,6 +134,8 @@ The example code supports requiring a specific TLS certificate as well as skippi
 ## `eth_sendRawTransaction`
 
 You can use `eth_sendRawTransaction` to send a single signed transaction to BuilderNet.
+
+Transactions sent with `eth_sendRawTransaction` are NOT eligible for refunds.
 
 Transactions sent this way are:
 - _not_ sent to the mempool.
