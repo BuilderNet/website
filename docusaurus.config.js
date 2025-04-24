@@ -82,7 +82,6 @@ module.exports = async function createConfigAsync() {
         {
           docs: {
             sidebarPath: require.resolve('./docs/sidebars.js'),
-            // Please change this to your repo.
             routeBasePath: 'docs',
             id: 'docs',
             editUrl: 'https://github.com/BuilderNet/website/edit/main/',
@@ -95,12 +94,7 @@ module.exports = async function createConfigAsync() {
           },
           blog: {
             path: 'blog',
-            // Simple use-case: string editUrl
-            // editUrl: 'https://github.com/facebook/docusaurus/edit/main/website/',
-            // Advanced use-case: functional editUrl
             editUrl: 'https://github.com/BuilderNet/website/edit/main/',
-            // editUrl: ({ locale, blogDirPath, blogPath, permalink }) =>
-            //   `https://github.com/buildernet/blog/edit/main/website/${blogDirPath}/${blogPath}`,
             editLocalizedFiles: false,
             blogTitle: 'BuilderNet Blog',
             blogDescription: 'Blog',
