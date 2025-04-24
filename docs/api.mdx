@@ -63,7 +63,7 @@ Notes:
 ### Example request <!-- omit in toc -->
 
 ```bash
-curl https://buildernet-flashbots-azure-eastus2-04.builder.flashbots.net \
+curl https://buildernet-flashbots-azure-eastus2-05.builder.flashbots.net \
     --cacert builder-cert.pem \  # or using --insecure
     --header 'Content-Type: application/json' \
     --header 'X-Flashbots-Signature: <public key address>:<signature>' \
@@ -105,7 +105,7 @@ For more details and examples on signing the payload, see the [documentation her
 The builder node creates a fresh TLS certificate on each startup, of which the private key is guaranteed to stay inside the TEE instance. You can verify the TEE proof for this certificate using the "[TEE Proof Validation API](#tee-proof-validation-api-atls)". You can also - insecurely - get the certificate with `curl` like this:
 
 ```bash
-curl -w %{certs} -k https://buildernet-flashbots-azure-eastus2-04.builder.flashbots.net
+curl -w %{certs} -k https://buildernet-flashbots-azure-eastus2-05.builder.flashbots.net
 ```
 
 ### Example Golang code <!-- omit in toc -->
@@ -172,7 +172,7 @@ go install github.com/flashbots/cvm-reverse-proxy/cmd/attested-get
 
 # Get the builder certificate over an attested channel
 attested-get \
-    --addr=https://buildernet-flashbots-azure-eastus2-04.builder.flashbots.net:7936/cert \
+    --addr=https://buildernet-flashbots-azure-eastus2-05.builder.flashbots.net:7936/cert \
     --expected-measurements=https://measurements.builder.flashbots.net \
     --out-response=builder-cert.pem
 ```
