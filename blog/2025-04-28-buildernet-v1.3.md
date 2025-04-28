@@ -1,23 +1,18 @@
 ---
 title: BuilderNet v1.3
 description: We are excited to announce BuilderNet v1.3!
-image: /img/buildernet-cover-photo-m.jpg
 hide_table_of_contents: false
 ---
 
-We are thrilled to announce the release of BuilderNet v1.3, an update that introduces significant enhancements including an upgraded `eth_sendBundle` API, improved monitoring, initial support local devnet environment, and advanced operational features that empower operators with greater control and deployment flexibility.
+BuilderNet v1.3 is the culmination of close collaboration with searchers, OFAs, and other orderflow providers to integrate BuilderNet directly with their production workflows. This release improves both the user experience for sending bundles to BuilderNet nodes, and the testing, observability, and deployment experience for operators to facilitate faster iteration in the future.
 
 <!-- truncate -->
-
-This release also introduces crucial operational features like an rbuilder on/off switch for safer deployments, multi-endpoint Prometheus metrics support, extended rate limiting capabilities, and configurable merging algorithms.
 
 ## Improvements
 
 ### Upgraded `eth_sendBundle` API
 
-BuilderNet v1.3 provides an upgraded `eth_sendBundle` API, which includes new fields for backrun OFAs that are widely supported by other block builders. This allows backrun OFAs to submit directly to BuilderNet with better performance and customization.
-
-Specifically, these new (optional) fields were added:
+BuilderNet v1.3 provides an upgraded `eth_sendBundle` API, which includes new fields for backrun OFAs that are widely supported by other block builders. This allows backrun OFAs to submit directly to BuilderNet with better performance and customization. Specifically, these new (optional) fields were added:
 
 | Field              | Description                                                                                                                                                                                                                                                                                            |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -26,12 +21,11 @@ Specifically, these new (optional) fields were added:
 | `refundRecipient`  | An address that the funds from `refundPercent` will be transferred to in the payout transaction. If not specified, they will be sent to the `from` address of the first transaction.                                                                                                                   |
 
 
-BuilderNet now also supports bundle cancellations with `eth_sendBundle`, by sending a bundle with the same `replacementUuid` and an empty list of transactions. This allows you to cancel bundles that are no longer needed.
+BuilderNet now also supports bundle cancellations with `eth_sendBundle`. To cancel a bundle, send a new `eth_sendBundle` request with the same `replacementUuid` and an empty list of transactions. This matches the standard behavior supported by [Beaverbuild](https://beaverbuild.org/docs.html) and [Titan](https://docs.titanbuilder.xyz/api/eth_sendbundle).
 
 :::info
 
-See also the [BuilderNet API Reference](https://buildernet.org/docs/api) for more information and details, as well as the API docs
-for [Beaver Builder](https://beaverbuild.org/docs.html) and [Titan](https://docs.titanbuilder.xyz/api/eth_sendbundle).
+See the [BuilderNet API Reference](https://buildernet.org/docs/api) for more information and details.
 
 :::
 
