@@ -31,7 +31,9 @@ See the [BuilderNet API Reference](https://buildernet.org/docs/api) for more inf
 
 ### Improved cancellations
 
-In addition to these API-level changes, BuilderNet v1.3 also makes several upgrades to the performance and reliability of bundle cancellations. The v1.3 release adds support for block level cancellations on all connected MEV-Boost relays, and continues to bid even when its block value decreases, to ensure that cancellations are successfully processed more often. We have also introduced a time limit on block building strategies to prevent slower (though more profitable) bundle merging algorithms from arbitrarily delaying cancellations. We expect these changes will make BuilderNet a much better venue for users that require fast updates to their bundles.
+In addition to these API-level changes, BuilderNet v1.3 also makes several upgrades to the performance and reliability of bundle cancellations. To ensure cancellations are correctly processed, v1.3 adds support for block level cancellations on MEV-Boost relays and continues bidding even when the block value decreases. To reduce the latency for processing cancellations, BuilderNet nodes now submit only to regional relays (shaving off an estimated ~50ms in network latency). We have also introduced a time limit to prevent slower bundle merging strategies from arbitrarily delaying cancellations, and an initial set of spam prevention techniques to reduce the load on the builder. The latter drove a 2x decrease in p99 e2e latency.
+
+Together we expect these changes will make BuilderNet a much better venue for users that require fast updates to their bundles.
 
 ### Additional end-to-end latency metrics
 
