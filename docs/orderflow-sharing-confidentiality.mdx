@@ -18,10 +18,7 @@ During initial BuilderNet bootstrapping Flashbots will receive logs and have acc
 
 ### MEV-Boost Relays
 
-Orderflow is only leaving the TDX instance when sent in blocks to MEV-Boost relays. Currently, these relays are used:
-1. Flashbots
-1. Agnostic
-1. Ultrasound EU and US
+Orderflow only leaves the TDX instance when sent in blocks to MEV-Boost relays. BuilderNet prioritizes relays that are fast, independent, and reliable (more [here](https://collective.flashbots.net/t/updated-mev-boost-relay-settings/4881)).
 
-We are working to get rid of centralized relays through efforts such as [tee-boost](https://collective.flashbots.net/t/tee-boost/3741),
+We are also working to get rid of centralized relays through efforts such as [tee-boost](https://collective.flashbots.net/t/tee-boost/3741),
 to end-to-end encrypt the entire MEV supply chain.
