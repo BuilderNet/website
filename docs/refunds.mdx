@@ -7,15 +7,57 @@ BuilderNet uses a refund mechanism to share the value it creates with the partie
 
 ## For orderflow providers
 
-Users, wallets, apps, and searchers who submit transactions or bundles to BuilderNet will receive refunds for the value their orderflow adds to its blocks. Today all refunds are calculated according to a standard open source rule. The full definition of the current rule can be found [here](https://docs.flashbots.net/flashbots-auction/advanced/gas-fee-refunds).
-
-At a high level:
+Users, wallets, apps, and searchers who submit transactions or bundles privately to BuilderNet will receive refunds for the value their orderflow adds to its blocks. The goal of the refund rule is to minimize the amount that each transaction or bundle pays to land onchain. At a high level:
 - BuilderNet competes in the MEV-Boost auction to land a block.
-- If BuilderNet's block is more valuable than others, it may bid less than the true value of its block. It retains the `remainder` to refund users.
-- For each transaction in that block, BuilderNet simulates the most valuable block it could have produced with vs without the transaction. The difference is the transaction's `contribution`.
+- If BuilderNet's block is more valuable than others, it may bid less than the true value of its block and retain the `remainder` to refund users.
+- For each transaction in the landed block, BuilderNet retroactively simulates the most valuable block it could have produced with vs without the transaction. The difference is the transaction's `contribution`.
 - The `remainder` is split proportionally among users, based on their relative `contribution` to the block.
 
-Transactions and bundles sent to Flashbots Protect, Flashbots Bundle Relay, or directly to a BuilderNet node will automatically receive refunds. Public mempool transactions do not receive refunds.
+The full refund rule is defined below and implemented in [rbuilder](https://github.com/flashbots/rbuilder). For further details about how to bid and interact with the refund rule, read the [explainer](https://collective.flashbots.net/t/refund-rule-wat-dis-how-to-and-faq/4049/2).
+
+Note that transactions seen in the public mempool, or bundles only containing transactions from the public mempool, do not receive refunds. Bundles sent by the same signer will be treated as non-competitive.
+
+### The Flat Tax Rule
+
+- **$B(T)$** is the most profitable block produced from bundles in $T$.
+- **$v(T)$** is the value of $B(T)$.
+- **$b_i(T)$** is the payment of all bundles sent by identity $i$ if block $B(T)$ is realized.
+- **$\mu_i(T) = \min\{b_i(T), v(T) - v(T \setminus \{i\})\}$** is the marginal contribution of all bundles sent by identity $i$ if $B(T)$ is realized. We bound the marginal contribution so that the net payment can't be negative.
+- **$c$** is the amount the builder pays to the proposer to win the block.
+  
+$$
+\phi_i(T, c) = \frac{\mu_i(T)}{\sum_j \mu_j(T)} \min\{v(B(T)) - c, \sum_j \mu_j(T)\}
+$$
+
+So the net payment per identity (assuming it's included) is $p_i(T) = b_i(B(T)) - \phi_i(T, c)$.
+
+Notice that if the block generates enough value after paying the proposer, everyone should be refunded their contribution, meaning everyone pays the minimum they need to pay to beat competition. 
+
+### Identity constraint
+
+To avoid the rule being gamed by submitting bundles from multiple identities, we impose an additional constraint that no set of identities can receive in total more refunds than they contribute to the block.
+
+For each set of identities $I$ we define
+
+$$
+\mu_I(T) = \min\{\sum_{i\in I} b_i(T), v(T) - v(T \setminus I)\},
+$$
+
+to be the joint marginal contribution of the identities in $I$ to the block. Then we choose rebates that are minimally different from the flat-tax rule subject to the constraint that they don't rebate a set of bundles more in total than its joint marginal contribution. This means the vector of rebates $\psi(T, c)$ solves
+
+$$
+\min_{r\in\mathbb{R}^n_+} \sum_i (r_i - \phi_i(T, c))^2
+$$
+
+$$
+\text{subject to} \sum_{i\in I} r_i \leq \mu_I(T) \text{ for each } I \subseteq B(T),
+$$
+
+$$
+\sum_i r_i \leq v(T) - c
+$$
+
+where $\phi(T, c)$ are the orginal flat-tax rebates as defined above.
 
 ## For operators
 
