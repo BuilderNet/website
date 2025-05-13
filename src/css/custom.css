@@ -275,9 +275,11 @@ article img.img-border {
   margin-bottom: 1em;
 }
 
-[class*='blog-'] article h2 {
+[class*='blog-'] article h2,
+[class*='blog-'] article h3 {
   margin-top: 1.5em;
 }
+
 
 /* Move nav bar to right and adjust text size */
 [class*='blog-'] .navbar__items--right {
