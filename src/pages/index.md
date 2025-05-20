@@ -9,7 +9,7 @@ import Image from '@theme/IdealImage';
 <br />
 
 
-<a href="blog/introducing-buildernet" className="intro-link">
+<a href="/blog/introducing-buildernet" className="intro-link">
   <div className="intro-block">
     <div className="intro-image">
       <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"><path d="M13 2.5a1.5 1.5 0 0 1 3 0v11a1.5 1.5 0 0 1-3 0v-.214c-2.162-1.241-4.49-1.843-6.912-2.083l.405 2.712A1 1 0 0 1 5.51 15.1h-.548a1 1 0 0 1-.916-.599l-1.85-3.49-.202-.003A2.014 2.014 0 0 1 0 9V7a2.02 2.02 0 0 1 1.992-2.013 75 75 0 0 0 2.483-.075c3.043-.154 6.148-.849 8.525-2.199zm1 0v11a.5.5 0 0 0 1 0v-11a.5.5 0 0 0-1 0m-1 1.35c-2.344 1.205-5.209 1.842-8 2.033v4.233q.27.015.537.036c2.568.189 5.093.744 7.463 1.993zm-9 6.215v-4.13a95 95 0 0 1-1.992.052A1.02 1.02 0 0 0 1 7v2c0 .55.448 1.002 1.006 1.009A61 61 0 0 1 4 10.065m-.657.975 1.609 3.037.01.024h.548l-.002-.014-.443-2.966a68 68 0 0 0-1.722-.082z" /></svg>
@@ -25,7 +25,7 @@ import Image from '@theme/IdealImage';
 
 
 <div className="intro-grid">
-  <a href="docs/" className="intro-link">
+  <a href="/docs" className="intro-link">
     <div className="intro-block">
       <div className="intro-image">
 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path d="M6 22h15v-2H6.012C5.55 19.988 5 19.805 5 19s.55-.988 1.012-1H21V4c0-1.103-.897-2-2-2H6c-1.206 0-3 .799-3 3v14c0 2.201 1.794 3 3 3zM5 8V5c0-.805.55-.988 1-1h13v12H5V8z"></path><path d="M8 6h9v2H8z"></path></svg>
@@ -37,7 +37,7 @@ import Image from '@theme/IdealImage';
     </div>
   </a>
 
-  <a href="blog/" className="intro-link">
+  <a href="/blog" className="intro-link">
     <div className="intro-block">
       <div className="intro-image">
 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path d="M19.045 7.401c.378-.378.586-.88.586-1.414s-.208-1.036-.586-1.414l-1.586-1.586c-.378-.378-.88-.586-1.414-.586s-1.036.208-1.413.585L4 13.585V18h4.413L19.045 7.401zm-3-3 1.587 1.585-1.59 1.584-1.586-1.585 1.589-1.584zM6 16v-1.585l7.04-7.018 1.586 1.586L7.587 16H6zm-2 4h16v2H4z"></path></svg>
@@ -58,7 +58,7 @@ import Image from '@theme/IdealImage';
 <br />
 
 <div className="intro-grid">
-  <a href="docs/" className="intro-link">
+  <a href="/docs" className="intro-link">
     <div className="intro-block">
       <div className="intro-image">
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path d="M9 20h6v2H9zm7.906-6.288C17.936 12.506 19 11.259 19 9c0-3.859-3.141-7-7-7S5 5.141 5 9c0 2.285 1.067 3.528 2.101 4.73.358.418.729.851 1.084 1.349.144.206.38.996.591 1.921H8v2h8v-2h-.774c.213-.927.45-1.719.593-1.925.352-.503.726-.94 1.087-1.363zm-2.724.213c-.434.617-.796 2.075-1.006 3.075h-2.351c-.209-1.002-.572-2.463-1.011-3.08a20.502 20.502 0 0 0-1.196-1.492C7.644 11.294 7 10.544 7 9c0-2.757 2.243-5 5-5s5 2.243 5 5c0 1.521-.643 2.274-1.615 3.413-.373.438-.796.933-1.203 1.512z"></path></svg>
@@ -70,7 +70,7 @@ import Image from '@theme/IdealImage';
     </div>
   </a>
 
-  <a href="docs/architecture/" className="intro-link">
+  <a href="/docs/architecture" className="intro-link">
     <div className="intro-block">
       <div className="intro-image">
 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"  viewBox="0 0 16 16">
@@ -84,7 +84,7 @@ import Image from '@theme/IdealImage';
     </div>
   </a>
 
-  <a href="docs/api/" className="intro-link">
+  <a href="/docs/api" className="intro-link">
     <div className="intro-block">
       <div className="intro-image">
 
@@ -100,7 +100,7 @@ import Image from '@theme/IdealImage';
     </div>
   </a>
 
-  <a href="docs/send-orderflow/" className="intro-link">
+  <a href="/docs/send-orderflow" className="intro-link">
     <div className="intro-block">
       <div className="intro-image">
 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 16 16">
