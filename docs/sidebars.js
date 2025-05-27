@@ -44,7 +44,19 @@ module.exports = {
         'network-ports',
         'downloads-measurements',
         'open-source',
-        'operating-a-node',
+        {
+          type: 'category',
+          label: 'Operator Guides',
+          // link: {
+          //   type: 'doc',
+          //   id: 'operator-guides',
+          // },
+          items: [
+            'operating-a-node',
+            'staging-instance-handbook',
+          ]
+        }
+        ,
         // 'contribute',
       ],
     },

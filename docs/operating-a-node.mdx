@@ -46,15 +46,40 @@ Notes on the setup:
 
 ## Bare metal hosting
 
-Bare metal hosting is currently not supported because of two reasons:
+Bare metal hosting is not yet supported. We are currently working with providers including Google and OpenMetal to resolve any remaining issues with measurements, attestations and BIOS upgrades. We expect bare-metal hosting to be available in the near future (Q3/4 2025).
 
-1. Hosting providers only run old BIOS versions
-2. Attestations are not reliable
+[This presentation](https://docs.google.com/presentation/d/1OfT9R9JwRvIhtiNlDzktcj3_flhIOmQ-ZoiwqGp46rs/edit#slide=id.p18) contains more details about the challenges of TDX attestations on bare-metal servers.
 
-[This presentation](https://docs.google.com/presentation/d/1OfT9R9JwRvIhtiNlDzktcj3_flhIOmQ-ZoiwqGp46rs/edit#slide=id.p18) has a lot more details about the challenges of TDX attestations
-on bare-metal servers.
 
-For bare-metal hosting, we are currently working with providers including Google, OpenMetal to resolve any remaining issues with measurements, attestations and BIOS upgrades.
+<hr class="clean" />
+
+
+## Securing the Operator API
+
+After initial startup of the instance, you need to secure the [Operator API](operator-api) by setting a password:
+
+```bash
+curl -k -v --data "<PASSWORD>" https://<INSTANCE_IP>:3535/api/v1/set-basic-auth
+```
+
+:::warning
+
+Store the password in a safe place. If it is lost, the instance is not recoverable, and you will need to redeploy the instance.
+
+:::
+
+You can update the password at any time by running the same command with a new password and the old auth secret:
+
+```bash
+curl -k -v --user "admin:<OLD_PASSWORD>" --data "<NEW_PASSWORD>" https://<INSTANCE_IP>:3535/api/v1/set-basic-auth
+```
+
+Now ensure it works by testing the `/logs` API call:
+
+```bash
+curl -k --user "admin:<PASSWORD>" https://<INSTANCE_IP>:3535/logs
+```
+
 
 <hr class="clean" />
 

@@ -1,0 +1,137 @@
+---
+title: Staging instance handbook
+description: Guide for working with BuilderNet staging instances.
+---
+
+This is a guide for working and experimenting with BuilderNet staging instances, which are disconnected from the production network and orderflow.
+
+## Secure the Operator API
+
+After initial startup of the instance, you need to secure the [Operator API](operator-api) by setting a password:
+
+```bash
+curl -k -v --data "<PASSWORD>" https://<INSTANCE_IP>:3535/api/v1/set-basic-auth
+```
+
+:::warning
+
+Store the password in a safe place. If it is lost, the instance is not recoverable, and you will need to redeploy the instance.
+
+:::
+
+You can update the password at any time by running the same command with a new password and the old auth secret:
+
+```bash
+curl -k -v --user "admin:<OLD_PASSWORD>" --data "<NEW_PASSWORD>" https://<INSTANCE_IP>:3535/api/v1/set-basic-auth
+```
+
+Now ensure it works by testing the `/logs` API call:
+
+```bash
+curl -k --user "admin:<PASSWORD>" https://<INSTANCE_IP>:3535/logs
+```
+
+## Configure SSH access
+
+Ensure the instance has SSH access enabled via Operator API action. You can do it with:
+
+```bash
+curl -k -u "admin:<PASSWORD>" https://<INSTANCE_IP>:3535/api/v1/actions/ssh_start
+```
+
+SSH port is 40192:
+
+```bash
+ssh "root@<INSTANCE_IP>" -p 40192 -o "IdentitiesOnly=yes" -i ~/.ssh/your_ssh_key
+```
+
+## Patch non-containerized binaries
+
+Most of the binaries on the VM are non-containerized, most notably rbuilder, orderflow-proxy, system-api, lighthouse and reth.
+
+For example, to update the rbuilder binary follow the steps below.
+
+Build the binary normally and then patch the LD path using [patchelf](https://github.com/NixOS/patchelf) locally:
+
+```bash
+patchelf --set-interpreter /lib/ld-linux-x86-64.so.2 ./rbuilder
+```
+
+To replace the binary with the locally build version copy it over to the VM using SCP:
+
+```bash
+scp -i ~/.ssh/your_ssh_key -O -P 40192 ./rbuilder root@<instance_ip>:/usr/bin/rbuilder2
+```
+
+Stop rbuilder:
+
+```bash
+/etc/init.d/rbuilder stop
+```
+
+Edit init service of rbuilder and replace the `DAEMON` path with the new binary:
+
+```bash
+sed -i -E 's/^(DAEMON=).+/\1\/usr\/bin\/rbuilder2/' /etc/init.d/rbuilder
+```
+
+Start rbuilder
+
+```bash
+/etc/init.d/rbuilder start
+```
+
+Check the logs of the service
+
+```bash
+tail -f /var/log/rbuilder.log
+```
+
+rbuilder config is at `/etc/rbuilder.config`
+
+## Patch containerized binaries
+
+Containerized workloads are bidding-service and HAProxy.
+
+For example, to update the bidding-service binary build it as described above. Upload it with `scp -O <src> <dest>` . You don’t need to patch it with patchelf. But you’ll need to `chmod 755` the uploaded binary!
+
+Stop the service
+
+```bash
+/etc/init.d/rbuilder-bidding stop
+```
+
+Edit init service for the bidding-service (`/etc/init.d/rbuilder-bidding`) adding another volume mount with the binary to `start_builder_bidding()` function:
+
+```bash
+start_builder_bidding() {
+    podman run -dt --rm --restart on-failure --name $NAME \
+        ...
+	      -v /usr/bin/bidding-service-2-20230313:/bidding-service \
+        ...
+}
+```
+
+Start the service
+
+```bash
+/etc/init.d/rbuilder-bidding start
+```
+
+Check the logs
+
+```bash
+tail -f /var/log/containers/rbuilder-bidding.log
+```
+
+Subsidy config: `/etc/rbuilder-bidding/bidding-service.toml`
+
+## HAProxy rate-limiting
+
+Orderflow is first arriving at the HAProxy service, which is used for rate-limiting. The orderflow sent to the BuilderNet node is then forwarded to the `of-proxy` service.
+
+HAProxy does currently not terminate TLS but rather proxies encrypted TCP stream to of-proxy service.
+
+Rate limiting rules are global and stored in the HAProxy configuration file: `/etc/haproxy/haproxy.cfg`
+
+Make sure to adjust the rules accordingly to avoid rate limiting.
