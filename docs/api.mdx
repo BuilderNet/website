@@ -72,13 +72,13 @@ This is useful for sending multiple transactions that depend on each other.
 
 ### Response <!-- omit in toc -->
 
+The response always contains (a) an empty result and (b) a matching request ID:
+
 ```json
 {
     "id": 1,
     "jsonrpc": "2.0",
-    "result": {
-        "bundleHash": "0x2228f5d8954ce31dc1601a8ba264dbd401bf1428388ce88238932815c5d6f23f"
-    }
+    "result": null
 }
 ```
 
