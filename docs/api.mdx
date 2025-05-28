@@ -63,7 +63,7 @@ This is useful for sending multiple transactions that depend on each other.
 - **Replacing bundles**: Send another bundle with the same `replacementUuid` , and it will override any previous one.
 - **Cancelling bundles**: Send another bundle with the same `replacementUuid` and an empty list of transactions.
 
-**Refunds:**
+**MEV Refunds:**
 
 When a searcher makes money by using some user tx, it pays the builder to be included in the block. Part of that payment is refunded to the user.
 To determine how much the searcher paid the builder, we check the delta in the builder's balance before and after executing a particular tx in the bundle. By checking this delta, we are considering gas payments and also explicit transfers from the searcher to the builder.
