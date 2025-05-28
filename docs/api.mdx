@@ -68,7 +68,7 @@ This is useful for sending multiple transactions that depend on each other.
 When a searcher makes money by using some user tx, it pays the builder to be included in the block. Part of that payment is refunded to the user.
 To determine how much the searcher paid the builder, we check the delta in the builder's balance before and after executing a particular tx in the bundle. By checking this delta, we are considering gas payments and also explicit transfers from the searcher to the builder.
  
- These refunds should not be confused with [BuilderNet Refunds](./refunds.mdx).
+ These refunds should not be confused with [Gas Fee Refunds](./refunds.mdx).
 
 - `refundTxHashes` field (optional): Specifies which transaction in the bundle should be analyzed to measure the payment to the builder.
   - If present, specifies which transactions in the bundle should be considered for refund calculations. 
