@@ -51,3 +51,14 @@ a coinbase key for block production, signing keys for relay submissions, extra d
 
 On startup, builder nodes make a client-side attested request to BuilderHub (in Flashbots infra), to receive the required secrets and configuration.
 BuilderHub verifies that the request comes from an authorized machine by verifying the TEE measurement attestation and the IP address.
+
+<hr class="clean" />
+
+## TEE VM vs bare-metal hosting
+
+To learn more about the advantages and disadvantages of running TEE applications in hosted VM environments versus bare-metal, see also the following articles:
+
+- https://collective.flashbots.net/t/tee-engineering-part-1-cloud-attestations-advantages-shortcomings-solutions/3514
+- https://collective.flashbots.net/t/intel-tdx-security-and-side-channels/3648
+- https://collective.flashbots.net/t/closing-the-intel-tdx-page-fault-side-channel-or-the-case-for-tdexit-notify/3775
+- https://collective.flashbots.net/t/taxonomy-of-tee-attacks/3543
