@@ -60,7 +60,7 @@ The specific TDX VM image for the BuilderNet v1.4 release is `buildernet-v1.4.0-
 
 ## Measurements
 
-These are the new [live](https://measurements.builder.flashbots.net/) measurements for BuilderNet v1.3.0:
+These are the new [live](https://measurements.builder.flashbots.net/) measurements for BuilderNet v1.4:
 
 ```json
 {
