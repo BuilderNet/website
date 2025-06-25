@@ -86,7 +86,7 @@ go install github.com/flashbots/cvm-reverse-proxy/cmd/attested-get
 # Get the builder certificate over an attested channel
 attested-get \
     --addr=https://direct-us.buildernet.org:7936/cert \
-    --expected-measurements=https://measurements.builder.flashbots.net \
+    --expected-measurements=https://measurements.buildernet.org \
     --out-response=builder-cert.pem
 ```
 
@@ -95,7 +95,7 @@ attested-get \
   <summary>Example output</summary>
 
 ```bash
-time=2025-04-24T11:12:19.747+01:00 level=INFO msg="Loading expected measurements from https://measurements.builder.flashbots.net ..." service=attested-get version=dev
+time=2025-04-24T11:12:19.747+01:00 level=INFO msg="Loading expected measurements from https://measurements.buildernet.org ..." service=attested-get version=dev
 time=2025-04-24T11:12:20.186+01:00 level=INFO msg="Measurements loaded" service=attested-get version=dev measurements=4
 time=2025-04-24T11:12:20.186+01:00 level=INFO msg="Executing attested GET request to https://direct-us.buildernet.org:7936/cert ..." service=attested-get version=dev
 time=2025-04-24T11:12:20.786+01:00 level=INFO msg="Validating attestation document" service=attested-get version=dev

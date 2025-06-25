@@ -110,13 +110,13 @@ The reproducible build toolchain for BuilderNet v1.3 is based on [yocto-manifest
 
 ## Artifacts
 
-Signed artifacts are stored at https://builder-artifacts.flashbots.net/buildernet-images/.
+Signed artifacts are stored at https://downloads.buildernet.org/buildernet-images/.
 
 The specific TDX VM image for the BuilderNet v1.3 release is `buildernet-v1.3.0-azure-tdx-d17a02695c1acc0800aff80e86efbe0e5919843184e6562d8d572894ab43d149`
 
 ## Measurements
 
-These are the new [live](https://measurements.builder.flashbots.net/) measurements for BuilderNet v1.3.0:
+These are the new [live](https://measurements.buildernet.org/) measurements for BuilderNet v1.3.0:
 
 ```json
 {
@@ -151,7 +151,7 @@ git checkout v1.3.0
 make image-buildernet
 ```
 
-You can confirm that the hash of your build matches the [expected](https://measurements.builder.flashbots.net/) one:
+You can confirm that the hash of your build matches the [expected](https://measurements.buildernet.org/) one:
 
 ```bash
 make measurements-buildernet

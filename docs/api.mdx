@@ -67,14 +67,14 @@ This is useful for sending multiple transactions that depend on each other.
 
 When a searcher makes money by using some user tx, it pays the builder to be included in the block. Part of that payment is refunded to the user.
 To determine how much the searcher paid the builder, we check the delta in the builder's balance before and after executing a particular tx in the bundle. By checking this delta, we are considering gas payments and also explicit transfers from the searcher to the builder.
- 
+
  These refunds should not be confused with [Gas Fee Refunds](./refunds.mdx).
 
 - `refundTxHashes` field (optional): Specifies which transaction in the bundle should be analyzed to measure the payment to the builder.
-  - If present, specifies which transactions in the bundle should be considered for refund calculations. 
+  - If present, specifies which transactions in the bundle should be considered for refund calculations.
   - If empty or not specified, defaults to the last transaction in the bundle.
   - Currently limited to a maximum of 1 transaction hash.
-  
+
 - `refundPercent` field:
   - (Optional) An integer between 1-99 which defines how much of the total priority fee + coinbase payment you want to be refunded for.
   - Example: If a bundle pays 0.2 ETH of priority fee plus 1 ETH to coinbase, a refundPercent set to 50 will result in a transaction being appended after the bundle, paying 0.59 ETH back to the EOA. This is assuming the payout tx will cost BuilderNet 0.01 ETH in fees, which are deducted from the 0.6 ETH payout.
@@ -200,7 +200,7 @@ go install github.com/flashbots/cvm-reverse-proxy/cmd/attested-get
 # Get the builder certificate over an attested channel
 attested-get \
     --addr=https://direct-us.buildernet.org:7936/cert \
-    --expected-measurements=https://measurements.builder.flashbots.net \
+    --expected-measurements=https://measurements.buildernet.org \
     --out-response=builder-cert.pem
 ```
 

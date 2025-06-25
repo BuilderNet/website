@@ -88,7 +88,7 @@ make image-buildernet
 
 The first time, building takes a long time (~1h). Subsequent runs are faster because some of the build artifacts will then be cached.
 
-You can confirm that the hash of your build matches the [expected](https://measurements.builder.flashbots.net) one:
+You can confirm that the hash of your build matches the [expected](https://measurements.buildernet.org) one:
 
 ```bash
 make measurements-buildernet
@@ -119,11 +119,11 @@ BuilderNet is based on [v1.2.1](https://github.com/flashbots/yocto-manifests/rel
 
 ### Artifacts
 
-Signed artifacts are stored [here](https://builder-artifacts.flashbots.net/buildernet-images/), and the specific VM image file is [buildernet-v1.2.1-azure-tdx-5ddf9cba5dfe0e3ac097b005145ad789bcfdf262231382909062b02db3d461d4.wic.vhd](https://builder-artifacts.flashbots.net/buildernet-images/buildernet-v1.2.1-azure-tdx-5ddf9cba5dfe0e3ac097b005145ad789bcfdf262231382909062b02db3d461d4.wic.vhd) ([checksum](https://builder-artifacts.flashbots.net/buildernet-images/buildernet-v1.2.1-azure-tdx-5ddf9cba5dfe0e3ac097b005145ad789bcfdf262231382909062b02db3d461d4.wic.vhd.sha256), [signature](https://builder-artifacts.flashbots.net/buildernet-images/buildernet-v1.2.1-azure-tdx-5ddf9cba5dfe0e3ac097b005145ad789bcfdf262231382909062b02db3d461d4.wic.vhd.minisig)).
+Signed artifacts are stored [here](https://downloads.buildernet.org/buildernet-images/), and the specific VM image file is [buildernet-v1.2.1-azure-tdx-5ddf9cba5dfe0e3ac097b005145ad789bcfdf262231382909062b02db3d461d4.wic.vhd](https://downloads.buildernet.org/buildernet-images/buildernet-v1.2.1-azure-tdx-5ddf9cba5dfe0e3ac097b005145ad789bcfdf262231382909062b02db3d461d4.wic.vhd) ([checksum](https://downloads.buildernet.org/buildernet-images/buildernet-v1.2.1-azure-tdx-5ddf9cba5dfe0e3ac097b005145ad789bcfdf262231382909062b02db3d461d4.wic.vhd.sha256), [signature](https://downloads.buildernet.org/buildernet-images/buildernet-v1.2.1-azure-tdx-5ddf9cba5dfe0e3ac097b005145ad789bcfdf262231382909062b02db3d461d4.wic.vhd.minisig)).
 
 ### Measurements
 
-These are the new [live](https://measurements.builder.flashbots.net/) measurements for v1.2.1:
+These are the new [live](https://measurements.buildernet.org/) measurements for v1.2.1:
 
 ```bash
 {
