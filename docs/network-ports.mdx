@@ -15,7 +15,8 @@ Ports open for connections from outside the TDX instance.
 
 | Port  | Protocol    | Service                                                                      | Use                                                 |
 | ----- | ----------- | ---------------------------------------------------------------------------- | --------------------------------------------------- |
-| 5544  | TCP (HTTPS) | [orderflow-proxy](https://github.com/flashbots/buildernet-orderflow-proxy)   | Receive orderflow from builder nodes and Flashbots. |
+| 80    | TCP (HTTP)  | HAProxy                                                                      | Permanent redirect to HTTPS                         |
+| 5544  | TCP (HTTPS) | HAProxy                                                                      | Receive orderflow from builder nodes and Flashbots. |
 | 9000  | TCP/UDP     | [Lighthouse](https://lighthouse-book.sigmaprime.io/advanced_networking.html) | Consensus network peering.                          |
 | 30303 | TCP         | [Reth](https://reth.rs/run/ports.html)                                       | Execution network peering.                          |
 
@@ -36,8 +37,9 @@ Ports open to requests from inside the TDX instance only.
 
 | Port  | Protocol   | Service                                                                      | Use                                                                                                                                                                                            |
 | ----- | ---------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 14727 | TCP (HTTP) | [orderflow-proxy](https://github.com/flashbots/orderflow-proxy)              | Serving `GET /cert` REST API which is used by cvm-proxy on port 7936.                                                                                                                          |
-| 3443  | TCP (HTTP) | [orderflow-proxy](https://github.com/flashbots/orderflow-proxy)              | User orderflow, via HAProxy on port 443.                                                                                                                                                       |
+| 14727 | TCP (HTTP) | HAProxy                                                                      | Serving `GET /cert` REST API which is used by cvm-proxy on port 7936.
+| 5542  | TCP (HTTP) | [orderflow-proxy](https://github.com/flashbots/orderflow-proxy)              | System orderflow, via HAProxy on port 5544.                                                                                                                           |
+| 5543  | TCP (HTTP) | [orderflow-proxy](https://github.com/flashbots/orderflow-proxy)              | User orderflow, via HAProxy on port 443.                                                                                                                                                       |
 | 7937  | TCP (HTTP) | [cvm-proxy](https://github.com/flashbots/cvm-reverse-proxy)                  | Proxy for requests to Flashbots infra (BuilderHub) using client-aTLS-attestation. Used to retrieve secrets and configuration, a list of peers, and for services to register their public keys. |
 | 8645  | TCP        | [rbuilder](https://github.com/flashbots/rbuilder)                            | JSON-RPC API (requests are sent from orderflow-proxy).                                                                                                                                         |
 | 6069  | TCP        | [rbuilder](https://github.com/flashbots/rbuilder)                            | Prometheus telemetry.                                                                                                                                                                          |
@@ -58,9 +60,10 @@ On the firewall, these ports should be opened up for either private or public ac
 
 | Port  | Service                       | Open to                        | Used for                                                            |
 | ----- | ----------------------------- | ------------------------------ | ------------------------------------------------------------------- |
-| 5544  | Orderflow Proxy               | **Public**                     | Receive orderflow from other nodes and Flashbots.                   |
+| 5544  | Orderflow Proxy (via HAProxy) | **Public**                     | Receive orderflow from other nodes and Flashbots.                   |
 | 9000  | Lighthouse                    | **Public**                     | Consensus network peering                                           |
 | 30303 | Reth                          | **Public**                     | Execution network peering                                           |
+| 80    | HAProxy                       | **Public**                     | Redirect to HTTPS                                                   |
 | 443   | Orderflow Proxy (via HAProxy) | Operator, optionally for users | Receive orderflow from operator, users, wallets.                    |
 | 7936  | cvm-proxy                     | Operator, optionally for users | Serve the local TLS certificate through an attested channel (aTLS). |
 | 3535  | Operator Api                  | Operator                       | Admin interface                                                     |
