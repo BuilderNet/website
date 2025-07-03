@@ -1,10 +1,10 @@
 ---
 title: BuilderNet v1.5
-description: BuilderNet v1.5 is the July 2025 release of BuilderNet which includes significant performance improvements and several minor bugfixes.
+description: BuilderNet v1.5 the July 2025 release of BuilderNet, which includes new features and significant performance improvements.
 hide_table_of_contents: false
 ---
 
-BuilderNet v1.5 the July 2025 release of BuilderNet which includes significant performance improvements and several minor bugfixes.
+BuilderNet v1.5 the July 2025 release of BuilderNet, which includes new features (i.e. trusted TLS certificates) and significant performance improvements.
 
 <!-- truncate -->
 
@@ -15,20 +15,17 @@ BuilderNet v1.5 the July 2025 release of BuilderNet which includes significant p
 - [EVM caching](https://github.com/flashbots/rbuilder/pull/573)
 - [Trusted TLS certificates (using Let’s Encrypt, TLS termination now by HAProxy)](https://github.com/flashbots/meta-evm/pull/83)
 - [Reth upgrade, fixing possible root-hash issue](https://github.com/paradigmxyz/reth/releases/tag/v1.4.8)
-- Batched delayed refunds
 - Subsidy auto-update
 - Orderflow-proxy bugfixes and performance improvements
 - `/readyz` and `/livez` endpoints
 - Detection of coinbase fund transfer
-- Remove mempool txs from ordering
+- Discard mempool transactions when calculating profit
 
 ## Versions
 
 The build toolchain for BuilderNet v1.5 is based on [yocto-manifests@v1.5.0 (commit `TODO`)](https://github.com/flashbots/yocto-manifests/releases/tag/v1.5.0):
 
 ### Updated services
-
-
 
 | Project                                                                  | New Version                                                                             | Commit                                                                                                               | Previous Version                                                                        |
 | ------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |

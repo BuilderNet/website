@@ -63,8 +63,7 @@ attested-get \
     --out-response=builder-cert.pem
 ```
 
-Here's a full attestation request to the Flashbots BuilderNet node, matching expected measurements from https://measurements.buildernet.org.
-:
+Here's an example command for an attested request to the Flashbots BuilderNet node, matching expected measurements from https://measurements.buildernet.org:
 
 ```
 attested-get \
@@ -73,11 +72,4 @@ attested-get \
     --out-response=builder-cert.pem
 ```
 
-
-This will also allow you to look up instructions for verifying the measurements through reproducible builds.
-
-If you just want the certificate, you can request it without attestation using `curl` like this:
-
-```bash
-curl --insecure https://instance_ip:7936/cert
-```
+You can then use the `builder-cert.pem` file to verify the attested TLS certificate in your future requests to BuilderNet.
