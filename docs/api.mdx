@@ -95,7 +95,6 @@ The response always contains (a) an empty result and (b) a matching request ID:
 
 ```bash
 curl https://direct-us.buildernet.org \
-    --cacert builder-cert.pem \  # or using --insecure
     --header 'Content-Type: application/json' \
     --header 'X-Flashbots-Signature: <public key address>:<signature>' \
     --data '{
@@ -103,10 +102,11 @@ curl https://direct-us.buildernet.org \
         "jsonrpc": "2.0",
         "method": "eth_sendBundle",
         "params": [{
+            "blockNumber": "0x1361bd3",
             "txs": [
-                "0x000000..."
-            ],
-            "blockNumber": "0x1361bd3"
+                "0x100000...",
+                "0x200000..."
+            ]
         }]
     }'
 ```
@@ -127,10 +127,10 @@ For more details and examples on signing the payload, see the [documentation her
 
 ### Instance TLS certificate <!-- omit in toc -->
 
-The builder node creates a fresh TLS certificate on each startup, of which the private key is guaranteed to stay inside the TEE instance. You can verify the TEE proof for this certificate using the "[TEE Proof Validation API](#tee-proof-validation-api-atls)". You can also - insecurely - get the certificate with `curl` like this:
+The builder node creates a fresh TLS certificate on each startup, of which the private key is guaranteed to stay inside the TEE instance. You can verify the TEE proof for this certificate using the "[TEE Proof Validation API](#tee-proof-validation-api-atls)". You can also get the certificate with an unattested `curl` request:
 
 ```bash
-curl -w %{certs} -k https://direct-us.buildernet.org
+curl -w %{certs} https://direct-us.buildernet.org
 ```
 
 ### Example Golang code <!-- omit in toc -->
