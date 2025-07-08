@@ -1,26 +1,24 @@
 ---
 title: BuilderNet v1.5
-description: BuilderNet v1.5 the July 2025 release of BuilderNet, which includes new features and significant performance improvements.
+description: BuilderNet v1.5 introduces EVM caching, an (even) faster root hash, and trusted TLS certificates to improve the security and experience of submitting orderflow.
 hide_table_of_contents: false
 ---
 
-BuilderNet v1.5 the July 2025 release of BuilderNet, which includes new features (i.e. trusted TLS certificates) and significant performance improvements.
+BuilderNet v1.5 introduces EVM caching, an (even) faster root hash, and trusted TLS certificates to improve the security and experience of submitting orderflow.
 
 <!-- truncate -->
 
-
-## Main changes
+## Changelog
 
 - [Even faster root hash](https://github.com/flashbots/rbuilder/pull/634)
-- [EVM caching](https://github.com/flashbots/rbuilder/pull/573). Improved caching for EVM execution to reduce latency.
-- [Trusted TLS certificates (using Let’s Encrypt, TLS termination now by HAProxy)](https://github.com/flashbots/meta-evm/pull/83). Enhanced security and user experience for sending orderflow, and prepares groundwork for using a geographically distributed simple orderflow ingress.
-- [Reth upgrade, fixing possible root-hash issue](https://github.com/paradigmxyz/reth/releases/tag/v1.4.8). Stability improvements, avoiding potential issues with root hash calculations.
-- Subsidy auto-update. Makes it easier to adjust subsidies without manual intervention.
-- Batched delayed refunds. Allows for more efficient processing of delayed refunds by grouping them together.
-- Orderflow-proxy bugfixes and performance improvements. Various fixes and optimizations for the orderflow proxy.
-- `/readyz` and `/livez` endpoints. Added health check endpoints for better monitoring and automatic routing.
-- Detection of coinbase fund transfer. Avoid side-effects on subsidy calculation when coinbase funds are moved to the BuilderNet multisig.
-- Discard mempool transactions when calculating profit. Block building improvements.
+- [EVM caching](https://github.com/flashbots/rbuilder/pull/573)
+- [Reth upgrade, fixing possible root-hash issue](https://github.com/paradigmxyz/reth/releases/tag/v1.4.8)
+- [Trusted TLS certificates (using Let’s Encrypt, TLS termination now by HAProxy)](https://github.com/flashbots/meta-evm/pull/83) to enhance the security and experience for sending orderflow to BuilderNet and lay the groundwork for a geographically distributed orderflow ingress
+- Subsidy auto-update to allow adjusting subsidies without manual intervention
+- `/readyz` and `/livez` health check endpoints for better monitoring and automatic routing
+- Detection of coinbase fund transfer to avoid side-effects on subsidy calculation when coinbase funds are moved to the BuilderNet multisig
+- Discard mempool transactions when calculating profit
+- Orderflow-proxy bugfixes and performance improvements
 
 ## Versions
 
