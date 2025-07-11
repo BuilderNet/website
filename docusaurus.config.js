@@ -67,6 +67,10 @@ module.exports = async function createConfigAsync() {
             { to: '/docs', label: 'Docs', position: 'left' }, // or position: 'right'
             { to: '/blog', label: 'Blog', position: 'left' }, // or position: 'right'
             {
+              type: 'custom-mevMetrics',
+              position: 'right',
+            },
+            {
               href: 'https://collective.flashbots.net/c/buildernet/31',
               label: 'Forum',
               position: 'right',
