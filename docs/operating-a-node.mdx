@@ -17,11 +17,17 @@ If would like to participate as an operator, please fill out [this form](https:/
 
 ## System requirements
 
-- Intel TDX-capable CPU
-- 16 cores
-- 32 GiB RAM
-- 2 TB disk storage, min 30K IOPS read/write, 1200MiB/s sequential read/write
-- 1 Gbps Internet access
+- **CPU**: 
+  - Intel processor with TDX support (required)
+  - Minimum 32 cores
+- **Memory**: 
+  - Minimum 64 GiB RAM
+- **Storage**:
+  - At least 2 TB of disk capacity
+  - Minimum 30,000 IOPS (read and write)
+  - Minimum 1,200 MiB/s sequential read and write performance
+- **Network**: 
+  - 1 Gbps Internet bandwidth
 
 <hr class="clean" />
 
@@ -32,13 +38,14 @@ We are actively working with Google, OVH and other providers, and expect to expa
 
 ### Microsoft Azure Cloud
 
-For Azure, we recommend the [Standard_EC16es_v5](https://learn.microsoft.com/en-us/azure/virtual-machines/ecesv5-ecedsv5-series#ecesv5-series) instance type. You'll need to request a quota for "Standard ECEV5 Family vCPUs" (16 vCPUs).
+For Azure, we recommend the [Standard_EC16es_v5](https://learn.microsoft.com/en-us/azure/virtual-machines/ecesv5-ecedsv5-series#ecesv5-series) instance type. 
+You'll need to request a quota for "Standard ECEV5 Family vCPUs" (32 vCPUs).
 
 The Azure infrastructure can be created with this Terraform module: https://github.com/flashbots/terraform-module-azure-confidential-vm
 
 Notes on the setup:
-- Storage account: no redundancy necessary
-- Disk:
+- **Storage account**: no redundancy necessary
+- **Disk**:
   - 2TB Premium SSD v1 (not v2!) with toggled ["Performance Plus"](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-enable-performance?tabs=azure-cli#enable-performance-plus) and read-only [host cache](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-performance#virtual-machine-uncached-vs-cached-limits)
   - Need to support 20k IOPS read/write, 900MiB/s sequential read/write
 
