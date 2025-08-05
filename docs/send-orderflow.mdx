@@ -17,16 +17,23 @@ The instructions in this document are intended for advanced technical users with
 
 ## Sending orderflow to BuilderNet directly
 
-You can send orderflow to any BuilderNet node available to you.
+You can send orderflow directly to any BuilderNet node you control or have access to. Flashbots also offers public endpoints for interacting with the network.
 
+The global endpoint (`rpc.buildernet.org`) automatically routes requests to an available BuilderNet node. To target a specific region (e.g. US or EU), use the corresponding regional endpoint.
 
-:::tip[Public BuilderNet node]
+In all cases, submitted orderflow is propagated to other nodes in the network via the [Orderflow Proxy](https://buildernet.org/docs/os-services-builds#orderflow-proxy).
 
-Flashbots operates a public BuilderNet node:
+### Public BuilderNet endpoints
 
-- Orderflow endpoint: https://direct-us.buildernet.org:443
-- TEE proof validation (aTLS): https://direct-us.buildernet.org:7936
+| Region       | Endpoint                          | Orderflow Port | TEE Attestation Port  |
+|--------------|-----------------------------------|----------------|-----------------------|
+| Global       | `https://rpc.buildernet.org`      | 443            | 7936                  |
+| United States| `https://direct-us.buildernet.org`| 443            | 7936                  |
+| Europe       | `https://direct-eu.buildernet.org`| 443            | 7936                  |
 
+:::tip[TEE Attestation]
+
+Use the TEE attestation port to validate the node's integrity using attested TLS (aTLS). See [TEE proof validation](#tee-attestation) for details.
 
 :::
 
