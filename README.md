@@ -30,6 +30,28 @@ To start a new blog entry:
 
 ---
 
+## Refund Metrics Widget
+
+This site displays gas refund metrics in the navbar, fetched from the [Flashbots Refund Metrics API](https://github.com/flashbots/refund-metrics-dune-api).
+
+### Configuration
+
+To configure the widget, edit `docusaurus.config.js`:
+
+```js
+customFields: {
+  refundMetricsApiUrl: 'https://refund-metrics-dune-api.vercel.app',
+  refundMetricsRedirectUrl: 'https://dune.com/flashbots/buildernet',
+},
+```
+
+- `refundMetricsApiUrl`: The API endpoint for fetching metrics
+- `refundMetricsRedirectUrl`: Where to redirect when users click on the metrics
+
+The widget implementation is in `src/components/MevMetrics.tsx`. For BuilderNet, it:
+- Shows only gas refunds (no MEV refunds)
+- Clicking redirects to the configured URL (default: [BuilderNet Dune dashboard](https://dune.com/flashbots/buildernet))
+
 ## Notes
 
 - When making a release, search for `UPDATE_ON_RELEASE` in the docs to see what needs to be updated
