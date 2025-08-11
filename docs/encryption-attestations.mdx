@@ -58,7 +58,7 @@ You can use [this tool](https://github.com/flashbots/cvm-reverse-proxy/blob/get-
 go install github.com/flashbots/cvm-reverse-proxy/cmd/attested-get
 
 attested-get \
-    --addr=https://direct-us.buildernet.org:7936/cert \
+    --addr=https://rpc.buildernet.org:7936/cert \
     --out-measurements=measurements.json \
     --out-response=builder-cert.pem
 ```
@@ -67,7 +67,7 @@ Here's an example command for an attested request to the Flashbots BuilderNet no
 
 ```
 attested-get \
-    --addr=https://direct-us.buildernet.org:7936/cert \
+    --addr=https://rpc.buildernet.org:7936/cert \
     --expected-measurements=https://measurements.buildernet.org \
     --out-response=builder-cert.pem
 ```

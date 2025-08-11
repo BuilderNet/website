@@ -3,7 +3,7 @@ title: How to send orderflow
 description: How to send orderflow securely to a BuilderNet node.
 ---
 
-Orderflow sent to [Flashbots Protect](https://protect.flashbots.net) and [Flashbots Bundle Relay](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint) is shared with BuilderNet. You can also send orderflow directly to a BuilderNet node (and validate its TEE proof)!
+Orderflow sent to [Flashbots Protect](https://protect.flashbots.net) and [Flashbots Bundle Relay](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint) is shared with BuilderNet. You can also send orderflow directly to a BuilderNet node, and optionally validate the TEE proof.
 
 ---
 
@@ -17,21 +17,19 @@ The instructions in this document are intended for advanced technical users with
 
 ## Sending orderflow to BuilderNet directly
 
-You can send orderflow directly to any BuilderNet node you control or have access to. Flashbots also offers public endpoints for interacting with the network.
+The global endpoint `rpc.buildernet.org` automatically routes requests to the closest available BuilderNet node. To target a specific region (e.g. US or EU), use the corresponding regional endpoint.
 
-The global endpoint (`rpc.buildernet.org`) automatically routes requests to an available BuilderNet node. To target a specific region (e.g. US or EU), use the corresponding regional endpoint.
+Submitted orderflow is propagated to all other nodes.
 
-In all cases, submitted orderflow is propagated to other nodes in the network via the [Orderflow Proxy](https://buildernet.org/docs/os-services-builds#orderflow-proxy).
+### BuilderNet endpoints
 
-### Public BuilderNet endpoints
+| Region        | Endpoint                           | Orderflow Port | TEE Attestation Port |
+| ------------- | ---------------------------------- | -------------- | -------------------- |
+| Global        | `https://rpc.buildernet.org`       | 443            | 7936                 |
+| United States | `https://direct-us.buildernet.org` | 443            | 7936                 |
+| Europe        | `https://direct-eu.buildernet.org` | 443            | 7936                 |
 
-| Region       | Endpoint                          | Orderflow Port | TEE Attestation Port  |
-|--------------|-----------------------------------|----------------|-----------------------|
-| Global       | `https://rpc.buildernet.org`      | 443            | 7936                  |
-| United States| `https://direct-us.buildernet.org`| 443            | 7936                  |
-| Europe       | `https://direct-eu.buildernet.org`| 443            | 7936                  |
-
-Use the TEE attestation port to verify that the node is running in a trusted and verifiable TEE environment using attested TLS (aTLS). 
+Use the TEE attestation port to verify that the node is running in a trusted and verifiable TEE environment using attested TLS (aTLS).
 See [TEE proof validation](#tee-attestation) for details.
 
 ### Supported API methods
@@ -48,7 +46,7 @@ See also the [API reference](api) for more details on the API methods.
 This request sends a signed transaction to BuilderNet:
 
 ```bash
-curl https://direct-us.buildernet.org \
+curl https://rpc.buildernet.org \
     --header 'Content-Type: application/json' \
     --header 'X-Flashbots-Signature: <public key address>:<signature>' \
     --data '{
@@ -71,7 +69,7 @@ See [this example Golang code](https://github.com/flashbots/go-utils/blob/main/e
 You can use the `--cacert builder-cert.pem` option with curl to verify the attested TLS certificate of the BuilderNet node. You can get the public certificate (`builder-cert.pem`) over an attested channel (see the next section "[TEE proof validation](#tee-attestation)") or through an unattested `curl` request:
 
 ```bash
-curl -w %{certs} https://direct-us.buildernet.org/
+curl -w %{certs} https://rpc.buildernet.org/
 ```
 
 <hr class="clean" />
@@ -90,7 +88,7 @@ go install github.com/flashbots/cvm-reverse-proxy/cmd/attested-get
 
 # Get the builder certificate over an attested channel
 attested-get \
-    --addr=https://direct-us.buildernet.org:7936/cert \
+    --addr=https://rpc.buildernet.org:7936/cert \
     --expected-measurements=https://measurements.buildernet.org \
     --out-response=builder-cert.pem
 ```
@@ -102,7 +100,7 @@ attested-get \
 ```bash
 time=2025-04-24T11:12:19.747+01:00 level=INFO msg="Loading expected measurements from https://measurements.buildernet.org ..." service=attested-get version=dev
 time=2025-04-24T11:12:20.186+01:00 level=INFO msg="Measurements loaded" service=attested-get version=dev measurements=4
-time=2025-04-24T11:12:20.186+01:00 level=INFO msg="Executing attested GET request to https://direct-us.buildernet.org:7936/cert ..." service=attested-get version=dev
+time=2025-04-24T11:12:20.186+01:00 level=INFO msg="Executing attested GET request to https://rpc.buildernet.org:7936/cert ..." service=attested-get version=dev
 time=2025-04-24T11:12:20.786+01:00 level=INFO msg="Validating attestation document" service=attested-get version=dev
 time=2025-04-24T11:12:21.940+01:00 level=INFO msg="Successfully validated attestation document" service=attested-get version=dev
 time=2025-04-24T11:12:22.051+01:00 level=INFO msg="Measurements for azure-tdx with 24 entries:" service=attested-get version=dev

@@ -94,7 +94,7 @@ The response always contains (a) an empty result and (b) a matching request ID:
 ### Example request <!-- omit in toc -->
 
 ```bash
-curl https://direct-us.buildernet.org \
+curl https://rpc.buildernet.org \
     --header 'Content-Type: application/json' \
     --header 'X-Flashbots-Signature: <public key address>:<signature>' \
     --data '{
@@ -130,7 +130,7 @@ For more details and examples on signing the payload, see the [documentation her
 The builder node creates a fresh TLS certificate on each startup, of which the private key is guaranteed to stay inside the TEE instance. You can verify the TEE proof for this certificate using the "[TEE Proof Validation API](#tee-proof-validation-api-atls)". You can also get the certificate with an unattested `curl` request:
 
 ```bash
-curl -w %{certs} https://direct-us.buildernet.org
+curl -w %{certs} https://rpc.buildernet.org
 ```
 
 ### Example Golang code <!-- omit in toc -->
@@ -199,7 +199,7 @@ go install github.com/flashbots/cvm-reverse-proxy/cmd/attested-get
 
 # Get the builder certificate over an attested channel
 attested-get \
-    --addr=https://direct-us.buildernet.org:7936/cert \
+    --addr=https://rpc.buildernet.org:7936/cert \
     --expected-measurements=https://measurements.buildernet.org \
     --out-response=builder-cert.pem
 ```
