@@ -38,11 +38,11 @@ module.exports = {
       label: 'References',
       collapsed: false,
       items: [
+        'resources',
         'api',
         'send-orderflow',
         'public-identity',
         'network-ports',
-        'downloads-measurements',
         'open-source',
         {
           type: 'category',
@@ -54,6 +54,7 @@ module.exports = {
           items: [
             'operating-a-node',
             'staging-instance-handbook',
+            'downloads-measurements',
           ]
         }
         ,
