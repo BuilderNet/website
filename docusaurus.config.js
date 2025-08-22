@@ -94,7 +94,7 @@ module.exports = async function createConfigAsync() {
           },
           blog: {
             path: 'blog',
-            editUrl: 'https://github.com/BuilderNet/website/edit/main/',
+            // editUrl: 'https://github.com/BuilderNet/website/edit/main/',
             editLocalizedFiles: false,
             blogTitle: 'BuilderNet Blog',
             blogDescription: 'Blog',

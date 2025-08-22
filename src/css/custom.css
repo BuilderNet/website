@@ -202,10 +202,15 @@ div {
   line-height: 20px;
 }
 
-footer {
-  margin-top: 1em !important;
-  padding-top: 1em;
-  border-top: 1px solid #f0f0f0;
+article {
+  padding-bottom: 3em;
+  margin-bottom: 3em;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* article footer is shown on blog list (always), and on post page (only if editUrl is enabled) */
+article footer {
+  padding-top: 2em;
 }
 
 @media only screen and (max-width: 1120px) {
