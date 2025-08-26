@@ -42,13 +42,8 @@ export default function MevMetrics(): JSX.Element | null {
         setData(metrics);
       } catch (error) {
         console.error('Error fetching MEV metrics:', error);
-        // Mock data as fallback
-        setData({
-          totalMevRefund: 380.29,
-          totalGasRefund: 444.24,
-          fetchedAt: new Date().toISOString(),
-          stale: true
-        });
+        // Don't show widget on error
+        setData(null);
       } finally {
         setLoading(false);
       }
