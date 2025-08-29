@@ -138,6 +138,31 @@ curl -w %{certs} https://rpc.buildernet.org
 See [this example Golang code](https://github.com/flashbots/go-utils/blob/main/examples/send-multioperator-orderflow/main.go) for sending a signed transaction to a builder node.
 The example code supports requiring a specific TLS certificate as well as skipping certificate validation.
 
+### Bundle Hash<!-- omit in toc -->
+
+The bundle hash is a unique identifier for a specific bundle of transactions sent to BuilderNet.
+
+It is calculated by taking the Keccak-256 hash of the transactions in a bundle:
+
+```go
+// Compute keccak hash over the bundle transactions
+hasher := sha3.NewLegacyKeccak256()
+for _, rawTx := range b.Txs {
+    var tx types.Transaction
+    if err := tx.UnmarshalBinary(rawTx); err != nil {
+        return common.Hash{}, uuid.Nil, err
+    }
+    hasher.Write(tx.Hash().Bytes())
+}
+hashBytes := hasher.Sum(nil)
+```
+
+References:
+- [Golang reference implementation](https://github.com/flashbots/go-utils/blob/6530a1a3fb4995730b0beac14d811b51e08a52ca/rpctypes/types.go#L224-L233)
+- [Examples and test suite](https://github.com/flashbots/go-utils/blob/6530a1a3fb4995730b0beac14d811b51e08a52ca/rpctypes/types_test.go#L27)
+
+You can look up refunds for a specific bundle by using the [flashbots_getFeeRefundsByBundle](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint#flashbots_getfeerefundsbybundle) API.
+
 ---
 
 ## `eth_sendRawTransaction`

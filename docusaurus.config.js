@@ -50,7 +50,7 @@ module.exports = async function createConfigAsync() {
         prism: {
           theme: lightTheme,
           darkTheme,
-          additionalLanguages: ['solidity', 'typescript', 'bash', 'json', 'javascript', 'yaml', 'toml'], // https://docusaurus.io/docs/markdown-features/code-blocks#supported-languages
+          additionalLanguages: ['solidity', 'typescript', 'bash', 'json', 'javascript', 'yaml', 'toml', 'go'], // https://docusaurus.io/docs/markdown-features/code-blocks#supported-languages
         },
         docs: {
           sidebar: {
