@@ -1,0 +1,37 @@
+.metric {
+  gap: 0.25rem;
+  color: var(--ifm-navbar-link-color);
+}
+
+.value {
+  font-weight: 500;
+}
+
+.loading {
+  opacity: 0.5;
+}
+
+.separator {
+  color: var(--ifm-navbar-link-color);
+  opacity: 0.3;
+}
+
+.clickable {
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.clickable:hover {
+  opacity: 0.8;
+}
+
+.clickable:active {
+  opacity: 0.6;
+}
+
+/* Hide on mobile */
+@media (max-width: 996px) {
+  .container {
+    display: none !important;
+  }
+}
