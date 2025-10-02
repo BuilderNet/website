@@ -17,28 +17,28 @@ If would like to participate as an operator, please fill out [this form](https:/
 
 ## System requirements
 
-- **CPU**: 
+- **CPU**:
   - Intel processor with TDX support (required)
   - Minimum 32 cores
-- **Memory**: 
+- **Memory**:
   - Minimum 64 GiB RAM
 - **Storage**:
   - At least 2 TB of disk capacity
   - Minimum 30,000 IOPS (read and write)
   - Minimum 1,200 MiB/s sequential read and write performance
-- **Network**: 
+- **Network**:
   - 1 Gbps Internet bandwidth
 
 <hr class="clean" />
 
 ## Cloud hosting
 
-Currently only Microsoft Azure is supported for hosting, since it's the only provider with an end-to-end working TEE attestations.
+Microsoft Azure is currently the only supported cloud provider, as it offers end-to-end working TEE attestations.
 We are actively working with Google, OVH and other providers, and expect to expand the list of supported cloud providers soon.
 
 ### Microsoft Azure Cloud
 
-For Azure, we recommend the [Standard_EC32es_v6](https://learn.microsoft.com/en-us/azure/virtual-machines/ecesv5-ecedsv5-series#ecesv6-series-1) instance type. 
+For Azure, we recommend the [Standard_EC32es_v6](https://learn.microsoft.com/en-us/azure/virtual-machines/ecesv5-ecedsv5-series#ecesv6-series-1) instance type.
 You'll need to request a quota for "Standard ECesv6 Family vCPUs" (32 vCPUs).
 
 The Azure infrastructure can be created with this Terraform module: https://github.com/flashbots/terraform-module-azure-confidential-vm
@@ -53,7 +53,7 @@ Notes on the setup:
 
 ## Bare metal hosting
 
-Bare metal hosting is not yet supported. We are currently working with providers including Google and OpenMetal to resolve any remaining issues with measurements, attestations and BIOS upgrades. We expect bare-metal hosting to be available in the near future (Q3/4 2025).
+Bare metal hosting is not yet supported. We're working with providers including Google and OpenMetal to resolve remaining issues with measurements, attestations, and BIOS upgrades. We expect bare-metal hosting to be available in the future.
 
 [This presentation](https://docs.google.com/presentation/d/1OfT9R9JwRvIhtiNlDzktcj3_flhIOmQ-ZoiwqGp46rs/edit#slide=id.p18) contains more details about the challenges of TDX attestations on bare-metal servers.
 

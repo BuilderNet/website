@@ -3,7 +3,7 @@ title: How to send orderflow
 description: How to send orderflow securely to a BuilderNet node.
 ---
 
-Orderflow sent to [Flashbots Protect](https://protect.flashbots.net) and [Flashbots Bundle Relay](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint) is shared with BuilderNet. You can also send orderflow directly to a BuilderNet node, and optionally validate the TEE proof.
+Orderflow sent to [Flashbots Protect](https://protect.flashbots.net) and [Flashbots Bundle Relay](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint) is automatically shared with BuilderNet. Advanced users can send orderflow directly to BuilderNet nodes and optionally validate TEE proofs.
 
 ---
 
@@ -76,7 +76,7 @@ curl -w %{certs} https://rpc.buildernet.org/
 
 ## TEE proof validation {#tee-attestation}
 
-You can verify a builder node is running the correct code and configuration, and inside a specific TEE environment, using the [TEE attestation mechanism](encryption-attestations).
+Verify that a builder node runs the correct code and configuration inside a specific TEE environment using the [TEE attestation mechanism](encryption-attestations).
 
 It works by making a HTTPS request through an attested connection. During the TLS handshake, the server proves that it's running inside a TEE with specific measurements and responds with a TLS certificate for future use. Based on the verifiable code and configuration, this provides assurances that this certificate belongs to a specific VM image with specific measurements.
 
@@ -148,7 +148,7 @@ MREbwxknAiEA51ZRCYn/9UDvQA6DqCgNndwU1x2N2EvDtDAG79ZhVo0=
 
 </details>
 
-This returned TLS certificate is now provably tied to the specific VM image, and any server with the corresponding private key is verified to run the correct code and configuration and inside a TEE.
+This TLS certificate is cryptographically tied to the specific VM image. Any server with the corresponding private key is verified to run the correct code inside a TEE.
 
 You can use this certificate to securely send orderflow to this node on port 443 (see the [previous section](#example-curl-request)).
 

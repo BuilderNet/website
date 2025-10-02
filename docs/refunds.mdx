@@ -3,11 +3,11 @@ title: Refunds
 description: BuilderNet shares MEV value with the parties who contribute to its blocks.
 ---
 
-BuilderNet uses a refund mechanism to share the value it creates with the parties who contribute to its blocks. The goal of this mechanism is to create an efficient, transparent way for orderflow providers to internalize their MEV, and to sustain the ongoing operations of the network.
+BuilderNet refunds MEV value to the parties who contribute orderflow to its blocks. The goal of this mechanism is to create an efficient, transparent way for orderflow providers to internalize their MEV, and to sustain the ongoing operations of the network.
 
 ## For orderflow providers
 
-Users, wallets, apps, and searchers who submit transactions or bundles privately to BuilderNet will receive refunds for the value their orderflow adds to its blocks. The goal of the refund rule is to minimize the amount that each transaction or bundle pays to land onchain. At a high level:
+Users, wallets, apps, and searchers who privately submit transactions or bundles to BuilderNet receive refunds based on the value their orderflow adds. The goal of the refund rule is to minimize the amount that each transaction or bundle pays to land onchain. At a high level:
 - BuilderNet competes in the MEV-Boost auction to land a block.
 - If BuilderNet's block is more valuable than others, it may bid less than the true value of its block and retain the `remainder` to refund users.
 - For each transaction in the landed block, BuilderNet retroactively simulates the most valuable block it could have produced with vs without the transaction. The difference is the transaction's `contribution`.
