@@ -3,7 +3,9 @@ title: API Reference
 description: API reference for BuilderNet.
 ---
 
-BuilderNet provides these APIs:
+## Orderflow
+
+BuilderNet provides these APIs to send orderflow:
 
 - [`eth_sendBundle`](#eth_sendbundle)
 - [`eth_sendRawTransaction`](#eth_sendrawtransaction)
@@ -12,7 +14,7 @@ BuilderNet provides these APIs:
 ---
 
 
-## `eth_sendBundle`
+### `eth_sendBundle`
 
 You can use `eth_sendBundle` to send a bundle of transactions to BuilderNet. You can also use it to replace or cancel past bundles.
 
@@ -25,7 +27,7 @@ This is useful for sending multiple transactions that depend on each other.
 
 :::
 
-### Request <!-- omit in toc -->
+#### Request <!-- omit in toc -->
 
 ```json
 {
@@ -83,7 +85,7 @@ To determine how much the searcher paid the builder, we check the delta in the b
   - (Optional) An integer between 1-99 which defines how much of the total priority fee + coinbase payment you want to be refunded for.
   - Example: If a bundle pays 0.2 ETH of priority fee plus 1 ETH to coinbase, a refundPercent set to 50 will result in a transaction being appended after the bundle, paying 0.59 ETH back to the EOA. This is assuming the payout tx will cost BuilderNet 0.01 ETH in fees, which are deducted from the 0.6 ETH payout.
 
-### Response <!-- omit in toc -->
+#### Response <!-- omit in toc -->
 
 The response always contains (a) an empty result and (b) a matching request ID:
 
@@ -95,7 +97,7 @@ The response always contains (a) an empty result and (b) a matching request ID:
 }
 ```
 
-### Example request <!-- omit in toc -->
+#### Example request <!-- omit in toc -->
 
 ```bash
 curl https://rpc.buildernet.org \
@@ -117,7 +119,7 @@ curl https://rpc.buildernet.org \
 
 See [this example Golang code](https://github.com/flashbots/go-utils/blob/main/examples/send-multioperator-orderflow/main.go) for sending a transaction with a signed request and a pinned server certificate.
 
-### Request signature and authentication <!-- omit in toc -->
+#### Request signature and authentication <!-- omit in toc -->
 
 `eth_sendBundle` requests require a `X-Flashbots-Signature` header for authentication and for the signer to receive [refunds](refunds):
 
@@ -129,7 +131,7 @@ The signature is calculated by taking the EIP-191 hash of the json body encoded 
 Any valid [ECDSA secp256k1](https://en.bitcoin.it/wiki/Secp256k1) key (i.e. any Ethereum key) can be used to sign the payload. The address associated with this key will be used for [Redistribution](refunds).
 For more details and examples on signing the payload, see the [documentation here](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint#authentication).
 
-### Instance TLS certificate <!-- omit in toc -->
+#### Instance TLS certificate <!-- omit in toc -->
 
 The builder node creates a fresh TLS certificate on each startup, of which the private key is guaranteed to stay inside the TEE instance. You can verify the TEE proof for this certificate using the "[TEE Proof Validation API](#tee-proof-validation-api-atls)". You can also get the certificate with an unattested `curl` request:
 
@@ -137,12 +139,12 @@ The builder node creates a fresh TLS certificate on each startup, of which the p
 curl -w %{certs} https://rpc.buildernet.org
 ```
 
-### Example Golang code <!-- omit in toc -->
+#### Example Golang code <!-- omit in toc -->
 
 See [this example Golang code](https://github.com/flashbots/go-utils/blob/main/examples/send-multioperator-orderflow/main.go) for sending a signed transaction to a builder node.
 The example code supports requiring a specific TLS certificate as well as skipping certificate validation.
 
-### Bundle Hash<!-- omit in toc -->
+#### Bundle Hash<!-- omit in toc -->
 
 The bundle hash is a unique identifier for a specific bundle of transactions sent to BuilderNet.
 
@@ -165,11 +167,11 @@ References:
 - [Golang reference implementation](https://github.com/flashbots/go-utils/blob/6530a1a3fb4995730b0beac14d811b51e08a52ca/rpctypes/types.go#L224-L233)
 - [Examples and test suite](https://github.com/flashbots/go-utils/blob/6530a1a3fb4995730b0beac14d811b51e08a52ca/rpctypes/types_test.go#L27)
 
-You can look up refunds for a specific bundle by using the [flashbots_getFeeRefundsByBundle](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint#flashbots_getfeerefundsbybundle) API.
+You can look up refunds for a specific bundle by using the [buildernet_getFeeRefundsByBundle](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint#buildernet_getfeerefundsbybundle) API.
 
 ---
 
-## `eth_sendRawTransaction`
+### `eth_sendRawTransaction`
 
 You can use `eth_sendRawTransaction` to send a single signed transaction to BuilderNet.
 
@@ -180,7 +182,7 @@ Transactions sent this way are:
 - propagated to other BuilderNet builder nodes.
 - tried to include for up to 5 blocks.
 
-#### Request <!-- omit in toc -->
+##### Request <!-- omit in toc -->
 
 ```json
 {
@@ -191,7 +193,7 @@ Transactions sent this way are:
 }
 ```
 
-#### Response <!-- omit in toc -->
+##### Response <!-- omit in toc -->
 
 The response contains the transaction hash:
 
@@ -203,13 +205,13 @@ The response contains the transaction hash:
 }
 ```
 
-#### Request signature and authentication <!-- omit in toc -->
+##### Request signature and authentication <!-- omit in toc -->
 
 `eth_sendRawTransaction` requests also require a `X-Flashbots-Signature` header for authentication. For more details, see the [relevant section for `eth_sendBundle`](#request-signature-and-authentication-).
 
 ---
 
-## TEE Proof Validation API (aTLS)
+### TEE Proof Validation API (aTLS)
 
 BuilderNet uses attested TLS (aTLS) to verify the attestation of specific builder node instances.
 
@@ -234,3 +236,248 @@ attested-get \
 ```
 
 See also "[Orderflow encryption and attestation](encryption-attestations)" for more details.
+
+## Refunds
+
+BuilderNet provides these APIs to check refunds data:
+
+- [`buildernet_getFeeRefundTotalsByRecipient`](#buildernet_getFeeRefundTotalsByRecipient)
+- [`buildernet_getFeeRefundsByRecipient`](#buildernet_getFeeRefundsByRecipient)
+- [`buildernet_getFeeRefundsByBlock`](#buildernet_getFeeRefundsByBlock)
+- [`buildernet_getFeeRefundsByBundle`](#buildernet_getFeeRefundsByBundle)
+- [`buildernet_setFeeRefundRecipient`](#buildernet_setFeeRefundRecipient)
+- [`buildernet_getDelayedRefunds`](#buildernet_getDelayedRefunds)
+- [`buildernet_getDelayedRefundTotalsByRecipient`](#buildernet_getDelayedRefundTotalsByRecipient)
+
+---
+
+
+### buildernet_getFeeRefundTotalsByRecipient
+
+The `buildernet_getFeeRefundTotalsByRecipient` JSON-RPC method returns the total amount of fee refunds that have been earned by a specific address.
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "buildernet_getFeeRefundTotalsByRecipient",
+  "params": [
+    recipient,       // String, the address to query for fee refunds
+  ]
+}
+```
+
+The response contains three fields:
+
+```json
+{
+  "pending":"0x17812ea4fbbe314",
+  "received":"0x108d1b27b63a213",
+  "maxBlockNumber":"0x13ddb08"
+}
+```
+
+- `pending`: the total amount of fee refunds that have been earned but not yet received by the recipient
+- `received`: the total amount of fee refunds that have been received by the recipient
+- `maxBlockNumber`: the highest block number for which fee refunds have been processed
+
+### buildernet_getFeeRefundsByRecipient
+
+The `buildernet_getFeeRefundsByRecipient` JSON-RPC method returns detailed information about [fee refunds](./refunds.mdx) that have been earned by a specific address.  Our refund process usually calculates these values with a 4 hour delay.
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "buildernet_getFeeRefundsByRecipient",
+  "params": [
+    {
+      recipient,       // String, the address to query for fee refunds
+      cursor,          // [optional] String, the cursor to continue from
+    }
+  ]
+}
+```
+
+Responses are paginated and contain the following fields:
+
+```json
+{
+  "refunds": [
+    {
+      "hash": "0x...",
+      "amount": "0x...",
+      "blockNumber": "0x13ddaa4",
+      "status": "pending",
+      "recipient": "0x..."
+    },
+    ...
+  ],
+  "cursor": "0x..."
+}
+```
+
+The `"refunds"` field contains an array of per-order fee refunds, each with the following fields:
+
+- `hash`: the bundle hash or transaction hash associated with the fee refund
+- `amount`: the amount of the fee refund, in wei
+- `blockNumber`: the block number the order was contained in
+- `status`: the status of the fee refund, either "pending" or "received"
+- `recipient`: the address the fee refund is credited to, either the bundle signer or transaction sender
+
+The `"cursor"` field is only included if there are more fee refunds to fetch. To continue fetching fee refunds, include the cursor as the second argument in the next request.
+
+NOTE: This API currently only returns details for bundles included in block 20802497 and later.  To see total fee refunds processed for a specific address since inception, use the `buildernet_getFeeRefundTotalsByRecipient` method.
+
+### buildernet_getFeeRefundsByBundle
+
+The `buildernet_getFeeRefundsByBundle` is similar to `buildernet_getFeeRefundsByRecipient` but returns result for the given bundle.
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "buildernet_getFeeRefundsByBundle",
+  "params": [
+      bundle_hash,       // String, the hash of the bundle
+  ]
+}
+```
+
+### buildernet_getFeeRefundsByBlock
+
+The `buildernet_getFeeRefundsByBlock` is similar to `buildernet_getFeeRefundsByRecipient` but returns result for the given block.
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "buildernet_getFeeRefundsByBlock",
+  "params": [
+    {
+      block_number,       // String, hex-encoded block number (e.g. 0x15d0280)
+    }
+  ]
+}
+```
+
+
+
+### buildernet_setFeeRefundRecipient
+
+The `buildernet_setFeeRefundRecipient` JSON-RPC method allows a user to "delegate" their [fee refunds](./refunds.mdx) to a specific wallet address.  Two addresses must be provided, the first is the address associated with the signing key used to authenticate your request, while the second is the address to send refunds to.
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "buildernet_setFeeRefundRecipient",
+  "params": [
+    "0xD2824D2D7D6399a4b9A47F258B870D2AFb213948",
+    "0xa273A268CE96E54cF6a7D879B7d016F57E396F48"
+  ]
+}
+```
+
+If the first address matches the authentication signature, then a response with `from` and `to` fields in the result will be returned:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "from":"0xd2824d2d7d6399a4b9a47f258b870d2afb213948",
+    "to":"0xa273a268ce96e54cf6a7d879b7d016f57e396f48"
+  }
+}
+```
+
+If the signature is invalid or does not match the first address, an appropriate error will be returned instead.
+
+### buildernet_getDelayedRefunds
+
+The `buildernet_getDelayedRefunds` JSON-RPC method returns detailed information about delayed refunds.
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "buildernet_getDelayedRefunds",
+  "params": [
+    {
+      recipient,       // String, the address that receives delayed refunds
+      blockRangeFrom,  // [optional] String, hex-encoded block number for the start of the range (inclusive)
+      blockRangeTo,    // [optional] String, hex-encoded block number for the end of the range (inclusive)
+      cursor,          // [optional] String, the cursor to continue from
+      hash,            // [optional] String, bundle hash; if provided, you must also set both blockRangeFrom and blockRangeTo
+    }
+  ]
+}
+```
+
+Responses are paginated and contain the following fields:
+
+
+```json
+{
+  "refunds": [
+    {
+      "amount": "0x...",
+      "blockNumber": "0x13ddaa4",
+      "hash": "0x...",
+      "recipient": "0x...",
+      "status": "pending"
+    },
+    ...
+  ],
+  "nextCursor": "0x..."
+  "indexedUpTo": "0x..."
+}
+```
+
+The `"refunds"` field contains an array of per-order fee refunds, each with the following fields:
+
+- `amount`: the amount of the delayed refund, in wei
+- `blockNumber`: the block number the order was contained in
+- `hash`: the bundle hash that generated delayed refund
+- `status`: the status of the delayed refund, either "pending" or "received"
+- `recipient`: the address the delayed refund is credited to
+
+The `"cursor"` field is only included if there are more delayed refunds to fetch, some data might be avaiable in the future. To continue fetching, include the cursor as the second argument in the next request. If response is empty but contains cursor retry later.
+
+`"indexedUpTo"` contains maximum block number for which delayed refunds are indexed
+
+### buildernet_getDelayedRefundTotalsByRecipient
+
+The `buildernet_getDelayedRefundTotalsByRecipient` JSON-RPC method returns the total amount of delayed refunds that have been earned by a specific address.
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "buildernet_getDelayedRefundTotalsByRecipient",
+  "params": [
+    {
+      recipient,       // String, the address to query for delayed refunds
+      blockRangeFrom,  // [optional] String, hex-encoded block number for the start of the range (inclusive)
+      blockRangeTo,    // [optional] String, hex-encoded block number for the end of the range (inclusive)
+    }
+  ]
+}
+```
+
+The response contains three fields:
+
+```json
+{
+  "indexedUpTo":"0x13ddb08"
+  "pending":"0x17812ea4fbbe314",
+  "received":"0x108d1b27b63a213",
+}
+```
+
+- `indexedUpTo`: the highest block number for which delayed refunds have been processed
+- `pending`: the total amount of fee refunds that have been earned but not yet received by the recipient
+- `received`: the total amount of fee refunds that have been received by the recipient
+
+

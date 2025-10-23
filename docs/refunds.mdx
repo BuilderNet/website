@@ -24,14 +24,14 @@ Note that transactions seen in the public mempool, or bundles only containing tr
 - **$b_i(T)$** is the payment of all bundles sent by identity $i$ if block $B(T)$ is realized.
 - **$\mu_i(T) = \min\{b_i(T), v(T) - v(T \setminus \{i\})\}$** is the marginal contribution of all bundles sent by identity $i$ if $B(T)$ is realized. We bound the marginal contribution so that the net payment can't be negative.
 - **$c$** is the amount the builder pays to the proposer to win the block.
-  
+
 $$
 \phi_i(T, c) = \frac{\mu_i(T)}{\sum_j \mu_j(T)} \min\{v(B(T)) - c, \sum_j \mu_j(T)\}
 $$
 
 So the net payment per identity (assuming it's included) is $p_i(T) = b_i(B(T)) - \phi_i(T, c)$.
 
-Notice that if the block generates enough value after paying the proposer, everyone should be refunded their contribution, meaning everyone pays the minimum they need to pay to beat competition. 
+Notice that if the block generates enough value after paying the proposer, everyone should be refunded their contribution, meaning everyone pays the minimum they need to pay to beat competition.
 
 ### Identity constraint
 
@@ -77,7 +77,7 @@ We intend to monitor these dynamics and upgrade BuilderNet's approach to redistr
 
 ## Data
 
-Refund data is available in the [BuilderNet dashboard](https://dune.com/flashbots/buildernet), [Flashbots Protect dashboard](https://dune.com/flashbots/flashbots-protect), and through [Flashbots APIs](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint#flashbots_getfeerefundtotalsbyrecipient).
+Refund data is available through the [BuilderNet APIs](./api.mdx#Refunds), [BuilderNet dashboard](https://dune.com/flashbots/buildernet), and the [Flashbots Protect dashboard](https://dune.com/flashbots/flashbots-protect).
 
 ## Refund wallet
 
