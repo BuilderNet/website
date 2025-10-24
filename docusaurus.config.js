@@ -71,6 +71,11 @@ module.exports = async function createConfigAsync() {
               label: 'Forum',
               position: 'right',
             },
+            {
+              href: 'http://t.me/buildernet_general',
+              label: 'Telegram',
+              position: 'right',
+            },
           ],
         },
         image: 'img/buildernet-cover-photo-m.jpg',
