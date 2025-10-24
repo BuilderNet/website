@@ -93,7 +93,9 @@ The response always contains (a) an empty result and (b) a matching request ID:
 {
     "id": 1,
     "jsonrpc": "2.0",
-    "result": null
+    "result": {
+      "bundleHash": "0x..."
+    }
 }
 ```
 
@@ -167,7 +169,7 @@ References:
 - [Golang reference implementation](https://github.com/flashbots/go-utils/blob/6530a1a3fb4995730b0beac14d811b51e08a52ca/rpctypes/types.go#L224-L233)
 - [Examples and test suite](https://github.com/flashbots/go-utils/blob/6530a1a3fb4995730b0beac14d811b51e08a52ca/rpctypes/types_test.go#L27)
 
-You can look up refunds for a specific bundle by using the [buildernet_getFeeRefundsByBundle](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint#buildernet_getfeerefundsbybundle) API.
+You can look up refunds for a specific bundle by using the [buildernet_getFeeRefundsByBundle](#buildernet_getfeerefundsbybundle) API.
 
 ---
 
