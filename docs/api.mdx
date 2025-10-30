@@ -51,7 +51,7 @@ This is useful for sending multiple transactions that depend on each other.
 
         refundPercent     // Number (integer between 1-99), How much of the total priority fee + coinbase payment you want to be refunded for.
         refundRecipient   // String, The address that the funds from refundPercent will be sent to. If not specified, they will be sent to the from address of the first transaction.
-        delayedRefund     // Boolean, If true, `refundPercent` refund is processed asynchronously via BuilderNet refund pipeline rather than in the same block.
+        delayedRefund     // Boolean, If true, `refundPercent` refund is processed asynchronously via BuilderNet refund pipeline rather than in the same block. Bundles with delayedRefund will not receive BuilderNet refunds by default.  
 
         refundIdentity   // String, Address that BuilderNet refunds should be sent to instead of the bundle signer.
     }]
