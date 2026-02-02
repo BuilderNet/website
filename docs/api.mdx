@@ -148,28 +148,11 @@ The example code supports requiring a specific TLS certificate as well as skippi
 
 #### Bundle Hash<!-- omit in toc -->
 
-The bundle hash is a unique identifier for a specific bundle of transactions sent to BuilderNet.
+"bundle hash" is a unique identifier for a specific bundle of transactions sent to BuilderNet. It is returned as response of the `eth_sendBundle` RPC call.
 
-It is calculated by taking the Keccak-256 hash of the transactions in a bundle:
+You can use this hash to look up refunds for a specific bundle by using the [buildernet_getFeeRefundsByBundle](#buildernet_getfeerefundsbybundle) API.
 
-```go
-// Compute keccak hash over the bundle transactions
-hasher := sha3.NewLegacyKeccak256()
-for _, rawTx := range b.Txs {
-    var tx types.Transaction
-    if err := tx.UnmarshalBinary(rawTx); err != nil {
-        return common.Hash{}, uuid.Nil, err
-    }
-    hasher.Write(tx.Hash().Bytes())
-}
-hashBytes := hasher.Sum(nil)
-```
-
-References:
-- [Golang reference implementation](https://github.com/flashbots/go-utils/blob/6530a1a3fb4995730b0beac14d811b51e08a52ca/rpctypes/types.go#L224-L233)
-- [Examples and test suite](https://github.com/flashbots/go-utils/blob/6530a1a3fb4995730b0beac14d811b51e08a52ca/rpctypes/types_test.go#L27)
-
-You can look up refunds for a specific bundle by using the [buildernet_getFeeRefundsByBundle](#buildernet_getfeerefundsbybundle) API.
+See the [reference implementation in FlowProxy](https://github.com/BuilderNet/FlowProxy/blob/07c4e33af664098a29be45807e8d9f0a48b85749/src/primitives/mod.rs#L95). Note that the implementation may change over time, and we recommend to use the hash returned by the `eth_sendBundle` RPC call directly.
 
 ---
 
