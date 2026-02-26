@@ -39,37 +39,42 @@ Client requests require the server to own the private key for this particular TL
 ## TEE attestation of the certificate
 
 TEE attestation allows you to verify that a given TLS certificate belongs to a particular VM image (with specific codebase and configuration).
-On every builder node, an API on port 7936 serves the local certificate over an aTLS attested channel.
+On every builder node, an API on port 7936 serves the local certificate over an attested-TLS channel.
 
 :::info
 
-Read more about aTLS in the [Constellation documentation](https://github.com/edgelesssys/constellation/blob/main/internal/atls/README.md).
+Read more about attested-tls in the [documentation](https://github.com/flashbots/attested-tls-proxy/tree/main/attested-tls/README.md).
 
 :::
 
 
-As part of the aTLS handshake, the client (i.e. user) can verify that the server runs inside a TEE instance with specific measurements
+As part of the attested-TLS handshake, the client (i.e. user) can verify that the server runs inside a TEE instance with specific measurements
 (i.e. specific codebase and configuration).
 
-You can use [this tool](https://github.com/flashbots/cvm-reverse-proxy/blob/main/cmd/attested-get/main.go) to get the certificate with TEE attestation:
+You can use [this tool](https://github.com/flashbots/attested-tls-proxy) to get the certificate with TEE attestation:
+
+Installing with `cargo`:
 
 ```bash
-# Install attested-get
-go install github.com/flashbots/cvm-reverse-proxy/cmd/attested-get
+cargo install --git https://github.com/flashbots/attested-tls-proxy attested-tls-proxy
+# optionally add --tag <version number of latest release>
+```
 
-attested-get \
-    --addr=https://rpc.buildernet.org:7936/cert \
-    --out-measurements=measurements.json \
-    --out-response=builder-cert.pem
+Alternatively see the [releases page](https://github.com/flashbots/attested-tls-proxy/releases) to install from pre-built x86 binary or debian package.
+
+```
+attested-tls-proxy get-tls-cert \
+    --allowed-remote-attestaton-type tdx \
+    --out-measurements measurements.json \
+    rpc.buildernet.org:7936/cert > builder-cert.pem
 ```
 
 Here's an example command for an attested request to the Flashbots BuilderNet node, matching expected measurements from https://measurements.buildernet.org:
 
 ```
-attested-get \
-    --addr=https://rpc.buildernet.org:7936/cert \
-    --expected-measurements=https://measurements.buildernet.org \
-    --out-response=builder-cert.pem
+attested-tls-proxy get-tls-cert \
+    --measurements-file https://measurements.buildernet.org \
+    rpc.buildernet.org:7936/cert > builder-cert.pem
 ```
 
 You can then use the `builder-cert.pem` file to verify the attested TLS certificate in your future requests to BuilderNet.

@@ -206,18 +206,17 @@ You can find more details in the [Constellation docs](https://docs.edgeless.syst
 >
 > The protocol can be used by clients to verify a server certificate, by a server to verify a client certificate, or for mutual verification (mutual aTLS).
 
-In BuilderNet, [github.com/flashbots/cvm-reverse-proxy](https://github.com/flashbots/cvm-reverse-proxy) is responsible for attested TLS (aTLS) communication, both towards users as well as within the network.
-You can use the [`attested-get`](https://github.com/flashbots/cvm-reverse-proxy/blob/main/cmd/attested-get/main.go) tool to receive the builder certificate over an attested channel:
+In BuilderNet,
+[github.com/flashbots/attested-tls-proxy](https://github.com/flashbots/attested-tls-proxy) is responsible for attested TLS communication, both towards users as well as within the network.
+You can use the [`attested-tls-proxy get-tls-cert`](https://github.com/flashbots/attested-tls-proxy) command to receive the builder certificate over an attested channel:
 
 ```bash
-# Install attested-get
-go install github.com/flashbots/cvm-reverse-proxy/cmd/attested-get
+cargo install --git https://github.com/flashbots/attested-tls-proxy attested-tls-proxy
+# optionally add --tag <version number of latest release>
 
-# Get the builder certificate over an attested channel
-attested-get \
-    --addr=https://rpc.buildernet.org:7936/cert \
-    --expected-measurements=https://measurements.buildernet.org \
-    --out-response=builder-cert.pem
+attested-tls-proxy get-tls-cert \
+    --measurements-file https://measurements.buildernet.org \
+    rpc.buildernet.org:7936/cert > builder-cert.pem
 ```
 
 See also "[Orderflow encryption and attestation](encryption-attestations)" for more details.
@@ -470,5 +469,4 @@ The response contains three fields:
 - `indexedUpTo`: the highest block number for which delayed refunds have been processed
 - `pending`: the total amount of fee refunds that have been earned but not yet received by the recipient
 - `received`: the total amount of fee refunds that have been received by the recipient
-
 
