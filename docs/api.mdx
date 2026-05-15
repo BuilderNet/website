@@ -199,15 +199,17 @@ The response contains the transaction hash:
 
 ### Priority updates
 
-A priority update is a transaction that is given precedence to write to specific onchain storage before any other transaction accesses the same state. This is intended to enable actively managed liquidity systems like PropAMMs, but can be used for any system which requires prioritisation of certain onchain actions over others.
+A priority update is a transaction that BuilderNet includes ahead of other transactions accessing the same state. This can be used by smart contracts to ensure that some interactions are prioritized ahead of others (e.g. for maker vs. taker prioritization).
 
-Depending on configuration, BuilderNet can conditionally included the priority update if and only if there is another transaction which attempts to access the same state in the block (e.g. a taker trading against the actively managed pool). This is a gas optimisation feature.
-- it's configured to land at the top of the next block, **or**
-- its post-state is read by another transaction in the same block (e.g. a taker trade matching a quoted price).
+Priority update transactions must post data via the [Priority Update Registry](https://github.com/flashbots/priority-update-registry).
 
-The mode is set per API key.
+These updates can be configured in one of two modes:
+* **Top-of-Block:** to land at the **top of the next block**
+* **Conditional:** to land only on the condition that another transaction reading the update is also included in the same block. Conditional updates are not guaranteed to be at the top of the block. This is an experimental gas savings feature subject to change. Currently, inclusion is not triggered by reads that occur in reverting call frames.
 
-This is intended for operators of proprietary AMMs to publish quote updates with low replacement latency. Access requires an API key, granted on request.
+When multiple updates for the same state are available at the time a block is built, the builder will prioritise the latest update.
+
+The mode is set per API key, which can be granted on request. This requirement may be dropped in future. Operators needing both modes can request multiple keys.
 
 #### Endpoints <!-- omit in toc -->
 
