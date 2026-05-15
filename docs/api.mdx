@@ -205,7 +205,7 @@ Priority update transactions must post data via the [Priority Update Registry](h
 
 These updates can be configured in one of two modes:
 * **Top-of-Block:** to land at the **top of the next block**
-* **Conditional:** to land only on the condition that another transaction reading the update is also included in the same block. Conditional updates are not guaranteed to be at the top of the block. This is an experimental gas savings feature subject to change. Currently, inclusion is not triggered by reads that occur in reverting call frames.
+* **Conditional:** to land only on the condition that another transaction reading the update is also included in the same block. Conditional updates are not guaranteed to be at the top of the block. This is an experimental gas savings feature subject to change.
 
 When multiple updates for the same state are available at the time a block is built, the builder will prioritise the latest update.
 
