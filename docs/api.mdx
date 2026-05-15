@@ -9,6 +9,7 @@ BuilderNet provides these APIs to send orderflow:
 
 - [`eth_sendBundle`](#eth_sendbundle)
 - [`eth_sendRawTransaction`](#eth_sendrawtransaction)
+- [Priority updates](#priority-updates)
 - [TEE Proof Validation API (aTLS)](#tee-proof-validation-api-atls)
 
 ---
@@ -193,6 +194,59 @@ The response contains the transaction hash:
 ##### Request signature and authentication <!-- omit in toc -->
 
 `eth_sendRawTransaction` requests also require a `X-Flashbots-Signature` header for authentication. For more details, see the [relevant section for `eth_sendBundle`](#request-signature-and-authentication-).
+
+---
+
+### Priority updates
+
+A priority update is a transaction that BuilderNet includes ahead of other transactions accessing the same state. This can be used by smart contracts to ensure that some interactions are prioritized ahead of others (e.g. for maker vs. taker prioritization).
+
+Priority update transactions must post data via the [Priority Update Registry](https://github.com/flashbots/priority-update-registry).
+
+These updates can be configured in one of two modes:
+* **Top-of-Block:** to land at the **top of the next block**
+* **Conditional:** to land only on the condition that another transaction reading the update is also included in the same block. Conditional updates are not guaranteed to be at the top of the block. This is an experimental gas savings feature subject to change.
+
+When multiple updates for the same state are available at the time a block is built, the builder will prioritise the latest update.
+
+The mode is set per API key, which can be granted on request (see [How to participate](how-to-participate)). This requirement may be dropped in future. Operators needing both modes can request multiple keys.
+
+#### Endpoints <!-- omit in toc -->
+
+Priority updates are submitted over WebSocket on the same hosts as the JSON-RPC endpoints (see [BuilderNet endpoints](send-orderflow#buildernet-endpoints)) at the path `/ws/sendquoteupdate`, e.g. `wss://rpc.buildernet.org/ws/sendquoteupdate`.
+
+#### Request <!-- omit in toc -->
+
+Messages are protobuf-encoded:
+
+```proto
+message PWebsocketQuoteUpdateV1Args {
+  bytes tx = 1;                       // RLP-encoded quote tx (empty for cancellation)
+  uint64 block_number = 2;            // Target block
+  bytes replacement_uuid = 3;         // 16-byte quote identifier
+  uint64 replacement_seq_number = 4;  // Monotonic sequence (>0)
+  bool disable_cross_region_sharing = 5;
+}
+```
+
+**Replacement and cancellation:**
+- **Replace**: send a new message with the same `replacement_uuid` and a higher `replacement_seq_number`.
+- **Cancel**: same as replace, but with an empty `tx`.
+
+#### Response <!-- omit in toc -->
+
+```proto
+message PWebsocketQuoteUpdateV1Response {
+  bytes replacement_uuid = 1;
+  uint64 replacement_seq_number = 2;
+  uint64 timestamp = 3;               // RPC receive time (UNIX nanos)
+  string error = 4;                   // Error details on failure
+}
+```
+
+#### Authentication <!-- omit in toc -->
+
+Set the API key in the `Authorization` header when establishing the WebSocket connection.
 
 ---
 
