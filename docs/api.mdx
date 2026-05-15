@@ -199,7 +199,9 @@ The response contains the transaction hash:
 
 ### Priority updates
 
-A priority update is a transaction that BuilderNet includes only if either:
+A priority update is a transaction that is given precedence to write to specific onchain storage before any other transaction accesses the same state. This is intended to enable actively managed liquidity systems like PropAMMs, but can be used for any system which requires prioritisation of certain onchain actions over others.
+
+Depending on configuration, BuilderNet can conditionally included the priority update if and only if there is another transaction which attempts to access the same state in the block (e.g. a taker trading against the actively managed pool). This is a gas optimisation feature.
 - it's configured to land at the top of the next block, **or**
 - its post-state is read by another transaction in the same block (e.g. a taker trade matching a quoted price).
 
