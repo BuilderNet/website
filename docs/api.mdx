@@ -248,6 +248,42 @@ message PWebsocketQuoteUpdateV1Response {
 
 Set the API key in the `Authorization` header when establishing the WebSocket connection.
 
+#### State stream <!-- omit in toc -->
+
+You can subscribe to a read-only stream of the priority update state the builder would apply to the next block. Only priority updates that opt in to publishing are included in the stream.
+
+The stream is exposed over WebSocket on the same hosts as the JSON-RPC endpoints (see [BuilderNet endpoints](send-orderflow#buildernet-endpoints)) at the path `/ws/pamm_quote_stream`. No API key is required, e.g. `wss://rpc.buildernet.org/ws/pamm_quote_stream`.
+
+Each message is a JSON snapshot describing the aggregated state overrides for the next block:
+
+```json
+{
+  "slot": 14372440,
+  "blockNumber": 25137544,
+  "timestamp": 1779293304512809332,
+  "0x0000000000000000000000000000000000000000": {
+    "stateOverride": {
+      "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640": {
+        "stateDiff": {
+          "0x0000000000000000000000000000000000000000000000000000000000000000": "0x00014402d302d301f2030bdf000000000000547eda875f9cf4410635a0b28154",
+          "0x0000000000000000000000000000000000000000000000000000000000000002": "0x0000000000000000000000000000170574a8b2439b6436f669cd2f061bd02bc2",
+          "0x0000000000000000000000000000000000000000000000000000000000000003": "0x00000000000000000012ed16f4d0744000000000000000000000000001f1ab12"
+        }
+      }
+    }
+  }
+}
+```
+
+| Field | Description |
+| --- | --- |
+| `slot` | Target slot for the snapshot. |
+| `blockNumber` | Target block number. |
+| `timestamp` | Snapshot time (UNIX nanoseconds). |
+| `0x…` (address keys) | State overrides are grouped by an address — typically the main proPAMM contract. Each maps to a `stateOverride` object describing the storage the builder would apply for priority updates associated with that group. |
+
+The `stateOverride` object uses the standard Ethereum state-override format: it maps each contract address to a `stateDiff`, which in turn maps 32-byte storage slots to their 32-byte values.
+
 ---
 
 ### TEE Proof Validation API (aTLS)
