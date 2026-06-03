@@ -211,15 +211,6 @@ When multiple updates for the same state are available at the time a block is bu
 
 The mode is set per API key, which can be granted on request (see [How to participate](how-to-participate)). This requirement may be dropped in future. Operators needing both modes can request multiple keys.
 
-#### propAMM stream addresses <!-- omit in toc -->
-
-State overrides can be sent to `0xda7afeed01fe625cf15d187a19f94b45f00b8c5f`. 
-
-| Name | Stream address |
-| --- | --- |
-| FermiSwap | `0xb1076fe3ab5e28005c7c323bac5ac06a680d452e` |
-| Kipseli | `0x5CDbE59400Cc2EFDCC2B54acca4a99FE00dD588c` |
-
 #### Endpoints <!-- omit in toc -->
 
 Priority updates are submitted over WebSocket on the same hosts as the JSON-RPC endpoints (see [BuilderNet endpoints](send-orderflow#buildernet-endpoints)) at the path `/ws/sendquoteupdate`, e.g. `wss://rpc.buildernet.org/ws/sendquoteupdate`.
@@ -292,6 +283,16 @@ Each message is a JSON snapshot describing the aggregated state overrides for th
 | `0x…` (address keys) | State overrides are grouped by an address — typically the main propAMM contract. Each maps to a `stateOverride` object describing the storage the builder would apply for priority updates associated with that group. |
 
 The `stateOverride` object uses the standard Ethereum state-override format: it maps each contract address to a `stateDiff`, which in turn maps 32-byte storage slots to their 32-byte values.
+
+
+#### propAMM stream addresses <!-- omit in toc -->
+
+State overrides can be sent to `0xda7afeed01fe625cf15d187a19f94b45f00b8c5f`. 
+
+| Name | Stream address |
+| --- | --- |
+| FermiSwap | `0xb1076fe3ab5e28005c7c323bac5ac06a680d452e` |
+| Kipseli | `0x5CDbE59400Cc2EFDCC2B54acca4a99FE00dD588c` |
 
 ---
 
