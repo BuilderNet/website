@@ -16,6 +16,7 @@ Ports open for connections from outside the TDX instance.
 | Port  | Protocol    | Service                                                                      | Use                                                                                      |
 | ----- | ----------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | 5544  | TCP (HTTPS) | HAProxy                                                                      | Receive orderflow from builder nodes and Flashbots. Fwd to orderflow-proxy on port 5542. |
+| 6000  | TCP  | Optimistic v3                                                                      | Relay requesting payload from builder. |
 | 9000  | TCP/UDP     | [Lighthouse](https://lighthouse-book.sigmaprime.io/advanced_networking.html) | Consensus network peering.                                                               |
 | 30303 | TCP         | [Reth](https://reth.rs/run/ports.html)                                       | Execution network peering.                                                               |
 

@@ -9,6 +9,7 @@ BuilderNet provides these APIs to send orderflow:
 
 - [`eth_sendBundle`](#eth_sendbundle)
 - [`eth_sendRawTransaction`](#eth_sendrawtransaction)
+- [Priority updates](#priority-updates)
 - [TEE Proof Validation API (aTLS)](#tee-proof-validation-api-atls)
 
 ---
@@ -148,28 +149,11 @@ The example code supports requiring a specific TLS certificate as well as skippi
 
 #### Bundle Hash<!-- omit in toc -->
 
-The bundle hash is a unique identifier for a specific bundle of transactions sent to BuilderNet.
+"bundle hash" is a unique identifier for a specific bundle of transactions sent to BuilderNet. It is returned as response of the `eth_sendBundle` RPC call.
 
-It is calculated by taking the Keccak-256 hash of the transactions in a bundle:
+You can use this hash to look up refunds for a specific bundle by using the [buildernet_getFeeRefundsByBundle](#buildernet_getfeerefundsbybundle) API.
 
-```go
-// Compute keccak hash over the bundle transactions
-hasher := sha3.NewLegacyKeccak256()
-for _, rawTx := range b.Txs {
-    var tx types.Transaction
-    if err := tx.UnmarshalBinary(rawTx); err != nil {
-        return common.Hash{}, uuid.Nil, err
-    }
-    hasher.Write(tx.Hash().Bytes())
-}
-hashBytes := hasher.Sum(nil)
-```
-
-References:
-- [Golang reference implementation](https://github.com/flashbots/go-utils/blob/6530a1a3fb4995730b0beac14d811b51e08a52ca/rpctypes/types.go#L224-L233)
-- [Examples and test suite](https://github.com/flashbots/go-utils/blob/6530a1a3fb4995730b0beac14d811b51e08a52ca/rpctypes/types_test.go#L27)
-
-You can look up refunds for a specific bundle by using the [buildernet_getFeeRefundsByBundle](#buildernet_getfeerefundsbybundle) API.
+See the [reference implementation in FlowProxy](https://github.com/BuilderNet/FlowProxy/blob/07c4e33af664098a29be45807e8d9f0a48b85749/src/primitives/mod.rs#L95). Note that the implementation may change over time, and we recommend to use the hash returned by the `eth_sendBundle` RPC call directly.
 
 ---
 
@@ -210,6 +194,105 @@ The response contains the transaction hash:
 ##### Request signature and authentication <!-- omit in toc -->
 
 `eth_sendRawTransaction` requests also require a `X-Flashbots-Signature` header for authentication. For more details, see the [relevant section for `eth_sendBundle`](#request-signature-and-authentication-).
+
+---
+
+### Priority updates
+
+A priority update is a transaction that BuilderNet includes ahead of other transactions accessing the same state. This can be used by smart contracts to ensure that some interactions are prioritized ahead of others (e.g. for maker vs. taker prioritization).
+
+Priority update transactions must post data via the [Priority Update Registry](https://github.com/flashbots/priority-update-registry).
+
+These updates can be configured in one of two modes:
+* **Top-of-Block:** to land at the **top of the next block**
+* **Conditional:** to land only on the condition that another transaction reading the update is also included in the same block. Conditional updates are not guaranteed to be at the top of the block. This is an experimental gas savings feature subject to change.
+
+When multiple updates for the same state are available at the time a block is built, the builder will prioritise the latest update.
+
+The mode is set per API key, which can be granted on request (see [How to participate](how-to-participate)). This requirement may be dropped in future. Operators needing both modes can request multiple keys.
+
+#### Endpoints <!-- omit in toc -->
+
+Priority updates are submitted over WebSocket on the same hosts as the JSON-RPC endpoints (see [BuilderNet endpoints](send-orderflow#buildernet-endpoints)) at the path `/ws/sendquoteupdate`, e.g. `wss://rpc.buildernet.org/ws/sendquoteupdate`.
+
+#### Request <!-- omit in toc -->
+
+Messages are protobuf-encoded:
+
+```proto
+message PWebsocketQuoteUpdateV1Args {
+  bytes tx = 1;                       // RLP-encoded quote tx (empty for cancellation)
+  uint64 block_number = 2;            // Target block
+  bytes replacement_uuid = 3;         // 16-byte quote identifier
+  uint64 replacement_seq_number = 4;  // Monotonic sequence (>0)
+  bool disable_cross_region_sharing = 5;
+}
+```
+
+**Replacement and cancellation:**
+- **Replace**: send a new message with the same `replacement_uuid` and a higher `replacement_seq_number`.
+- **Cancel**: same as replace, but with an empty `tx`.
+
+#### Response <!-- omit in toc -->
+
+```proto
+message PWebsocketQuoteUpdateV1Response {
+  bytes replacement_uuid = 1;
+  uint64 replacement_seq_number = 2;
+  uint64 timestamp = 3;               // RPC receive time (UNIX nanos)
+  string error = 4;                   // Error details on failure
+}
+```
+
+#### Authentication <!-- omit in toc -->
+
+Set the API key in the `Authorization` header when establishing the WebSocket connection.
+
+#### State stream <!-- omit in toc -->
+
+You can subscribe to a read-only stream of the priority update state the builder would apply to the next block. Only priority updates that opt in to publishing are included in the stream.
+
+The stream is exposed over WebSocket on the same hosts as the JSON-RPC endpoints (see [BuilderNet endpoints](send-orderflow#buildernet-endpoints)) at the path `/ws/pamm_quote_stream`. No API key is required, e.g. `wss://rpc.buildernet.org/ws/pamm_quote_stream`.
+
+Each message is a JSON snapshot describing the aggregated state overrides for the next block:
+
+```json
+{
+  "slot": 14372440,
+  "blockNumber": 25137544,
+  "timestamp": 1779293304512809332,
+  "0x0000000000000000000000000000000000000000": {
+    "stateOverride": {
+      "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640": {
+        "stateDiff": {
+          "0x0000000000000000000000000000000000000000000000000000000000000000": "0x00014402d302d301f2030bdf000000000000547eda875f9cf4410635a0b28154",
+          "0x0000000000000000000000000000000000000000000000000000000000000002": "0x0000000000000000000000000000170574a8b2439b6436f669cd2f061bd02bc2",
+          "0x0000000000000000000000000000000000000000000000000000000000000003": "0x00000000000000000012ed16f4d0744000000000000000000000000001f1ab12"
+        }
+      }
+    }
+  }
+}
+```
+
+| Field | Description |
+| --- | --- |
+| `slot` | Target slot for the snapshot. |
+| `blockNumber` | Target block number. |
+| `timestamp` | Snapshot time (UNIX nanoseconds). |
+| `0x…` (address keys) | State overrides are grouped by an address — typically the main propAMM contract. Each maps to a `stateOverride` object describing the storage the builder would apply for priority updates associated with that group. |
+
+The `stateOverride` object uses the standard Ethereum state-override format: it maps each contract address to a `stateDiff`, which in turn maps 32-byte storage slots to their 32-byte values.
+
+
+#### propAMM stream addresses <!-- omit in toc -->
+
+State overrides can be sent to `0xda7afeed01fe625cf15d187a19f94b45f00b8c5f`. 
+
+| Name | Stream address |
+| --- | --- |
+| FermiSwap | `0xb1076fe3ab5e28005c7c323bac5ac06a680d452e` |
+| Kipseli | `0x5CDbE59400Cc2EFDCC2B54acca4a99FE00dD588c` |
 
 ---
 
