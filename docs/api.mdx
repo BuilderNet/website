@@ -41,7 +41,7 @@ This is useful for sending multiple transactions that depend on each other.
 
         // Optional fields
         replacementUuid   // String, UUID that can be used to cancel/replace this bundle.
-        replacementNonce  // String, Used to order bundles sharing the same replacementUuid. Bundles received with a lower replacementNonce than the latest accepted one are ignored.
+        replacementNonce  // Number, Used to order bundles sharing the same replacementUuid. Bundles received with a lower replacementNonce than the latest accepted one are ignored.
 
         revertingTxHashes // Array[String], A list of tx hashes that are allowed to revert.
         droppingTxHashes  // Array[String], A list of tx hashes that can be removed from the bundle if it's deemed useful (but not revert).
