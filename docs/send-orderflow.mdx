@@ -82,58 +82,22 @@ Verify that a builder node runs the correct code and configuration inside a spec
 
 It works by making a HTTPS request through an attested connection. During the TLS handshake, the server proves that it's running inside a TEE with specific measurements and responds with a TLS certificate for future use. Based on the verifiable code and configuration, this provides assurances that this certificate belongs to a specific VM image with specific measurements.
 
-You can use our open-source [`attested-get` tool](https://github.com/flashbots/cvm-reverse-proxy/blob/main/cmd/attested-get/main.go) to receive the certificate **over an attested channel** (after verifying the TEE proof) and save it as `builder-cert.pem`:
+You can use our open-source [`attested-get` tool](https://github.com/flashbots/attested-tls-proxy) to receive the certificate **over an attested channel** (after verifying the TEE proof) and save it as `builder-cert.pem`:
 
 ```bash
-# Install attested-get tool
-go install github.com/flashbots/cvm-reverse-proxy/cmd/attested-get
-
+# In a checkout of github.com/flashbots/attested-tls-proxy:
 # Get the builder certificate over an attested channel
-attested-get \
-    --addr=https://rpc.buildernet.org:7936/cert \
-    --expected-measurements=https://measurements.buildernet.org \
-    --out-response=builder-cert.pem
+cargo run -- attested-get \
+    --measurements-file https://measurements.buildernet.org \
+    rpc.buildernet.org:7936/cert \
+    > builder-cert.pem
 ```
 
 
 <details>
-  <summary>Example output</summary>
+  <summary>Example `builder-cert.pem` output</summary>
 
-```bash
-time=2025-04-24T11:12:19.747+01:00 level=INFO msg="Loading expected measurements from https://measurements.buildernet.org ..." service=attested-get version=dev
-time=2025-04-24T11:12:20.186+01:00 level=INFO msg="Measurements loaded" service=attested-get version=dev measurements=4
-time=2025-04-24T11:12:20.186+01:00 level=INFO msg="Executing attested GET request to https://rpc.buildernet.org:7936/cert ..." service=attested-get version=dev
-time=2025-04-24T11:12:20.786+01:00 level=INFO msg="Validating attestation document" service=attested-get version=dev
-time=2025-04-24T11:12:21.940+01:00 level=INFO msg="Successfully validated attestation document" service=attested-get version=dev
-time=2025-04-24T11:12:22.051+01:00 level=INFO msg="Measurements for azure-tdx with 24 entries:" service=attested-get version=dev
-{
-    "0": "2ade8023eeec241d83eff996830fd33b6b26811a79e8e809def01296337abced",
-    "1": "3d458cfe55cc03ea1f443f1562beec8df51c75e14a9fcf9a7234a13f198e7969",
-    "10": "0000000000000000000000000000000000000000000000000000000000000000",
-    "11": "3aede0e78b33f4197175b73468be54f168a46719c063b7c4f27c10984e614b38",
-    "12": "0000000000000000000000000000000000000000000000000000000000000000",
-    "13": "0000000000000000000000000000000000000000000000000000000000000000",
-    "14": "0000000000000000000000000000000000000000000000000000000000000000",
-    "15": "0000000000000000000000000000000000000000000000000000000000000000",
-    "16": "0000000000000000000000000000000000000000000000000000000000000000",
-    "17": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-    "18": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-    "19": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-    "2": "3d458cfe55cc03ea1f443f1562beec8df51c75e14a9fcf9a7234a13f198e7969",
-    "20": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-    "21": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-    "22": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-    "23": "0000000000000000000000000000000000000000000000000000000000000000",
-    "3": "3d458cfe55cc03ea1f443f1562beec8df51c75e14a9fcf9a7234a13f198e7969",
-    "4": "966f0aa4b6f6952e601712cfe78f71a6ae61467a425a92d0800c754e98933d78",
-    "5": "18b53ae9ecb6aca7d765eae8e4324ecb61691822deb2bd6d318b76b6835ae4f0",
-    "6": "737a9771c3575e3202b8dc69e4881de4b666253cfa92a5dbac6d99fd7e81c8c2",
-    "7": "124daf47b4d67179a77dc3c1bcca198ae1ee1d094a2a879974842e44ab98bb06",
-    "8": "0000000000000000000000000000000000000000000000000000000000000000",
-    "9": "af03ec5b7f02f5b9779f04bc837b8cbbf85d5b0386d5f387d8b99e8f0d9a1fa4"
-}
-time=2025-04-24T11:12:22.051+01:00 level=INFO msg="Measurements match expected measurements ✅" service=attested-get version=dev matchedMeasurements=buildernet-v1.3.0-azure-tdx-d17a02695c1acc0800aff80e86efbe0e5919843184e6562d8d572894ab43d149.wic.vhd
-time=2025-04-24T11:12:22.051+01:00 level=INFO msg="Response body with 696 bytes:" service=attested-get version=dev
+```
 -----BEGIN CERTIFICATE-----
 MIIB1TCCAXugAwIBAgIRAJpsLIpuWcMaYpyLRyfzzu0wCgYIKoZIzj0EAwIwDzEN
 MAsGA1UEChMEQWNtZTAeFw0yNTA0MjMxMDAzMDNaFw0yNjA0MjMxMDAzMDNaMA8x
