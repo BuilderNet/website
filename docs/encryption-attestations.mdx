@@ -51,25 +51,14 @@ Read more about aTLS in the [Constellation documentation](https://github.com/edg
 As part of the aTLS handshake, the client (i.e. user) can verify that the server runs inside a TEE instance with specific measurements
 (i.e. specific codebase and configuration).
 
-You can use [this tool](https://github.com/flashbots/cvm-reverse-proxy/blob/main/cmd/attested-get/main.go) to get the certificate with TEE attestation:
+You can use [this tool](https://github.com/flashbots/attested-tls-proxy) to get the certificate with TEE attestation, matching expected measurements from https://measurements.buildernet.org:
 
 ```bash
-# Install attested-get
-go install github.com/flashbots/cvm-reverse-proxy/cmd/attested-get
-
-attested-get \
-    --addr=https://rpc.buildernet.org:7936/cert \
-    --out-measurements=measurements.json \
-    --out-response=builder-cert.pem
-```
-
-Here's an example command for an attested request to the Flashbots BuilderNet node, matching expected measurements from https://measurements.buildernet.org:
-
-```
-attested-get \
-    --addr=https://rpc.buildernet.org:7936/cert \
-    --expected-measurements=https://measurements.buildernet.org \
-    --out-response=builder-cert.pem
+# In a checkout of github.com/flashbots/attested-tls-proxy:
+cargo run -- attested-get \
+    --measurements-file https://measurements.buildernet.org \
+    rpc.buildernet.org:7936/cert \
+    > builder-cert.pem
 ```
 
 You can then use the `builder-cert.pem` file to verify the attested TLS certificate in your future requests to BuilderNet.
