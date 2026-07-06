@@ -43,6 +43,19 @@ See also the [API reference](api) for more details on the API methods.
 
 ---
 
+### Rate limits
+
+The following rate limits apply per client when sending requests to the BuilderNet RPC endpoints:
+
+- Connection rate: 3 per 10s (~0.3/s)
+- Concurrent connections: 3
+- Bandwidth in: 600 MB/min (~10 MB/s)
+- HTTP request rate: 100 per 10s (~10/s)
+
+If you need increased limits, reach out to us in the Telegram group: [t.me/buildernet_general](https://t.me/buildernet_general).
+
+---
+
 ### Example `curl` request
 
 This request sends a signed transaction to BuilderNet:
