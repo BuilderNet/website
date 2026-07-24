@@ -55,6 +55,12 @@ This is useful for sending multiple transactions that depend on each other.
         delayedRefund     // Boolean, If true, `refundPercent` refund is processed asynchronously via BuilderNet refund pipeline rather than in the same block.
 
         refundIdentity   // String, Address that BuilderNet refunds should be sent to instead of the bundle signer.
+
+        // Target pools (requires "version": "v2")
+        version           // String, Bundle format version. Set to "v2" to use the target pool fields below.
+        desiredState      // String, Desired placement of the bundle. Set to "BottomOfBlock"
+        targetAddresses   // Array[String], A list of contract addresses (e.g., AMM pools) whose state this bundle targets.
+        targetSlots       // Array[Array[String]], Hex encoded storage slots to target per address, index-aligned with targetAddresses. An empty array targets all slots of that address.
     }]
 }
 ```
