@@ -21,6 +21,8 @@ The global endpoint `rpc.buildernet.org` automatically routes requests to the cl
 
 Submitted orderflow is propagated to all other nodes.
 
+For best performance, reuse a single long-lived connection instead of opening a new one per request — this avoids repeating the TCP and TLS handshakes on every submission. Prefer HTTP/2, which multiplexes many requests over one connection. On HTTP/1.1, keep the connection open with the `Connection: keep-alive` header and reuse it across requests.
+
 ### BuilderNet endpoints
 
 | Region        | Endpoint                           | Orderflow Port | TEE Attestation Port |
@@ -47,10 +49,10 @@ See also the [API reference](api) for more details on the API methods.
 
 The following rate limits apply per client when sending requests to the BuilderNet RPC endpoints:
 
-- Connection rate: 3 per 10s (~0.3/s)
-- Concurrent connections: 3
+- New TCP connections per second: 10
+- Concurrent TCP connections: 10
 - Bandwidth in: 600 MB/min (~10 MB/s)
-- HTTP request rate: 100 per 10s (~10/s)
+- HTTP request rate: 1000 per 10s (~100/s)
 
 If you need increased limits, reach out to us in the Telegram group: [t.me/buildernet_general](https://t.me/buildernet_general).
 
