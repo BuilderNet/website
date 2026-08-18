@@ -223,7 +223,11 @@ Reach out to get API keys (see [How to participate](how-to-participate)).
 
 #### Pricing <!-- omit in toc -->
 
-Priority update transactions pay no priority fees. Makers are charged a volume fee of 0.1 bps on propAMM volume that settles in BuilderNet-built blocks. Reach out for details.
+Priority update transactions pay no priority fees. Makers are charged a volume-based fee on filled trades. Reach out for pricing.
+
+#### Taker speed bump <!-- omit in toc -->
+
+A taker transaction that touches priority-update state is only eligible for inclusion once the builder has held it for at least 50 ms. This protects makers from takers attempting to snipe stale quotes.
 
 #### How conditional inclusion works <!-- omit in toc -->
 
