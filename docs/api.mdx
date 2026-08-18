@@ -221,6 +221,10 @@ The mode is set per API key. This requirement may be dropped in future. Operator
 
 Reach out to get API keys (see [How to participate](how-to-participate)).
 
+#### Pricing <!-- omit in toc -->
+
+Priority update transactions pay no priority fees. Makers are charged a volume fee of 0.1 bps on propAMM volume that settles in BuilderNet-built blocks. Reach out for details.
+
 #### How conditional inclusion works <!-- omit in toc -->
 
 The builder treats a conditional update as consumed when both of the following hold:
@@ -308,14 +312,16 @@ Each message is a JSON snapshot describing the aggregated state overrides for th
 | `slot` | Target slot for the snapshot. |
 | `blockNumber` | Target block number. |
 | `timestamp` | Snapshot time (UNIX nanoseconds). |
-| `0x…` (address keys) | State overrides are grouped by an address — typically the main propAMM contract. Each maps to a `stateOverride` object describing the storage the builder would apply for priority updates associated with that group. |
+| `0x…` (address keys) | The maker's stream address (see the table below). Each maps to a `stateOverride` object describing the storage the builder would apply for that maker's priority updates. |
 
-The `stateOverride` object uses the standard Ethereum state-override format: it maps each contract address to a `stateDiff`, which in turn maps 32-byte storage slots to their 32-byte values.
+The addresses in a message play different roles:
 
+- **Top-level keys** are stream addresses: a stable identifier each maker's overrides are published under, typically the maker's main propAMM contract. Use them to select which maker's state to consume.
+- **Keys inside `stateOverride`** are the contract accounts whose storage the pending updates modify. The object uses the standard Ethereum state-override format: each account maps to a `stateDiff`, which maps 32-byte storage slots to their 32-byte values. It can be passed directly as the state-override parameter to `eth_call` or `eth_simulateV1` to quote against next-block state.
 
 #### propAMM stream addresses <!-- omit in toc -->
 
-State overrides can be sent to `0xda7afeed01fe625cf15d187a19f94b45f00b8c5f`.
+Priority update transactions post their data through the Priority Update Registry at `0xda7afeed01fe625cf15d187a19f94b45f00b8c5f`.
 
 | Name | Stream address |
 | --- | --- |
