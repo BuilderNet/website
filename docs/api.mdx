@@ -207,17 +207,39 @@ The response contains the transaction hash:
 
 ### Priority updates
 
-A priority update is a transaction that BuilderNet includes ahead of other transactions accessing the same state. This can be used by smart contracts to ensure that some interactions are prioritized ahead of others (e.g. for maker vs. taker prioritization).
+A priority update is a transaction that BuilderNet includes ahead of other transactions accessing the same state. Market makers use priority updates to run propAMMs (proprietary AMMs): onchain pools whose quotes are refreshed offchain many times per slot. The builder guarantees that takers trade against the freshest posted quote.
 
-Priority update transactions must post data via the [Priority Update Registry](https://github.com/flashbots/priority-update-registry).
+**Priority update transactions must post data through the [Priority Update Registry](https://github.com/flashbots/priority-update-registry), which scopes the state an update can write.**
 
 These updates can be configured in one of two modes:
-* **Top-of-Block:** to land at the **top of the next block**
-* **Conditional:** to land only on the condition that another transaction reading the update is also included in the same block. Conditional updates are not guaranteed to be at the top of the block. This is an experimental gas savings feature subject to change.
+* **Conditional:** the update lands only if a transaction consuming it is also included in the same block, so the maker pays gas only on fills. Conditional updates are not guaranteed to be at the top of the block. This is the main way to use priority updates.
+* **Top-of-Block:** the update lands at the top of the next block, unconditionally. The maker pays gas every block the update lands.
+
+The implementation is new and exact behaviour is subject to change. Feedback welcome.
 
 When multiple updates for the same state are available at the time a block is built, the builder will prioritise the latest update.
 
-The mode is set per API key, which can be granted on request (see [How to participate](how-to-participate)). This requirement may be dropped in future. Operators needing both modes can request multiple keys.
+The mode is set per API key. This requirement may be dropped in future. Operators needing both modes can request multiple keys.
+
+Reach out to get API keys (see [How to participate](how-to-participate)).
+
+#### Pricing <!-- omit in toc -->
+
+Priority update transactions pay no priority fees. Makers are charged a volume-based fee on filled trades. Reach out for pricing.
+
+#### Taker speed bump <!-- omit in toc -->
+
+A taker transaction that touches priority-update state is only eligible for inclusion once the builder has held it for at least 50 ms. This protects makers from takers attempting to snipe stale quotes.
+
+#### How conditional inclusion works <!-- omit in toc -->
+
+Each maker registers one or more event signatures (a contract address and an event topic) that identify the event their pool emits when a swap consumes a quote. A conditional update is included only when a transaction in the block emits a matching log.
+
+What this means for integrators:
+
+- **Makers:** register your consumption events when your conditional API key is provisioned. Without a registered event, conditional updates never land. We plan to upgrade the event registration flow soon.
+- **Pool authors:** emit a distinct event on the fill path, not in view or quote paths.
+- **Takers and routers:** nothing. Consumption is detected from the fill's logs automatically.
 
 #### Endpoints <!-- omit in toc -->
 
@@ -256,6 +278,11 @@ message PWebsocketQuoteUpdateV1Response {
 
 Set the API key in the `Authorization` header when establishing the WebSocket connection.
 
+#### Submission best practices <!-- omit in toc -->
+
+- Use one `replacement_uuid` per quoted instrument and increase `replacement_seq_number` monotonically. The builder keeps only the highest sequence number for each uuid, so refresh a quote by replacing it rather than creating a new uuid.
+- Target the next block in `block_number` and resend on each new head. Updates for past blocks are dropped.
+
 #### State stream <!-- omit in toc -->
 
 You can subscribe to a read-only stream of the priority update state the builder would apply to the next block. Only priority updates that opt in to publishing are included in the stream.
@@ -288,14 +315,16 @@ Each message is a JSON snapshot describing the aggregated state overrides for th
 | `slot` | Target slot for the snapshot. |
 | `blockNumber` | Target block number. |
 | `timestamp` | Snapshot time (UNIX nanoseconds). |
-| `0x…` (address keys) | State overrides are grouped by an address — typically the main propAMM contract. Each maps to a `stateOverride` object describing the storage the builder would apply for priority updates associated with that group. |
+| `0x…` (address keys) | The maker's stream address (see the table below). Each maps to a `stateOverride` object describing the storage the builder would apply for that maker's priority updates. |
 
-The `stateOverride` object uses the standard Ethereum state-override format: it maps each contract address to a `stateDiff`, which in turn maps 32-byte storage slots to their 32-byte values.
+The addresses in a message play different roles:
 
+- **Top-level keys** are stream addresses: a stable identifier each maker's overrides are published under, typically the maker's main propAMM contract. Use them to select which maker's state to consume.
+- **Keys inside `stateOverride`** are the contract accounts whose storage the pending updates modify. The object uses the standard Ethereum state-override format: each account maps to a `stateDiff`, which maps 32-byte storage slots to their 32-byte values. It can be passed directly as the state-override parameter to `eth_call` or `eth_simulateV1` to quote against next-block state.
 
 #### propAMM stream addresses <!-- omit in toc -->
 
-State overrides can be sent to `0xda7afeed01fe625cf15d187a19f94b45f00b8c5f`.
+Priority update transactions post their data through the Priority Update Registry at `0xda7afeed01fe625cf15d187a19f94b45f00b8c5f`.
 
 | Name | Stream address |
 | --- | --- |
@@ -303,6 +332,12 @@ State overrides can be sent to `0xda7afeed01fe625cf15d187a19f94b45f00b8c5f`.
 | Kipseli | `0x5CDbE59400Cc2EFDCC2B54acca4a99FE00dD588c` |
 | Bebop | `0xbc60639345dfa607d73b74e88c2d54d8b8ad7cc3` |
 | Tempest | `0x00000003f1ec2379e79f58e12ec6c4f51ee92149` |
+
+#### Routing against propAMMs <!-- omit in toc -->
+
+propAMM liquidity is ordinary onchain liquidity, and any contract can fill against it. The [IPropAMM](https://github.com/lambdaclass/propamm-router-contracts/blob/main/src/interfaces/IPropAMM.sol) interface provides a common way to discover, quote, and swap against propAMMs. The Lambda Class [PropAMMRouter](https://github.com/lambdaclass/propamm-router-contracts) is a reference integration: a single-hop router that quotes and executes against a propAMM and falls back to Uniswap V3 when the propAMM can't fill.
+
+We are also building just-in-time routing: route selection at block building time, so takers get filled against the freshest propAMM quotes and onchain state. This leads to tighter spreads and lower revert rates. Reach out if you want to integrate early.
 
 ---
 
