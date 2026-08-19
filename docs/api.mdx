@@ -212,8 +212,10 @@ A priority update is a transaction that BuilderNet includes ahead of other trans
 **Priority update transactions must post data through the [Priority Update Registry](https://github.com/flashbots/priority-update-registry), which scopes the state an update can write.**
 
 These updates can be configured in one of two modes:
+* **Conditional:** the update lands only if a transaction consuming it is also included in the same block, so the maker pays gas only on fills. Conditional updates are not guaranteed to be at the top of the block. This is the main way to use priority updates.
 * **Top-of-Block:** the update lands at the top of the next block, unconditionally. The maker pays gas every block the update lands.
-* **Conditional:** the update lands only if a transaction consuming it is also included in the same block. Conditional updates are not guaranteed to be at the top of the block. The maker pays gas only on fills. This is an experimental gas savings feature subject to change.
+
+The implementation is new and exact behaviour is subject to change.
 
 When multiple updates for the same state are available at the time a block is built, the builder will prioritise the latest update.
 
@@ -231,10 +233,7 @@ A taker transaction that touches priority-update state is only eligible for incl
 
 #### How conditional inclusion works <!-- omit in toc -->
 
-The builder treats a conditional update as consumed when both of the following hold:
-
-1. **A registered event is emitted.** Each maker registers one or more event signatures (a contract address and an event topic) that identify the event their pool emits when a swap consumes a quote. A conditional update is included only when a transaction in the block emits a matching log.
-2. **The update's state is read in a successful call.** The builder traces reads of the update's registered storage slots. Reads made inside subcalls that revert don't count, so a failed fill attempt does not pull the update (and its gas) into the block.
+Each maker registers one or more event signatures (a contract address and an event topic) that identify the event their pool emits when a swap consumes a quote. A conditional update is included only when a transaction in the block emits a matching log.
 
 What this means for integrators:
 
