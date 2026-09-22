@@ -55,6 +55,7 @@ module.exports = {
             'operating-a-node',
             'staging-instance-handbook',
             'downloads-measurements',
+            'historic-measurements',
           ]
         }
         ,

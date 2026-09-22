@@ -18,6 +18,8 @@ module.exports = async function createConfigAsync() {
     baseUrl: process.env.BASE_URL || '/',
     onBrokenLinks: 'throw',
     onBrokenMarkdownLinks: 'warn',
+    // Match vercel.json (trailingSlash: false) so canonical URLs and the sitemap use the same form.
+    trailingSlash: false,
     favicon: 'img/favicon.ico',
     organizationName: 'BuilderNet',
     projectName: 'docs',
@@ -26,6 +28,25 @@ module.exports = async function createConfigAsync() {
       mermaid: true,
     },
     themes: ['@docusaurus/theme-mermaid'],
+    headTags: [
+      {
+        tagName: 'script',
+        attributes: { type: 'application/ld+json' },
+        innerHTML: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'Organization',
+          name: 'BuilderNet',
+          url: 'https://buildernet.org',
+          logo: 'https://buildernet.org/img/logo.png',
+          sameAs: [
+            'https://collective.flashbots.net/c/buildernet/31',
+            'https://t.me/buildernet_general',
+            'https://github.com/BuilderNet',
+            'https://github.com/flashbots/rbuilder',
+          ],
+        }),
+      },
+    ],
     stylesheets: [
       {
         href: 'https://cdn.jsdelivr.net/npm/katex@0.13.24/dist/katex.min.css',
@@ -79,6 +100,43 @@ module.exports = async function createConfigAsync() {
           ],
         },
         image: 'img/buildernet-cover-photo-m.jpg',
+        footer: {
+          style: 'dark',
+          links: [
+            {
+              title: 'Send orderflow',
+              items: [
+                { label: 'Send bundles', to: '/docs/send-orderflow' },
+                { label: 'Priority updates (propAMM)', to: '/docs/api#priority-updates' },
+                { label: 'Wallets and apps', to: '/docs/how-to-participate' },
+                { label: 'Refunds', to: '/docs/refunds' },
+                { label: 'API reference', to: '/docs/api' },
+              ],
+            },
+            {
+              title: 'Network',
+              items: [
+                { label: 'What is BuilderNet', to: '/docs' },
+                { label: 'Architecture', to: '/docs/architecture' },
+                { label: 'Verifiable system integrity', to: '/docs/verifiable-system-integrity' },
+                { label: 'Operate a node', to: '/docs/operating-a-node' },
+                { label: 'Dune dashboard', href: 'https://dune.com/flashbots/buildernet' },
+              ],
+            },
+            {
+              title: 'Community',
+              items: [
+                { label: 'Blog', to: '/blog' },
+                { label: 'Forum', href: 'https://collective.flashbots.net/c/buildernet/31' },
+                { label: 'Telegram', href: 'https://t.me/buildernet_general' },
+                { label: 'GitHub', href: 'https://github.com/BuilderNet' },
+                { label: 'rbuilder', href: 'https://github.com/flashbots/rbuilder' },
+                { label: 'Flashbots', href: 'https://www.flashbots.net' },
+              ],
+            },
+          ],
+          copyright: `Copyright © ${new Date().getFullYear()} Flashbots.`,
+        },
       }),
     presets: [
       [
@@ -102,7 +160,7 @@ module.exports = async function createConfigAsync() {
             // editUrl: 'https://github.com/BuilderNet/website/edit/main/',
             editLocalizedFiles: false,
             blogTitle: 'BuilderNet Blog',
-            blogDescription: 'Blog',
+            blogDescription: 'BuilderNet release notes and announcements.',
             blogSidebarCount: 0,
             blogSidebarTitle: 'All our posts',
             routeBasePath: 'blog',
@@ -129,7 +187,7 @@ module.exports = async function createConfigAsync() {
             lastmod: 'date',
             changefreq: 'weekly',
             priority: 0.5,
-            ignorePatterns: ['/tags/**'],
+            ignorePatterns: ['/tags/**', '/search'],
             filename: 'sitemap.xml',
             createSitemapItems: async (params) => {
               const { defaultCreateSitemapItems, ...rest } = params;
@@ -143,6 +201,23 @@ module.exports = async function createConfigAsync() {
     plugins: [
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       '@docusaurus/plugin-ideal-image',
+      [
+        // Generates /llms.txt (index) and /llms-full.txt (all docs + blog posts) at build time,
+        // so LLM-based assistants can ingest the documentation directly. https://llmstxt.org
+        'docusaurus-plugin-llms',
+        {
+          title: 'BuilderNet documentation',
+          description:
+            'BuilderNet is a TEE-based block building network for Ethereum. Refunds minimise execution costs; private transactions, bundles and propAMM quote updates go directly to the builder.',
+          rootContent:
+            'BuilderNet is a TEE-based block building network for Ethereum. It pays refunds to minimise execution costs, and gives end users, market makers, traders and searchers the tools for efficient execution: private transactions, bundles and propAMM quote updates (priority updates), sent directly to the builder. These docs cover how to send orderflow, how refunds work, and how to operate a node. Site: https://buildernet.org. Send orderflow: https://buildernet.org/docs/send-orderflow. API reference: https://buildernet.org/docs/api. Refunds: https://buildernet.org/docs/refunds.',
+          includeBlog: true,
+          ignoreFiles: ['_*', '**/_*'],
+          excludeImports: true,
+          removeDuplicateHeadings: true,
+          generateMarkdownFiles: false,
+        },
+      ],
     ],
   };
 };

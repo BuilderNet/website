@@ -1,6 +1,6 @@
 ---
 title: How to participate
-description: How to participate in BuilderNet
+description: Ways to participate in BuilderNet as a wallet, searcher, propAMM market maker, developer, node operator or researcher.
 ---
 
 ### Users, Wallets, and Apps
@@ -14,6 +14,14 @@ For advanced users: send orderflow directly to a BuilderNet node and validate TE
 ### Searchers, Solvers, and Builders
 
 Submit to the Flashbots Bundle Relay or [register](https://www.notion.so/flashbots/1356b4a0d8768094a07be796f7615b30) to operate your own BuilderNet node. Learn more about how to optimize your bundles for refunds [here](https://collective.flashbots.net/t/refund-rule-wat-dis-how-to-and-faq/4049) and find historical data for your signer [here](https://app.hex.tech/9eb1e790-53f7-4c16-be76-4a22c1aa7d17/app/0c2d34ef-1304-481a-b3d6-b773ce9e0e19/latest).
+
+---
+
+### Market makers (propAMMs)
+
+If you operate a proprietary AMM (propAMM), stream your quote updates to BuilderNet as [priority updates](api#priority-updates). Depending on the mode set for your API key, the builder places an update at the top of the block or includes it only when another transaction in the block reads it. Updates are sent over WebSocket and go through the [Priority Update Registry](https://github.com/flashbots/priority-update-registry). API keys are issued on request; message the team on Telegram (see below).
+
+Aggregators and solvers that route against propAMM liquidity can read the pending quote state from the [quote stream](api#priority-updates). No key is needed.
 
 ---
 
