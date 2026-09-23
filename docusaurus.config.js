@@ -120,7 +120,6 @@ module.exports = async function createConfigAsync() {
                 { label: 'Architecture', to: '/docs/architecture' },
                 { label: 'Verifiable system integrity', to: '/docs/verifiable-system-integrity' },
                 { label: 'Operate a node', to: '/docs/operating-a-node' },
-                { label: 'Dune dashboard', href: 'https://dune.com/flashbots/buildernet' },
               ],
             },
             {
