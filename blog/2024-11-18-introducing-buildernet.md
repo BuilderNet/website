@@ -58,7 +58,7 @@ Apps and wallets want to internalize their MEV and give their users a cheap, eas
 
 To this end, the first release of BuilderNet uses an open source [refund rule](https://docs.flashbots.net/flashbots-auction/advanced/gas-fee-refunds#how-are-refunds-calculated) to compensate all users for their contribution to its blocks. In the future we intend to upgrade this rule to ensure it accommodates each use case, make all aspects of calculating and receiving refunds fully permissionless, and ensure all participants in the network (e.g. TEE operators) are appropriately compensated for their contributions as well.
 
-→ Users, wallets, and apps can access refunds by sending transactions to [Protect](https://protect.flashbots.net/). More data is available [here](https://dune.com/flashbots/flashbots-protect).
+→ Users, wallets, and apps can access refunds by sending transactions to [Protect](https://protect.flashbots.net/).
 
 ## BuilderNet for searchers and solvers
 
