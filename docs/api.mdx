@@ -288,21 +288,27 @@ Each message is a JSON snapshot describing the aggregated state overrides for th
 | `slot` | Target slot for the snapshot. |
 | `blockNumber` | Target block number. |
 | `timestamp` | Snapshot time (UNIX nanoseconds). |
-| `0x…` (address keys) | State overrides are grouped by an address — typically the main propAMM contract. Each maps to a `stateOverride` object describing the storage the builder would apply for priority updates associated with that group. |
+| `0x…` (address keys) | A venue's stream address (see the table below); most venues have one key, Metric has one per oracle. Each maps to a `stateOverride` object describing the storage the builder would apply for that venue's priority updates. |
 
 The `stateOverride` object uses the standard Ethereum state-override format: it maps each contract address to a `stateDiff`, which in turn maps 32-byte storage slots to their 32-byte values.
 
 
 #### propAMM stream addresses <!-- omit in toc -->
 
-State overrides can be sent to `0xda7afeed01fe625cf15d187a19f94b45f00b8c5f`.
+Each top-level address key is a venue's stream address. The `stateOverride` object under it names the contract the venue's priority updates write, and is what you pass as the state override to `eth_call` or `eth_simulateV1` when quoting that venue. Venues that use the shared Priority Update Registry write `0xDa7AfEeD021EAFC1c1Af9C362dE477DaD0396B81`, which replaced `0xda7afeed01fe625cf15d187a19f94b45f00b8c5f` on 2026-09-15; the others write their own pricing contract. `buildernet_getPammStateOverrides` on `https://rpc.buildernet.org/pamm/rpc` returns the current snapshot on demand.
 
-| Name | Stream address |
-| --- | --- |
-| FermiSwap | `0xb1076fe3ab5e28005c7c323bac5ac06a680d452e` |
-| Kipseli | `0x5CDbE59400Cc2EFDCC2B54acca4a99FE00dD588c` |
-| Bebop | `0xbc60639345dfa607d73b74e88c2d54d8b8ad7cc3` |
-| Tempest | `0x00000003f1ec2379e79f58e12ec6c4f51ee92149` |
+Venues (as of 2026-09-17):
+
+| Venue | Stream address (top-level key) | State override target |
+| --- | --- | --- |
+| FermiSwap | `0x5979458912F80B96d30D4220af8E2e4925A33320` (pool and router) | `0x0109AA912B58508886a2a707204B0F8C8b164CCc` (pricing engine) |
+| Tempest (Flowdesk) | `0x00000003f1EC2379e79F58E12eC6c4F51ee92149` | `0xDa7AfEeD021EAFC1c1Af9C362dE477DaD0396B81` (Priority Update Registry) |
+| Bebop | `0xB09999A44e3240193193Be9dD99CC73c8cc945A6` (pricing contract; swaps on `0xB09AAA8933626d7E4C48D65dAd2D77021CFBCA9a`) | `0xDa7AfEeD021EAFC1c1Af9C362dE477DaD0396B81` (Priority Update Registry) |
+| Kipseli | `0xC9A956b5196DFe110DEBE8781857Bc8B97d32091` (price oracle; router `0x342b8458161137d0203605Fa51E4363c1445ADCD`) | `0xDa7AfEeD021EAFC1c1Af9C362dE477DaD0396B81` (Priority Update Registry) |
+| El Zorro | `0xcf211b4dd0d2be5c173ea57bcf938fc61d1d3bd3` (pool and router) | `0xDa7AfEeD021EAFC1c1Af9C362dE477DaD0396B81` (Priority Update Registry) |
+| Metric | one key per oracle: `0xe844701934d9c6085b292e428f41b911cc0b3872` (CompressedOracleV1) and `0x30a88bf894d1b806125a23ebf23d715496fd7102` (PythOracle) | the same oracle |
+
+Superseded addresses, no longer used: Bebop `0xB0999914B3DE1be58Ef2416af09Bd2E7F8AaD03C`, Kipseli `0xfe3d12b21d2602868223e83149bdbbfb5d11e185`, and the previous registry instance `0xda7afeed01fe625cf15d187a19f94b45f00b8c5f`.
 
 ---
 
