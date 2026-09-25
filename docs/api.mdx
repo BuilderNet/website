@@ -234,6 +234,13 @@ message PWebsocketQuoteUpdateV1Args {
   bytes replacement_uuid = 3;         // 16-byte quote identifier
   uint64 replacement_seq_number = 4;  // Monotonic sequence (>0)
   bool disable_cross_region_sharing = 5;
+  // Optional PropAMM metadata.
+  // Pairs affected by this update. Each entry is 40 bytes: token0 || token1.
+  repeated bytes asset_pairs = 6;
+  // 20-byte address a taker must touch to receive a quote.
+  bytes quote_address = 7;
+  // Pool addresses whose swaps require this update. Each entry is 20 bytes.
+  repeated bytes pool_addresses = 8;
 }
 ```
 
