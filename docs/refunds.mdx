@@ -13,11 +13,17 @@ Users, wallets, apps, and searchers who privately submit transactions or bundles
 - For each transaction in the landed block, BuilderNet retroactively simulates the most valuable block it could have produced with vs without the transaction. The difference is the transaction's `contribution`.
 - The `remainder` is split proportionally among users, based on their relative `contribution` to the block.
 
-The full refund rule is defined below and implemented in [rbuilder](https://github.com/flashbots/rbuilder). For further details about how to bid and interact with the refund rule, read the [explainer](https://collective.flashbots.net/t/refund-rule-wat-dis-how-to-and-faq/4049/2).
+The refund rule is outlined below. For further details about how to bid and interact with the refund rule, read the [explainer](https://collective.flashbots.net/t/refund-rule-wat-dis-how-to-and-faq/4049/2).
 
 Note that transactions seen in the public mempool, or bundles only containing transactions from the public mempool, do not receive refunds. Bundles sent by the same signer will be treated as non-competitive.
 
 ### The Flat Tax Rule
+
+:::note
+
+The flat tax rule as described here is indicative only. We customise our implementation for some customer needs, and have made modifications for DoS protection and scalability.
+
+:::
 
 - **$B(T)$** is the most profitable block produced from bundles in $T$.
 - **$v(T)$** is the value of $B(T)$.

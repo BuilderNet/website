@@ -198,6 +198,31 @@ module.exports = async function createConfigAsync() {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       '@docusaurus/plugin-ideal-image',
       [
+        // Pages removed in the move away from TEE-based nodes; send old links to the overview.
+        '@docusaurus/plugin-client-redirects',
+        {
+          redirects: [
+            {
+              to: '/docs',
+              from: [
+                '/docs/verifiable-system-integrity',
+                '/docs/architecture',
+                '/docs/orderflow-sharing-confidentiality',
+                '/docs/encryption-attestations',
+                '/docs/operating-a-node',
+                '/docs/staging-instance-handbook',
+                '/docs/downloads-measurements',
+                '/docs/historic-measurements',
+                '/docs/os-services-builds',
+                '/docs/operator-api',
+                '/docs/network-ports',
+                '/docs/flashbots-infra',
+              ],
+            },
+          ],
+        },
+      ],
+      [
         // Generates /llms.txt (index) and /llms-full.txt (all docs + blog posts) at build time,
         // so LLM-based assistants can ingest the documentation directly. https://llmstxt.org
         'docusaurus-plugin-llms',

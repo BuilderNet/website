@@ -4,8 +4,68 @@
   "redirects": [
     {
       "source": "/docs/system-api",
-      "destination": "/docs/operator-api",
+      "destination": "/docs",
       "permanent": false
+    },
+    {
+      "source": "/docs/verifiable-system-integrity",
+      "destination": "/docs",
+      "permanent": true
+    },
+    {
+      "source": "/docs/architecture",
+      "destination": "/docs",
+      "permanent": true
+    },
+    {
+      "source": "/docs/orderflow-sharing-confidentiality",
+      "destination": "/docs",
+      "permanent": true
+    },
+    {
+      "source": "/docs/encryption-attestations",
+      "destination": "/docs",
+      "permanent": true
+    },
+    {
+      "source": "/docs/operating-a-node",
+      "destination": "/docs",
+      "permanent": true
+    },
+    {
+      "source": "/docs/staging-instance-handbook",
+      "destination": "/docs",
+      "permanent": true
+    },
+    {
+      "source": "/docs/downloads-measurements",
+      "destination": "/docs",
+      "permanent": true
+    },
+    {
+      "source": "/docs/historic-measurements",
+      "destination": "/docs",
+      "permanent": true
+    },
+    {
+      "source": "/docs/os-services-builds",
+      "destination": "/docs",
+      "permanent": true
+    },
+    {
+      "source": "/docs/operator-api",
+      "destination": "/docs",
+      "permanent": true
+    },
+    {
+      "source": "/docs/network-ports",
+      "destination": "/docs",
+      "permanent": true
+    },
+    {
+      "source": "/docs/flashbots-infra",
+      "destination": "/docs",
+      "permanent": true
     }
   ]
 }
