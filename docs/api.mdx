@@ -1,6 +1,6 @@
 ---
 title: API Reference
-description: API reference for BuilderNet.
+description: "BuilderNet API reference: eth_sendBundle, eth_sendRawTransaction, priority updates and the propAMM quote stream, TEE attestation, and the refund methods."
 ---
 
 ## Orderflow
@@ -58,7 +58,7 @@ This is useful for sending multiple transactions that depend on each other.
 
         // Target pools (requires "version": "v2")
         version           // String, Bundle format version. Set to "v2" to use the target pool fields below.
-        desiredState      // String, Desired placement of the bundle. Set to "BottomOfBlock"
+        desiredState      // String, Desired placement of the bundle. Set to either "BottomOfBlock" for consideration at only the bottom of the block or "AnyPosition" for consideration intrablock and bottom of the block.
         targetAddresses   // Array[String], A list of contract addresses (e.g., AMM pools) whose state this bundle targets.
         targetSlots       // Array[Array[String]], Hex encoded storage slots to target per address, index-aligned with targetAddresses. An empty array targets all slots of that address.
     }]

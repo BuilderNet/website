@@ -1,1 +1,4 @@
+User-agent: *
+Allow: /
+
 Sitemap: https://buildernet.org/sitemap.xml

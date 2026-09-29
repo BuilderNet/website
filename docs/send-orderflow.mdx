@@ -1,6 +1,6 @@
 ---
 title: How to send orderflow
-description: How to send orderflow securely to a BuilderNet node.
+description: Endpoints and methods for sending bundles, transactions and propAMM quote updates directly to BuilderNet nodes, and how to verify a node's TEE attestation.
 ---
 
 Orderflow sent to [Flashbots Protect](https://protect.flashbots.net) and [Flashbots Bundle Relay](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint) is automatically shared with BuilderNet. Advanced users can send orderflow directly to BuilderNet nodes and optionally validate TEE proofs.
@@ -39,7 +39,8 @@ See [TEE proof validation](#tee-attestation) for details.
 
 1. [`eth_sendBundle`](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint#eth_sendbundle)
 2. [`eth_sendRawTransaction`](https://docs.metamask.io/wallet/reference/json-rpc-methods/eth_sendrawtransaction/)
-3. [Priority updates](api#priority-updates) — for operators of proprietary AMMs (WebSocket, requires an API key)
+3. [Priority updates](api#priority-updates) — quote updates from propAMM market makers (WebSocket, API key required)
+4. [Quote stream](api#priority-updates) — read-only WebSocket with the pending propAMM quote state (no key required)
 
 See also the [API reference](api) for more details on the API methods.
 
