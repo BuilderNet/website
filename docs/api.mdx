@@ -241,6 +241,8 @@ What this means for integrators:
 - **Pool authors:** emit a distinct event on the fill path, not in view or quote paths.
 - **Takers and routers:** nothing. Consumption is detected from the fill's logs automatically.
 
+The optional `asset_pairs`, `quote_address` and `pool_addresses` request fields are recorded as metadata and do not currently affect inclusion.
+
 #### Endpoints <!-- omit in toc -->
 
 Priority updates are submitted over WebSocket on the same hosts as the JSON-RPC endpoints (see [BuilderNet endpoints](send-orderflow#buildernet-endpoints)) at the path `/ws/sendquoteupdate`, e.g. `wss://rpc.buildernet.org/ws/sendquoteupdate`.
@@ -285,7 +287,7 @@ Set the API key in the `Authorization` header when establishing the WebSocket co
 
 #### State stream <!-- omit in toc -->
 
-You can subscribe to a read-only stream of the priority update state the builder would apply to the next block. Only priority updates that opt in to publishing are included in the stream.
+You can subscribe to a read-only stream of the priority update state the builder would apply to the next block. Only priority updates that opt in to publishing are included in the stream. Appearing in the stream does not guarantee inclusion: conditional updates still land only when a matching consumption event is emitted.
 
 The stream is exposed over WebSocket on the same hosts as the JSON-RPC endpoints (see [BuilderNet endpoints](send-orderflow#buildernet-endpoints)) at the path `/ws/pamm_quote_stream`. No API key is required, e.g. `wss://rpc.buildernet.org/ws/pamm_quote_stream`.
 
@@ -319,12 +321,12 @@ Each message is a JSON snapshot describing the aggregated state overrides for th
 
 The addresses in a message play different roles:
 
-- **Top-level keys** are stream addresses: a stable identifier each maker's overrides are published under, typically the maker's main propAMM contract. Use them to select which maker's state to consume.
+- **Top-level keys** are stream addresses: a stable identifier each venue's overrides are published under (see the table below). Use them to select which venue's state to consume.
 - **Keys inside `stateOverride`** are the contract accounts whose storage the pending updates modify. The object uses the standard Ethereum state-override format: each account maps to a `stateDiff`, which maps 32-byte storage slots to their 32-byte values. It can be passed directly as the state-override parameter to `eth_call` or `eth_simulateV1` to quote against next-block state.
 
 #### propAMM stream addresses <!-- omit in toc -->
 
-Each top-level address key is a venue's stream address. The `stateOverride` object under it names the contract the venue's priority updates write, and is what you pass as the state override to `eth_call` or `eth_simulateV1` when quoting that venue. Venues that use the shared Priority Update Registry write `0xDa7AfEeD021EAFC1c1Af9C362dE477DaD0396B81`, which replaced `0xda7afeed01fe625cf15d187a19f94b45f00b8c5f` on 2026-09-15; the others write their own pricing contract. `buildernet_getPammStateOverrides` on `https://rpc.buildernet.org/pamm/rpc` returns the current snapshot on demand.
+Venues that use the shared Priority Update Registry write `0xDa7AfEeD021EAFC1c1Af9C362dE477DaD0396B81`, which replaced `0xda7afeed01fe625cf15d187a19f94b45f00b8c5f` on 2026-09-15; the others write their own pricing contract. `buildernet_getPammStateOverrides` on `https://rpc.buildernet.org/pamm/rpc` returns the current snapshot on demand.
 
 Venues (as of 2026-09-29):
 
