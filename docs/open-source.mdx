@@ -14,36 +14,5 @@ BuilderNet is based on open source software and infrastructure.
 | [github.com/flashbots/rbuilder](https://github.com/flashbots/rbuilder)                                     | The block building software                                      |
 | [github.com/sigp/lighthouse](https://github.com/sigp/lighthouse)                                           | CL client                                                        |
 | [github.com/paradigmxyz/reth/](https://github.com/paradigmxyz/reth/)                                       | EL client                                                        |
-| [github.com/flashbots/system-api](https://github.com/flashbots/system-api)                                 | Interface between operators and services inside the TDX instance |
-| [github.com/flashbots/cvm-reverse-proxy](https://github.com/flashbots/cvm-reverse-proxy)                   | For verifying TDX measurements using attestations                |
 | [github.com/flashbots/buildernet-orderflow-proxy](https://github.com/flashbots/buildernet-orderflow-proxy) | Receiving and multiplexing orderflow                             |
 
----
-
-### Infrastructure
-
-https://github.com/flashbots/builder-hub
-
----
-
-### Reproducible builds with Yocto
-
-Main entrypoint: https://github.com/flashbots/yocto-manifests/blob/main/tdx-buildernet.xml
-
-Referenced repositories:
-
-- https://github.com/flashbots/poky
-- https://github.com/flashbots/meta-openembedded
-- https://github.com/flashbots/meta-secure-core
-- https://github.com/flashbots/meta-virtualization
-- https://github.com/flashbots/meta-clang
-- https://github.com/flashbots/meta-confidential-compute
-- https://github.com/flashbots/meta-evm
-- https://github.com/flashbots/meta-rust-bin
-- https://github.com/flashbots/meta-observability
-- https://github.com/flashbots/meta-custom-podman
-
----
-
-### Terraform module
-You can deploy BuilderNet VM instances on Azure cloud using the [Terraform module](https://github.com/flashbots/terraform-module-azure-confidential-vm/)

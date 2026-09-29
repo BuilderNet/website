@@ -13,16 +13,6 @@ module.exports = {
     },
     {
       type: 'category',
-      label: 'Architecture',
-      collapsed: false,
-      items: [
-        'os-services-builds',
-        'operator-api',
-        'flashbots-infra',
-      ],
-    },
-    {
-      type: 'category',
       label: 'References',
       collapsed: false,
       items: [
@@ -30,23 +20,7 @@ module.exports = {
         'api',
         'send-orderflow',
         'public-identity',
-        'network-ports',
         'open-source',
-        {
-          type: 'category',
-          label: 'Operator Guides',
-          // link: {
-          //   type: 'doc',
-          //   id: 'operator-guides',
-          // },
-          items: [
-            'operating-a-node',
-            'staging-instance-handbook',
-            'downloads-measurements',
-            'historic-measurements',
-          ]
-        }
-        ,
         // 'contribute',
       ],
     },

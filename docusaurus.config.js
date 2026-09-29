@@ -117,7 +117,6 @@ module.exports = async function createConfigAsync() {
               title: 'Network',
               items: [
                 { label: 'What is BuilderNet', to: '/docs' },
-                { label: 'Operate a node', to: '/docs/operating-a-node' },
               ],
             },
             {
