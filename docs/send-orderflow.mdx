@@ -37,7 +37,7 @@ For best performance, reuse a single long-lived connection instead of opening a 
 1. [`eth_sendBundle`](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint#eth_sendbundle)
 2. [`eth_sendRawTransaction`](https://docs.metamask.io/wallet/reference/json-rpc-methods/eth_sendrawtransaction/)
 3. [Priority updates](api#priority-updates) — quote updates from propAMM market makers (WebSocket, API key required)
-4. [Quote stream](api#priority-updates) — read-only WebSocket with the pending propAMM quote state (no key required)
+4. [Quote stream](api#state-stream-) — read-only WebSocket with the pending propAMM quote state (no key required)
 
 See also the [API reference](api) for more details on the API methods.
 
@@ -85,7 +85,7 @@ See [this example Golang code](https://github.com/flashbots/go-utils/blob/main/e
 
 ### Request authentication
 
-Requests need a `X-Flashbots-Signature` header. The signature is calculated by taking the EIP-191 hash of the json body encoded as UTF-8 bytes.
+JSON-RPC requests (`eth_sendBundle`, `eth_sendRawTransaction`) need a `X-Flashbots-Signature` header. The signature is calculated by taking the EIP-191 hash of the json body encoded as UTF-8 bytes.
 Any valid [ECDSA secp256k1](https://en.bitcoin.it/wiki/Secp256k1) key (i.e. any Ethereum key) can be used to sign the payload. The address associated with this key will be used for [Redistribution](refunds).
 
 For more details and examples on signing the payload, see the [documentation here](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint#authentication).

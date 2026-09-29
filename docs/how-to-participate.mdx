@@ -11,7 +11,7 @@ For advanced users: send orderflow directly to a BuilderNet node. See the advanc
 
 ---
 
-### Searchers, Solvers, and Builders
+### Searchers and Solvers
 
 Submit bundles to the Flashbots Bundle Relay or [directly to BuilderNet](send-orderflow). Learn more about how to optimize your bundles for refunds [here](https://collective.flashbots.net/t/refund-rule-wat-dis-how-to-and-faq/4049) and find historical data for your signer [here](https://app.hex.tech/9eb1e790-53f7-4c16-be76-4a22c1aa7d17/app/0c2d34ef-1304-481a-b3d6-b773ce9e0e19/latest).
 
@@ -19,9 +19,9 @@ Submit bundles to the Flashbots Bundle Relay or [directly to BuilderNet](send-or
 
 ### Market makers (propAMMs)
 
-If you operate a proprietary AMM (propAMM), stream your quote updates to BuilderNet as [priority updates](api#priority-updates). Depending on the mode set for your API key, the builder places an update at the top of the block or includes it only when another transaction in the block reads it. Updates are sent over WebSocket and go through the [Priority Update Registry](https://github.com/flashbots/priority-update-registry). API keys are issued on request; message the team on Telegram (see below).
+If you operate a proprietary AMM (propAMM), stream your quote updates to BuilderNet as [priority updates](api#priority-updates). Depending on the mode set for your API key, the builder places an update at the top of the block or includes it only when a transaction in the block emits a consumption event registered for your key. Updates are sent over WebSocket and go through the [Priority Update Registry](https://github.com/flashbots/priority-update-registry). API keys are issued on request; message the team on Telegram (see below).
 
-Aggregators and solvers that route against propAMM liquidity can read the pending quote state from the [quote stream](api#priority-updates). No key is needed.
+Aggregators and solvers that route against propAMM liquidity can read the pending quote state from the [quote stream](api#state-stream-). No key is needed.
 
 ---
 
@@ -33,7 +33,7 @@ Contribute to [rbuilder](https://github.com/flashbots/rbuilder), the open source
 
 ### Researchers
 
-Contribute to the security and design of decentralized block building through initiatives like [zero trust execution environments](https://writings.flashbots.net/ZTEE), applications of software cryptography in MEV (eg. [MPC](https://writings.flashbots.net/backrunning-private-txs-MPC), [FHE](https://writings.flashbots.net/blind-arbitrage-fhe)), and more on our [research forum](https://collective.flashbots.net/c/research/20). Apply for grants from teams like Flashbots and the PBS Foundation to research new proposals like [TEE-Boost](https://collective.flashbots.net/t/tee-boost/3741). We are interested in establishing robust benchmarks for decentralization that can be used to measure BuilderNet’s progress and bring transparency to the community, and welcome input on the [forum](https://collective.flashbots.net/).*
+Contribute to the security and design of decentralized block building through initiatives like [zero trust execution environments](https://writings.flashbots.net/ZTEE), applications of software cryptography in MEV (eg. [MPC](https://writings.flashbots.net/backrunning-private-txs-MPC), [FHE](https://writings.flashbots.net/blind-arbitrage-fhe)), and more on our [research forum](https://collective.flashbots.net/c/research/20). Apply for grants from teams like Flashbots and the PBS Foundation to research new proposals like [TEE-Boost](https://collective.flashbots.net/t/tee-boost/3741). We are interested in establishing robust benchmarks for decentralization that can be used to measure BuilderNet’s progress and bring transparency to the community, and welcome input on the [forum](https://collective.flashbots.net/).
 
 ---
 
