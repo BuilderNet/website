@@ -59,10 +59,6 @@ $$
 
 where $\phi(T, c)$ are the orginal flat-tax rebates as defined above.
 
-## For operators
-
-In the future, the refund rule will be upgraded to compensate operators for their computation costs.
-
 ## For validators
 
 Block builders rarely bid the full value of their blocks to validators in the MEV-Boost auction today. The remainder is either internalized by the builder or refunded to orderflow providers off-chain. The immediate goal of BuilderNet is to create a transparent and permissionless alternative to these off-chain agreements so that all parties -- orderflow providers, builders, and validators -- have equal access and visibility into how value is distributed.
@@ -71,13 +67,13 @@ We do not expect this to substantially impact outcomes for validators in the sho
 
 In the long term, there are a few differences between BuilderNet and the current market:
 - If BuilderNet is widely adopted, non-contentious transactions (e.g. simple transfers) will no longer compete for inclusion, reducing one form of MEV that is currently paid to validators
-- On the other hand, in this scenario BuilderNet will likely (1) lower the friction to transact and (2) generate more emergent value between transactions, increasing the overall MEV that can be shared by validators, users, and operators
+- On the other hand, in this scenario BuilderNet will likely (1) lower the friction to transact and (2) generate more emergent value between transactions, increasing the overall MEV that can be shared by validators and users
 
 We intend to monitor these dynamics and upgrade BuilderNet's approach to redistribution and bidding so that it remains maximally transparent, inclusive, and incentive compatible for all parties. We invite staking teams and validators contribute to this research and share their thoughts on the [forum](https://collective.flashbots.net/).
 
 ## Data
 
-Refund data is available through the [BuilderNet APIs](./api.mdx#Refunds).
+Refund data is available through the [BuilderNet APIs](./api.mdx#refunds).
 
 ## Refund wallet
 

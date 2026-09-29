@@ -3,13 +3,13 @@ title: How to send orderflow
 description: Endpoints and methods for sending bundles, transactions and propAMM quote updates directly to BuilderNet nodes.
 ---
 
-Orderflow sent to [Flashbots Protect](https://protect.flashbots.net) and [Flashbots Bundle Relay](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint) is automatically shared with BuilderNet. Advanced users can send orderflow directly to BuilderNet nodes.
+Orderflow sent to [Flashbots Protect](https://protect.flashbots.net), [Flashbots Bundle Relay](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint) and [MEV-Share](https://docs.flashbots.net/flashbots-mev-share/introduction) is automatically shared with BuilderNet. Advanced users can send orderflow directly to BuilderNet nodes.
 
 ---
 
 :::note
 
-The instructions in this document are intended for advanced technical users with strict trust assumptions. As a regular user, you can simply use [Flashbots Protect](https://protect.flashbots.net) to transact securely through BuilderNet and get refunds for your transactions.
+The instructions in this document are intended for advanced technical users. As a regular user, you can simply use [Flashbots Protect](https://protect.flashbots.net) to transact securely through BuilderNet and get refunds for your transactions.
 
 :::
 
@@ -79,13 +79,7 @@ curl https://rpc.buildernet.org \
 ```
 
 
-See [this example Golang code](https://github.com/flashbots/go-utils/blob/main/examples/send-multioperator-orderflow/main.go) for sending a transaction with a signed request and a pinned server certificate.
-
-You can use the `--cacert builder-cert.pem` option with curl to pin the TLS certificate of the BuilderNet node. You can get the public certificate (`builder-cert.pem`) with a `curl` request:
-
-```bash
-curl -w %{certs} https://rpc.buildernet.org/
-```
+See [this example Golang code](https://github.com/flashbots/go-utils/blob/main/examples/send-multioperator-orderflow/main.go) for sending a transaction with a signed request.
 
 <hr class="clean" />
 
@@ -101,13 +95,6 @@ For more details and examples on signing the payload, see the [documentation her
 ### Example Golang code
 
 See [this example Golang code](https://github.com/flashbots/go-utils/blob/main/examples/send-multioperator-orderflow/main.go) for sending a signed transaction to a builder node.
-The example code supports requiring a specific TLS certificate as well as skipping certificate validation.
-
-<hr class="clean" />
-
-## See also
-
-- [Example code (Golang) for sending orderflow](https://github.com/flashbots/go-utils/blob/main/examples/send-multioperator-orderflow/main.go)
 
 ---
 
