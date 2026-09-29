@@ -117,8 +117,6 @@ module.exports = async function createConfigAsync() {
               title: 'Network',
               items: [
                 { label: 'What is BuilderNet', to: '/docs' },
-                { label: 'Architecture', to: '/docs/architecture' },
-                { label: 'Verifiable system integrity', to: '/docs/verifiable-system-integrity' },
                 { label: 'Operate a node', to: '/docs/operating-a-node' },
               ],
             },
@@ -207,9 +205,9 @@ module.exports = async function createConfigAsync() {
         {
           title: 'BuilderNet documentation',
           description:
-            'BuilderNet is a TEE-based block building network for Ethereum. Refunds minimise execution costs; private transactions, bundles and propAMM quote updates go directly to the builder.',
+            'BuilderNet is a block building network for Ethereum. Refunds minimise execution costs; private transactions, bundles and propAMM quote updates go directly to the builder.',
           rootContent:
-            'BuilderNet is a TEE-based block building network for Ethereum. It pays refunds to minimise execution costs, and gives end users, market makers, traders and searchers the tools for efficient execution: private transactions, bundles and propAMM quote updates (priority updates), sent directly to the builder. These docs cover how to send orderflow, how refunds work, and how to operate a node. Site: https://buildernet.org. Send orderflow: https://buildernet.org/docs/send-orderflow. API reference: https://buildernet.org/docs/api. Refunds: https://buildernet.org/docs/refunds.',
+            'BuilderNet is a block building network for Ethereum. It pays refunds to minimise execution costs, and gives end users, market makers, traders and searchers the tools for efficient execution: private transactions, bundles and propAMM quote updates (priority updates), sent directly to the builder. These docs cover how to send orderflow, how refunds work, and how to operate a node. Site: https://buildernet.org. Send orderflow: https://buildernet.org/docs/send-orderflow. API reference: https://buildernet.org/docs/api. Refunds: https://buildernet.org/docs/refunds.',
           includeBlog: true,
           ignoreFiles: ['_*', '**/_*'],
           excludeImports: true,

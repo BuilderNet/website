@@ -16,21 +16,9 @@ module.exports = {
       label: 'Architecture',
       collapsed: false,
       items: [
-        'architecture',
         'os-services-builds',
         'operator-api',
         'flashbots-infra',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Security',
-      collapsed: false,
-      items: [
-        'verifiable-system-integrity',
-        'encryption-attestations',
-        'orderflow-sharing-confidentiality',
-        // 'threat-model',
       ],
     },
     {

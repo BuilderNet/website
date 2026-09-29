@@ -2,14 +2,14 @@
 title: What is BuilderNet
 slug: /
 hide_title: true
-description: BuilderNet is a TEE-based block building network for Ethereum. Refunds minimise execution costs for the end users, market makers, traders and searchers who send it orderflow.
+description: BuilderNet is a block building network for Ethereum. Refunds minimise execution costs for the end users, market makers, traders and searchers who send it orderflow.
 ---
 
 # Welcome to BuilderNet
 
 BuilderNet is a decentralized block building network for Ethereum.
 
-It's a secure, performant, and globally distributed network for collaborative Ethereum block building. Transactions remain provably private, and MEV value is permissionlessly redistributed to users.
+It's a secure, performant, and globally distributed network for collaborative Ethereum block building. Transactions are optimised by a competitive market of searchers without compromising on transaction privacy, and MEV value is permissionlessly redistributed to users.
 
 By maximizing participation in block building, BuilderNet reinforces the continued decentralization and resilience of public blockchains like Ethereum. Read the full mission statement [here](/blog/introducing-buildernet).
 
@@ -27,17 +27,16 @@ In the future all operations will be permissionless.
 
 ## Key Features
 
-1. Open-source block builder instances run by node operators.
+1. Block builder instances, based on the open source [rbuilder](https://github.com/flashbots/rbuilder), run by node operators.
 2. Instances share orderflow and coordinate their bids with each other.
-3. Orderflow providers can verify the builder instance software, and securely send orderflow to them.
-4. Transactions remain provably private through builder nodes running in Trusted Execution Environments (TEEs).
-5. Users are refunded the value their orderflow contributes to the final value of the blocks.
-6. Anyone can audit and [contribute](/docs/how-to-participate) to the open source block builder that powers BuilderNet.
+3. TEEs are leveraged so that transactions are optimised by a competitive market of searchers without compromising on transaction privacy.
+4. Users are refunded the value their orderflow contributes to the final value of the blocks.
+5. Anyone can audit and [contribute](/docs/how-to-participate) to rbuilder, the open source block builder BuilderNet is based on.
 
 ## Resources
 
 - For more information about the mission of BuilderNet, read the [mission statement](/blog/introducing-buildernet)
-- For details about BuilderNet’s features, architecture, and roadmap — read on!
+- For details about BuilderNet’s features and roadmap — read on!
 
 
 <hr class="clean" />

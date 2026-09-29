@@ -1,6 +1,6 @@
 ---
 title: API Reference
-description: "BuilderNet API reference: eth_sendBundle, eth_sendRawTransaction, priority updates and the propAMM quote stream, TEE attestation, and the refund methods."
+description: "BuilderNet API reference: eth_sendBundle, eth_sendRawTransaction, priority updates and the propAMM quote stream, and the refund methods."
 ---
 
 ## Orderflow
@@ -10,7 +10,6 @@ BuilderNet provides these APIs to send orderflow:
 - [`eth_sendBundle`](#eth_sendbundle)
 - [`eth_sendRawTransaction`](#eth_sendrawtransaction)
 - [Priority updates](#priority-updates)
-- [TEE Proof Validation API (aTLS)](#tee-proof-validation-api-atls)
 
 ---
 
@@ -144,7 +143,7 @@ For more details and examples on signing the payload, see the [documentation her
 
 #### Instance TLS certificate <!-- omit in toc -->
 
-The builder node creates a fresh TLS certificate on each startup, of which the private key is guaranteed to stay inside the TEE instance. You can verify the TEE proof for this certificate using the "[TEE Proof Validation API](#tee-proof-validation-api-atls)". You can also get the certificate with an unattested `curl` request:
+The builder node creates a fresh TLS certificate on each startup. You can get the certificate with a `curl` request:
 
 ```bash
 curl -w %{certs} https://rpc.buildernet.org
@@ -305,30 +304,6 @@ State overrides can be sent to `0xda7afeed01fe625cf15d187a19f94b45f00b8c5f`.
 | Tempest | `0x00000003f1ec2379e79f58e12ec6c4f51ee92149` |
 
 ---
-
-### TEE Proof Validation API (aTLS)
-
-BuilderNet uses attested TLS (aTLS) to verify the attestation of specific builder node instances.
-
-You can find more details in the [Constellation docs](https://docs.edgeless.systems/constellation/architecture/attestation#attested-tls-atls):
-
-> aTLS modifies the TLS handshake by embedding an attestation statement into the TLS certificate. Instead of relying on a certificate authority, aTLS uses this attestation statement to establish trust in the certificate.
->
-> The protocol can be used by clients to verify a server certificate, by a server to verify a client certificate, or for mutual verification (mutual aTLS).
-
-In BuilderNet, [github.com/flashbots/cvm-reverse-proxy](https://github.com/flashbots/cvm-reverse-proxy) is responsible for attested TLS (aTLS) communication, both towards users as well as within the network.
-You can use the [`attested-get`](https://github.com/flashbots/attested-tls-proxy) tool to receive the builder certificate over an attested channel:
-
-```bash
-# In a checkout of github.com/flashbots/attested-tls-proxy:
-# Get the builder certificate over an attested channel
-cargo run -- attested-get \
-    --measurements-file https://measurements.buildernet.org \
-    rpc.buildernet.org:7936/cert \
-    > builder-cert.pem
-```
-
-See also "[Orderflow encryption and attestation](encryption-attestations)" for more details.
 
 ## Refunds
 
