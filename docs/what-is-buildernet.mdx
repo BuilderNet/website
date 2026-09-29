@@ -2,42 +2,35 @@
 title: What is BuilderNet
 slug: /
 hide_title: true
-description: BuilderNet is a TEE-based block building network for Ethereum. Refunds minimise execution costs for the end users, market makers, traders and searchers who send it orderflow.
+description: BuilderNet is a block building network for Ethereum. Refunds minimise execution costs for the end users, market makers, traders and searchers who send it orderflow.
 ---
 
 # Welcome to BuilderNet
 
-BuilderNet is a decentralized block building network for Ethereum.
+BuilderNet is a block building network for Ethereum.
 
-It's a secure, performant, and globally distributed network for collaborative Ethereum block building. Transactions remain provably private, and MEV value is permissionlessly redistributed to users.
+It's a secure, performant, and globally distributed network for collaborative Ethereum block building. Transactions are optimised by a competitive market of searchers without compromising on transaction privacy, and MEV value is permissionlessly redistributed to users.
 
 By maximizing participation in block building, BuilderNet reinforces the continued decentralization and resilience of public blockchains like Ethereum. Read the full mission statement [here](/blog/introducing-buildernet).
 
 :::info
 
-This is the initial release, and we expect the system to evolve rapidly. Updates are posted to [the forum](https://collective.flashbots.net/c/buildernet/31)!
+BuilderNet is currently transitioning to a new security model. During this period BuilderNet nodes are not running in TEEs, but backrunning and routing services continue to run in TEEs. Updates are posted to [the forum](https://collective.flashbots.net/c/buildernet/31).
 
 :::
 
-## Operators
-
-BuilderNet nodes are initially operated by Flashbots, Beaverbuild, and Nethermind, with more operators added in the coming months. Teams can express interest in becoming an operator through [the interest form](https://www.notion.so/flashbots/1356b4a0d8768094a07be796f7615b30).
-
-In the future all operations will be permissionless.
-
 ## Key Features
 
-1. Open-source block builder instances run by node operators.
+1. Multiple block builder instances, based on the open source [rbuilder](https://github.com/flashbots/rbuilder).
 2. Instances share orderflow and coordinate their bids with each other.
-3. Orderflow providers can verify the builder instance software, and securely send orderflow to them.
-4. Transactions remain provably private through builder nodes running in Trusted Execution Environments (TEEs).
-5. Users are refunded the value their orderflow contributes to the final value of the blocks.
-6. Anyone can audit and [contribute](/docs/how-to-participate) to the open source block builder that powers BuilderNet.
+3. TEEs let searchers compete to execute trades efficiently without compromising user privacy.
+4. Users are refunded the value their orderflow contributes to the final value of the blocks.
+5. Anyone can audit and [contribute](/docs/how-to-participate) to rbuilder.
 
 ## Resources
 
 - For more information about the mission of BuilderNet, read the [mission statement](/blog/introducing-buildernet)
-- For details about BuilderNet’s features, architecture, and roadmap — read on!
+- For where BuilderNet is headed, see the [roadmap](/docs/roadmap)
 
 
 <hr class="clean" />
