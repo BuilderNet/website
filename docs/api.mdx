@@ -11,6 +11,8 @@ BuilderNet provides these APIs to send orderflow:
 - [`eth_sendRawTransaction`](#eth_sendrawtransaction)
 - [Priority updates](#priority-updates)
 
+Market data is available from the read-only [quote stream](#state-stream-).
+
 ---
 
 
@@ -70,6 +72,29 @@ This is useful for sending multiple transactions that depend on each other.
   2. For next block only: `"0x"` or `null` or missing field
 - `uuid` is supported as alias for `replacementUuid`.
 
+**Titan-compatible methods:**
+
+For compatibility with [Titan's API](https://docs.titanbuilder.xyz/api/eth_sendendofblockbundle), BuilderNet also accepts `eth_sendEndOfBlockBundle` (alias `eth_sendBobBundle`). It takes the same bundle object as `eth_sendBundle`, with `targetPools` as an alias for `targetAddresses`:
+
+```json
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "eth_sendEndOfBlockBundle",
+    "params": [{
+        txs               // Array[String], A list of signed transactions to execute in an atomic bundle.
+        blockNumber       // String, A hex encoded block number for which this bundle is valid on.
+        targetPools       // Array[String], (Optional) A list of pool addresses this bundle targets.
+    }]
+}
+```
+
+- With `targetPools`, the bundle is considered at any position in the block, equivalent to `desiredState: "AnyPosition"`.
+- Without `targetPools`, the bundle is only considered at the bottom of the block.
+- `targetPools` must be set inside the bundle object. Passing it as a separate positional parameter is not supported.
+
+We recommend `eth_sendBundle` with `"version": "v2"` instead, which lets you choose `desiredState` and target specific storage slots with `targetSlots`.
+
 **Bundle replacement and cancellation:**
 
 - **Replacing bundles**: Send another bundle with the same `replacementUuid` , and it will override any previous one.
@@ -80,7 +105,7 @@ This is useful for sending multiple transactions that depend on each other.
 When a searcher makes money by using some user tx, it pays the builder to be included in the block. Part of that payment is refunded to the user.
 To determine how much the searcher paid the builder, we check the delta in the builder's balance before and after executing a particular tx in the bundle. By checking this delta, we are considering gas payments and also explicit transfers from the searcher to the builder.
 
- These refunds should not be confused with [Gas Fee Refunds](./refunds.mdx).
+ These refunds should not be confused with [redistributions](./refunds.mdx).
 
 - `refundTxHashes` field (optional): Specifies which transaction in the bundle should be analyzed to measure the payment to the builder.
   - If present, specifies which transactions in the bundle should be considered for refund calculations.
@@ -407,10 +432,8 @@ The `buildernet_getFeeRefundsByRecipient` JSON-RPC method returns detailed infor
   "id": 1,
   "method": "buildernet_getFeeRefundsByRecipient",
   "params": [
-    {
-      recipient,       // String, the address to query for fee refunds
-      cursor,          // [optional] String, the cursor to continue from
-    }
+    recipient,       // String, the address to query for fee refunds
+    cursor,          // [optional] String, the cursor to continue from
   ]
 }
 ```
@@ -424,8 +447,11 @@ Responses are paginated and contain the following fields:
       "hash": "0x...",
       "amount": "0x...",
       "blockNumber": "0x13ddaa4",
-      "status": "pending",
-      "recipient": "0x..."
+      "status": "sent",
+      "recipient": "0x...",
+      "refundTxHash": "0x...",
+      "refundTxBlockNumber": "0x...",
+      "refundTxStatus": "confirmed"
     },
     ...
   ],
@@ -438,8 +464,9 @@ The `"refunds"` field contains an array of per-order fee refunds, each with the 
 - `hash`: the bundle hash or transaction hash associated with the fee refund
 - `amount`: the amount of the fee refund, in wei
 - `blockNumber`: the block number the order was contained in
-- `status`: the status of the fee refund, either "pending" or "received"
+- `status`: the status of the fee refund, either "pending" or "sent"
 - `recipient`: the address the fee refund is credited to, either the bundle signer or transaction sender
+- `refundTxHash`, `refundTxBlockNumber`, `refundTxStatus`: the payout transaction, once the fee refund has been sent
 
 The `"cursor"` field is only included if there are more fee refunds to fetch. To continue fetching fee refunds, include the cursor as the second argument in the next request.
 
@@ -470,9 +497,7 @@ The `buildernet_getFeeRefundsByBlock` is similar to `buildernet_getFeeRefundsByR
   "id": 1,
   "method": "buildernet_getFeeRefundsByBlock",
   "params": [
-    {
-      block_number,       // String, hex-encoded block number (e.g. 0x15d0280)
-    }
+    block_number,       // String, hex-encoded block number (e.g. 0x15d0280)
   ]
 }
 ```
@@ -559,7 +584,7 @@ The `"refunds"` field contains an array of per-order fee refunds, each with the 
 - `status`: the status of the delayed refund, either "pending" or "received"
 - `recipient`: the address the delayed refund is credited to
 
-The `"cursor"` field is only included if there are more delayed refunds to fetch, some data might be avaiable in the future. To continue fetching, include the cursor as the second argument in the next request. If response is empty but contains cursor retry later.
+The `"nextCursor"` field is only included if there are more delayed refunds to fetch, or if more data might become available in the future. To continue fetching, pass its value as the `cursor` field in the next request. If the response is empty but contains `nextCursor`, retry later.
 
 `"indexedUpTo"` contains maximum block number for which delayed refunds are indexed
 
