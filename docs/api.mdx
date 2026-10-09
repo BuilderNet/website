@@ -72,9 +72,9 @@ This is useful for sending multiple transactions that depend on each other.
   2. For next block only: `"0x"` or `null` or missing field
 - `uuid` is supported as alias for `replacementUuid`.
 
-**Titan-compatible methods:**
+**Compatibility methods:**
 
-For compatibility with [Titan's API](https://docs.titanbuilder.xyz/api/eth_sendendofblockbundle), BuilderNet also accepts `eth_sendEndOfBlockBundle` (alias `eth_sendBobBundle`). It takes the same bundle object as `eth_sendBundle`, with `targetPools` as an alias for `targetAddresses`:
+For compatibility with other builders, BuilderNet also accepts `eth_sendEndOfBlockBundle` (alias `eth_sendBobBundle`). It takes the same bundle object as `eth_sendBundle`, with `targetPools` as an alias for `targetAddresses`:
 
 ```json
 {
@@ -91,7 +91,7 @@ For compatibility with [Titan's API](https://docs.titanbuilder.xyz/api/eth_sende
 
 - With `targetPools`, the bundle is considered at any position in the block, equivalent to `desiredState: "AnyPosition"`.
 - Without `targetPools`, the bundle is only considered at the bottom of the block.
-- `targetPools` must be set inside the bundle object. Passing it as a separate positional parameter is not supported.
+- `targetPools` must be set inside the bundle object. If it is passed as a separate positional parameter, it is ignored and the bundle is only considered at the bottom of the block.
 
 We recommend `eth_sendBundle` with `"version": "v2"` instead, which lets you choose `desiredState` and target specific storage slots with `targetSlots`.
 
