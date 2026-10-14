@@ -57,6 +57,8 @@ This is useful for sending multiple transactions that depend on each other.
 
         refundIdentity   // String, Address that BuilderNet refunds should be sent to instead of the bundle signer.
 
+        disableCrossRegionSharing // Boolean, If true, prevents BuilderNet from forwarding this bundle to other regions. Defaults to false.
+
         // Target pools (requires "version": "v2")
         version           // String, Bundle format version. Set to "v2" to use the target pool fields below.
         desiredState      // String, Desired placement of the bundle. Set to either "BottomOfBlock" for consideration at only the bottom of the block or "AnyPosition" for consideration intrablock and bottom of the block.
