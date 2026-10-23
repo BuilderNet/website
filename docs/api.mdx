@@ -237,6 +237,8 @@ The implementation is new and exact behaviour is subject to change. Feedback wel
 
 When multiple updates for the same state are available at the time a block is built, the builder will prioritise the latest update.
 
+BuilderNet does not forward priority updates to other builders. Updates are shared between BuilderNet instances in different regions unless `disable_cross_region_sharing` is set.
+
 The mode is set per API key. This requirement may be dropped in future. Updaters needing both modes can request multiple keys.
 
 Reach out to get API keys (see [How to participate](how-to-participate)).
