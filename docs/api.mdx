@@ -42,6 +42,7 @@ This is useful for sending multiple transactions that depend on each other.
 
         // Optional fields
         createdAtMs       // Number (non-negative integer), Sender-provided bundle creation time, in milliseconds since the Unix epoch.
+        expireAfterMs     // Number (non-negative integer), Maximum bundle age in milliseconds, measured from the earlier of createdAtMs and first receipt by BuilderNet. Omitted or 0 disables sender-requested expiration.
         replacementUuid   // String, UUID that can be used to cancel/replace this bundle.
         replacementNonce  // Number, Used to order bundles sharing the same replacementUuid. Bundles received with a lower replacementNonce than the latest accepted one are ignored.
 
@@ -159,15 +160,95 @@ See [this example Golang code](https://github.com/flashbots/go-utils/blob/main/e
 
 #### Request signature and authentication <!-- omit in toc -->
 
-`eth_sendBundle` requests require a `X-Flashbots-Signature` header for authentication and for the signer to receive [refunds](refunds):
+`eth_sendBundle` requests require a `X-Flashbots-Signature` header for authentication and for the signer to receive [refunds](refunds). You can use either a per-request body signature (v1) or a reusable credential (v2). Both schemes support any valid [ECDSA secp256k1](https://en.bitcoin.it/wiki/Secp256k1) key (i.e. any Ethereum key), and the signer address is used for [Redistribution](refunds).
+
+##### Per-request body signature (v1) <!-- omit in toc -->
 
 ```
 X-Flashbots-Signature: <public_key_address>:<signature>
 ```
 
-The signature is calculated by taking the EIP-191 hash of the json body encoded as UTF-8 bytes.
-Any valid [ECDSA secp256k1](https://en.bitcoin.it/wiki/Secp256k1) key (i.e. any Ethereum key) can be used to sign the payload. The address associated with this key will be used for [Redistribution](refunds).
+Sign the UTF-8 bytes of the lowercase, `0x`-prefixed hexadecimal Keccak-256 hash of the JSON request body using EIP-191. Generate a new signature for each different request body and omit `X-Flashbots-Auth`.
 For more details and examples on signing the payload, see the [documentation here](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint#authentication).
+
+##### Reusable credential (v2) {#authentication-v2}
+
+Authentication v2 lets you sign a credential once and reuse it across different `eth_sendBundle` and `eth_sendRawTransaction` request bodies until it expires. To opt in, send exactly one of each header on every request:
+
+```text
+X-Flashbots-Auth: flashbots-auth-v2:<expires-at>:<token>
+X-Flashbots-Signature: <signer-address>:<signature>
+```
+
+Create the credential as follows:
+
+1. Set `expires-at` to a future Unix timestamp in seconds, written as decimal digits with no leading zeroes. Use a lifetime of up to 24 hours.
+2. Generate a random `token` of exactly 32 ASCII alphanumeric characters (`A-Z`, `a-z`, `0-9`).
+3. EIP-191 sign the UTF-8 bytes of the complete `X-Flashbots-Auth` value, including the `flashbots-auth-v2:` prefix, timestamp, separators and token. Sign this string directly, without first hashing it to a hexadecimal string as in v1.
+4. Set `X-Flashbots-Signature` to the Ethereum address of the signing key, followed by `:` and the `0x`-prefixed signature.
+
+Reuse this header pair across requests and rotate it before expiry so in-flight submissions can reach the receiver. The maximum remaining lifetime check allows one minute of clock skew; expired credentials are always rejected. An invalid v2 credential is rejected without falling back to v1.
+
+For example, after setting `AUTH_VALUE` and `SIGNATURE_HEADER` to the generated header values, submit a bundle saved in `bundle.json`:
+
+```bash
+curl https://rpc.buildernet.org \
+    --header 'Content-Type: application/json' \
+    --header "X-Flashbots-Auth: ${AUTH_VALUE}" \
+    --header "X-Flashbots-Signature: ${SIGNATURE_HEADER}" \
+    --data-binary @bundle.json
+```
+
+Treat the header pair as a secret bearer credential: anyone who obtains it can submit requests as the signer until it expires. Send it only over HTTPS and keep it out of logs.
+
+Example Rust client for authentication v2. Set `FLASHBOTS_ORDERFLOW_SIGNER` to your signing private key and replace the transaction and block number placeholders before running:
+
+```rust
+use alloy_signer::SignerSync;
+use alloy_signer_local::PrivateKeySigner;
+use rand::distr::{Alphanumeric, SampleString};
+use serde_json::json;
+use std::{
+    env,
+    error::Error,
+    time::{SystemTime, UNIX_EPOCH},
+};
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn Error>> {
+    let signer: PrivateKeySigner =
+        env::var("FLASHBOTS_ORDERFLOW_SIGNER")?.parse()?;
+
+    let now = SystemTime::now().duration_since(UNIX_EPOCH)?.as_secs();
+    let expires_at = now + 24 * 60 * 60;
+    let token = Alphanumeric.sample_string(&mut rand::rng(), 32);
+    let auth = format!("flashbots-auth-v2:{expires_at}:{token}");
+
+    let signature = signer.sign_message_sync(auth.as_bytes())?;
+    let signature_header = format!("{}:{signature}", signer.address());
+
+    let request = json!({
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "eth_sendBundle",
+        "params": [{
+            "txs": ["0x..."],
+            "blockNumber": "0x..."
+        }]
+    });
+
+    let response = reqwest::Client::new()
+        .post("https://rpc.buildernet.org")
+        .header("X-Flashbots-Auth", &auth)
+        .header("X-Flashbots-Signature", &signature_header)
+        .json(&request)
+        .send()
+        .await?;
+
+    println!("{}", response.text().await?);
+    Ok(())
+}
+```
 
 #### Example Golang code <!-- omit in toc -->
 

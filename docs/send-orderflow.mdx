@@ -85,10 +85,12 @@ See [this example Golang code](https://github.com/flashbots/go-utils/blob/main/e
 
 ### Request authentication
 
-JSON-RPC requests (`eth_sendBundle`, `eth_sendRawTransaction`) need a `X-Flashbots-Signature` header. The signature is calculated by taking the EIP-191 hash of the json body encoded as UTF-8 bytes.
-Any valid [ECDSA secp256k1](https://en.bitcoin.it/wiki/Secp256k1) key (i.e. any Ethereum key) can be used to sign the payload. The address associated with this key will be used for [Redistribution](refunds).
+JSON-RPC requests (`eth_sendBundle`, `eth_sendRawTransaction`) need a `X-Flashbots-Signature` header. You can choose between two authentication schemes:
 
-For more details and examples on signing the payload, see the [documentation here](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint#authentication).
+- **Per-request body signature (v1):** EIP-191 sign the UTF-8 bytes of the lowercase, `0x`-prefixed hexadecimal Keccak-256 hash of the JSON request body. Generate a new signature for each different request body. See the [signing examples](https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint#authentication).
+- **Reusable credential (v2):** Sign a credential once and reuse it across different request bodies until it expires (up to 24 hours). Include both `X-Flashbots-Auth` and `X-Flashbots-Signature` on every request. See [authentication v2](api#authentication-v2) for the header format, signing steps and an example request.
+
+Any valid [ECDSA secp256k1](https://en.bitcoin.it/wiki/Secp256k1) key (i.e. any Ethereum key) can be used with either scheme. The address associated with this key will be used for [Redistribution](refunds).
 
 <hr class="clean" />
 
