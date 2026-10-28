@@ -42,6 +42,7 @@ This is useful for sending multiple transactions that depend on each other.
 
         // Optional fields
         createdAtMs       // Number (non-negative integer), Sender-provided bundle creation time, in milliseconds since the Unix epoch.
+        expireAfterMs     // Number (non-negative integer), Maximum bundle age in milliseconds, measured from the earlier of createdAtMs and first receipt by BuilderNet. Omitted or 0 disables sender-requested expiration.
         replacementUuid   // String, UUID that can be used to cancel/replace this bundle.
         replacementNonce  // Number, Used to order bundles sharing the same replacementUuid. Bundles received with a lower replacementNonce than the latest accepted one are ignored.
 
