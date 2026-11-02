@@ -434,7 +434,7 @@ The addresses in a message play different roles:
 
 Venues that use the shared Priority Update Registry write `0xDa7AfEeD021EAFC1c1Af9C362dE477DaD0396B81`, which replaced `0xda7afeed01fe625cf15d187a19f94b45f00b8c5f` on 2026-09-15; the others write their own pricing contract. `buildernet_getPammStateOverrides` on `https://rpc.buildernet.org/pamm/rpc` returns the current snapshot on demand.
 
-Venues (as of 2026-09-29):
+Venues (last updated 2026-11-02):
 
 | Venue | Stream address (top-level key) | State override target |
 | --- | --- | --- |
@@ -444,6 +444,7 @@ Venues (as of 2026-09-29):
 | Kipseli | `0xC9A956b5196DFe110DEBE8781857Bc8B97d32091` (price oracle; router `0x342b8458161137d0203605Fa51E4363c1445ADCD`) | `0xDa7AfEeD021EAFC1c1Af9C362dE477DaD0396B81` (Priority Update Registry) |
 | El Zorro | `0xcf211b4dd0d2be5c173ea57bcf938fc61d1d3bd3` (pool and router) | `0xDa7AfEeD021EAFC1c1Af9C362dE477DaD0396B81` (Priority Update Registry) |
 | TaurusFi | `0x217d58931a8549ca539426aa8152e33dafc3d95a` | `0xDa7AfEeD021EAFC1c1Af9C362dE477DaD0396B81` (Priority Update Registry) |
+| Fluxlabs | `0x80e8ee519fdbfd4975fd57c2d8f1f0b94ea02c39` (reader; swaps on `0x9A33Ad0755372Cf066D6bB8E1eEB80e2615016cD`) | `0xDa7AfEeD021EAFC1c1Af9C362dE477DaD0396B81` (Priority Update Registry) |
 | Metric | one key per oracle: `0xe844701934d9c6085b292e428f41b911cc0b3872` (CompressedOracleV1) and `0x30a88bf894d1b806125a23ebf23d715496fd7102` (PythOracle) | the same oracle |
 
 Superseded addresses, no longer used: Bebop `0xB0999914B3DE1be58Ef2416af09Bd2E7F8AaD03C`, Kipseli `0xfe3d12b21d2602868223e83149bdbbfb5d11e185`, and the previous registry instance `0xda7afeed01fe625cf15d187a19f94b45f00b8c5f`.
