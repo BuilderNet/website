@@ -101,8 +101,8 @@ We recommend `eth_sendBundle` with `"version": "v2"` instead, which lets you cho
 
 **Bundle replacement and cancellation:**
 
-- **Replacing bundles**: Send another bundle with the same `replacementUuid` , and it will override any previous one.
-- **Cancelling bundles**: Send another bundle with the same `replacementUuid` and an empty list of transactions.
+- **Replacing bundles**: Send another bundle with the same `replacementUuid` from the same signer, and it will override any previous one.
+- **Cancelling bundles**: Send another bundle with the same `replacementUuid` from the same signer and an empty list of transactions.
 
 **MEV Refunds:**
 
