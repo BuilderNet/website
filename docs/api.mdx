@@ -391,6 +391,12 @@ Set the API key in the `Authorization` header when establishing the WebSocket co
 - Use one `replacement_uuid` per quoted instrument and increase `replacement_seq_number` monotonically. The builder keeps only the highest sequence number for each uuid, so refresh a quote by replacing it rather than creating a new uuid.
 - Target the next block in `block_number` and resend on each new head. Updates for past blocks are dropped.
 
+#### Rate limits and expiry <!-- omit in toc -->
+
+- Each update message counts against the rate limit of your API key. This limit is set when the key is issued. If you exceed it, the response `error` field is `rate limited`.
+- The HTTP request rate in [Rate limits](send-orderflow#rate-limits) does not count update messages. The connection and bandwidth limits there are checked when you open a WebSocket connection, so keep your connections open and reuse them.
+- The builder drops an update 1 second after BuilderNet first receives it. To keep a quote live, send a new update before then. If your updater stops, your quotes expire within 1 second.
+
 #### State stream <!-- omit in toc -->
 
 You can subscribe to a read-only stream of the priority update state the builder would apply to the next block. Only priority updates that opt in to publishing are included in the stream. Appearing in the stream does not guarantee inclusion: conditional updates still land only when a matching consumption event is emitted.
