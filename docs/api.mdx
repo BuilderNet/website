@@ -394,7 +394,7 @@ Set the API key in the `Authorization` header when establishing the WebSocket co
 #### Rate limits and expiry <!-- omit in toc -->
 
 - Each update message counts against the rate limit of your API key. This limit is set when the key is issued. If you exceed it, the response `error` field is `rate limited`.
-- The HTTP request rate in [Rate limits](send-orderflow#rate-limits) does not count update messages. The connection and bandwidth limits there still apply, so keep your WebSocket connections open and reuse them.
+- The HTTP request rate in [Rate limits](send-orderflow#rate-limits) does not count update messages. The connection and bandwidth limits there are checked when you open a WebSocket connection, so keep your connections open and reuse them.
 - The builder drops an update 1 second after BuilderNet first receives it. To keep a quote live, send a new update before then. If your updater stops, your quotes expire within 1 second.
 
 #### State stream <!-- omit in toc -->
