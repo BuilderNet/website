@@ -57,7 +57,7 @@ This is useful for sending multiple transactions that depend on each other.
         refundRecipient   // String, The address that the funds from refundPercent will be sent to. If not specified, they will be sent to the from address of the first transaction.
         delayedRefund     // Boolean, If true, `refundPercent` refund is processed asynchronously via BuilderNet refund pipeline rather than in the same block.
 
-        refundIdentity   // String, Address that BuilderNet redistributions are sent to. From DATE_TBD, bundles without it do not receive redistributions.
+        refundIdentity   // String, Address that BuilderNet redistributions are sent to. From November 25, 2026 (UTC), bundles without it do not receive redistributions.
 
         disableCrossRegionSharing // Boolean, If true, prevents BuilderNet from forwarding this bundle to other regions. Defaults to false.
 
@@ -123,7 +123,7 @@ To determine how much the searcher paid the builder, we check the delta in the b
 **Redistributions and `refundIdentity`:**
 
 - BuilderNet pays [redistributions](./refunds.mdx) to the bundle's `refundIdentity`.
-- From DATE_TBD, bundles without a `refundIdentity` do not receive redistributions. They are still considered for inclusion.
+- From November 25, 2026 (UTC), bundles without a `refundIdentity` do not receive redistributions. They are still considered for inclusion.
 - To keep receiving redistributions at the address that signs your bundles, set `refundIdentity` to that address.
 
 #### Response <!-- omit in toc -->
