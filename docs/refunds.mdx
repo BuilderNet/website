@@ -17,6 +17,8 @@ The refund rule is outlined below. For further details about how to bid and inte
 
 Note that transactions seen in the public mempool, or bundles only containing transactions from the public mempool, do not receive refunds. Bundles sent by the same signer will be treated as non-competitive.
 
+From November 25, 2026 (UTC), a bundle must set [`refundIdentity`](./api.mdx#eth_sendbundle) to receive refunds. Refunds are sent to that address. Bundles without one still compete for inclusion and are part of the simulations below, but they do not receive refunds.
+
 ### The Flat Tax Rule
 
 :::note
