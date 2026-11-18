@@ -57,7 +57,7 @@ This is useful for sending multiple transactions that depend on each other.
         refundRecipient   // String, The address that the funds from refundPercent will be sent to. If not specified, they will be sent to the from address of the first transaction.
         delayedRefund     // Boolean, If true, `refundPercent` refund is processed asynchronously via BuilderNet refund pipeline rather than in the same block.
 
-        refundIdentity   // String, Address that BuilderNet refunds should be sent to instead of the bundle signer.
+        refundIdentity   // String, Address that BuilderNet redistributions are sent to. From DATE_TBD, bundles without it do not receive redistributions.
 
         disableCrossRegionSharing // Boolean, If true, prevents BuilderNet from forwarding this bundle to other regions. Defaults to false.
 
@@ -120,10 +120,17 @@ To determine how much the searcher paid the builder, we check the delta in the b
   - (Optional) An integer between 1-99 which defines how much of the total priority fee + coinbase payment you want to be refunded for.
   - Example: If a bundle pays 0.2 ETH of priority fee plus 1 ETH to coinbase, a refundPercent set to 50 will result in a transaction being appended after the bundle, paying 0.59 ETH back to the EOA. This is assuming the payout tx will cost BuilderNet 0.01 ETH in fees, which are deducted from the 0.6 ETH payout.
 
+**Redistributions and `refundIdentity`:**
+
+- BuilderNet pays [redistributions](./refunds.mdx) to the bundle's `refundIdentity`.
+- From DATE_TBD, bundles without a `refundIdentity` do not receive redistributions. They are still considered for inclusion.
+- To keep receiving redistributions at the address that signs your bundles, set `refundIdentity` to that address.
+
 #### Response <!-- omit in toc -->
 
 The response always contains the bundles unique hash which can then be used to query refunds.
 It also contains `receivedTimestampMs`, a Unix timestamp in milliseconds indicating when BuilderNet received the bundle. The value is a number and may include fractional milliseconds for microsecond precision.
+If the bundle has no `refundIdentity`, the response may also contain a `notice` string about its redistribution eligibility.
 
 ```json
 {
