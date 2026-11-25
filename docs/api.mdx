@@ -76,6 +76,19 @@ This is useful for sending multiple transactions that depend on each other.
   2. For next block only: `"0x"` or `null` or missing field
 - `uuid` is supported as alias for `replacementUuid`.
 
+**Limits:**
+
+A request that breaks one of these limits is rejected with an `Invalid params` error.
+
+- A bundle can contain at most 100 transactions.
+- The request body can be at most 10 MiB. For gzip-compressed requests, this applies both before and after decompression.
+- `targetAddresses` (or `targetPools`) can contain at most 35 addresses.
+- Each entry of `targetSlots` can contain at most 2 slots.
+- If `targetSlots` is set, it must have exactly one entry per address in `targetAddresses`. Use an empty array to target all slots of an address.
+- A bundle with `desiredState: "AnyPosition"` must have at least one address in `targetAddresses`.
+
+When the target fields break a limit, the `data` field of the error says which one, for example `bundle carries 41 state filters, exceeding the max of 35`. A state filter is one target address together with its slots.
+
 **Compatibility methods:**
 
 For compatibility with other builders, BuilderNet also accepts `eth_sendEndOfBlockBundle` (alias `eth_sendBobBundle`). It takes the same bundle object as `eth_sendBundle`, with `targetPools` as an alias for `targetAddresses`:
